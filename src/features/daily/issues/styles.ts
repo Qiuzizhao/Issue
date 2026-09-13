@@ -1,0 +1,277 @@
+import { Platform, StyleSheet } from 'react-native';
+
+import { colors, radius, shadow, spacing } from '@/src/shared/theme';
+
+export const styles = StyleSheet.create({
+  content: {
+    gap: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xxl,
+  },
+  noScrollBounce: Platform.select({
+    web: { overscrollBehaviorY: 'none' } as any,
+    default: {},
+  }),
+  headerEdit: {
+    fontSize: 15,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  headerEditButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 36,
+    minWidth: 40,
+  },
+  headerActions: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  projectScroller: {
+    marginHorizontal: -spacing.md,
+  },
+  projectTabs: {
+    gap: spacing.lg,
+    paddingHorizontal: spacing.md,
+  },
+  projectTab: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 36,
+    paddingHorizontal: 2,
+  },
+  projectTabText: {
+    color: colors.textSoft,
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  projectTabTextSelected: {
+    color: colors.primary,
+  },
+  quickAdd: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: radius.xl,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    padding: spacing.xs,
+    paddingLeft: spacing.md,
+    ...shadow,
+  },
+  quickInput: {
+    color: colors.text,
+    flex: 1,
+    fontSize: 15,
+    minHeight: 48,
+  },
+  addButton: {
+    alignItems: 'center',
+    borderRadius: radius.xl,
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+  disabled: {
+    opacity: 0.45,
+  },
+  list: {
+    gap: spacing.xs,
+  },
+  issueCard: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: radius.xl,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    minHeight: 54,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    ...shadow,
+  },
+  checkCircle: {
+    alignItems: 'center',
+    borderColor: colors.border,
+    borderRadius: radius.full,
+    borderWidth: 1.5,
+    height: 22,
+    justifyContent: 'center',
+    width: 22,
+  },
+  checkCircleDone: {
+  },
+  issueMain: {
+    flex: 1,
+    gap: 3,
+  },
+  issueTitle: {
+    color: colors.text,
+    fontSize: 17,
+    fontWeight: '700',
+    lineHeight: 23,
+  },
+  completed: {
+    color: colors.faint,
+    textDecorationLine: 'line-through',
+  },
+  description: {
+    color: colors.muted,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  metadata: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+  },
+  metadataItem: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 4,
+  },
+  metadataText: {
+    color: colors.muted,
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  emptyState: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    gap: spacing.xs,
+    padding: spacing.xl,
+  },
+  emptyTitle: {
+    color: colors.text,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  emptyText: {
+    color: colors.muted,
+    fontSize: 13,
+    textAlign: 'center',
+  },
+  modalContent: {
+    gap: spacing.md,
+    padding: spacing.xl,
+    paddingBottom: spacing.xxl,
+  },
+  sheetTitle: {
+    color: colors.text,
+    fontSize: 20,
+    fontWeight: '600',
+  },
+  projectRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  projectInput: {
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radius.lg,
+    color: colors.text,
+    flex: 1,
+    fontSize: 15,
+    minHeight: 48,
+    paddingHorizontal: spacing.md,
+  },
+  projectAction: {
+    alignItems: 'center',
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    height: 42,
+    justifyContent: 'center',
+    width: 42,
+  },
+  projectDelete: {
+    borderColor: colors.dangerSoft,
+  },
+  projectDivider: {
+    backgroundColor: colors.border,
+    height: 1,
+    marginVertical: spacing.sm,
+  },
+  issueEditorOverlay: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(15, 23, 42, 0.28)',
+    flex: 1,
+    justifyContent: 'center',
+    padding: spacing.lg,
+  },
+  issueEditorPanel: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.xl,
+    gap: spacing.md,
+    maxWidth: 420,
+    padding: spacing.lg,
+    width: '100%',
+    ...shadow,
+  },
+  issueEditorHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  issueEditorTitle: {
+    color: colors.text,
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  issueEditorClose: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radius.full,
+    height: 34,
+    justifyContent: 'center',
+    width: 34,
+  },
+  issueEditorInput: {
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radius.lg,
+    color: colors.text,
+    fontSize: 15,
+    minHeight: 52,
+    paddingHorizontal: spacing.md,
+  },
+  issueEditorActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  issueEditorButton: {
+    alignItems: 'center',
+    borderColor: colors.border,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    flex: 1,
+    flexDirection: 'row',
+    gap: spacing.xs,
+    justifyContent: 'center',
+    minHeight: 46,
+    paddingHorizontal: spacing.sm,
+  },
+  issueEditorButtonText: {
+    color: colors.textSoft,
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  issueEditorDeleteButton: {
+    backgroundColor: colors.dangerSoft,
+    borderColor: colors.dangerSoft,
+  },
+  issueEditorDeleteText: {
+    color: colors.danger,
+  },
+  issueEditorSaveButton: {
+    borderWidth: 1,
+  },
+  issueEditorSaveText: {
+    color: colors.surface,
+    fontSize: 14,
+    fontWeight: '700',
+  },
+});
