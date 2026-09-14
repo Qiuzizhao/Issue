@@ -211,10 +211,26 @@ export function FormSheet({
 }
 
 export function SheetTextInput({ value, onChangeText, onBlur, sheet = true, ...props }: TextInputProps & { sheet?: boolean }) {
+  const propValue = value == null ? '' : String(value);
   const [localValue, setLocalValue] = useState(value == null ? '' : String(value));
+  const [resetToken, setResetToken] = useState(0);
   const localValueRef = useRef(localValue);
   const composingRef = useRef(false);
+  const focusedRef = useRef(false);
+  // 父组件主动改写 value 时记录被覆盖掉的本地文本，用于识别输入法随后回写的旧文本
+  const overriddenTextRef = useRef<string | null>(null);
+  const seenPropValueRef = useRef(propValue);
+  // 记录用户最后一次输入时父组件的 value，父组件改写后就不再回写本地文本
+  const editedPropValueRef = useRef<string | null>(null);
   const InputComponent = sheet && Platform.OS !== 'web' ? BottomSheetTextInput : TextInput;
+
+  if (seenPropValueRef.current !== propValue) {
+    // 渲染阶段就登记覆盖：父组件清空输入框后，输入法回写的旧文本可能比副作用更早到达
+    if (localValueRef.current !== '' && propValue !== localValueRef.current) {
+      overriddenTextRef.current = localValueRef.current;
+    }
+    seenPropValueRef.current = propValue;
+  }
 
   useEffect(() => {
     const nextValue = value == null ? '' : String(value);
@@ -236,8 +252,19 @@ export function SheetTextInput({ value, onChangeText, onBlur, sheet = true, ...p
 
   const inputProps: TextInputProps & Record<string, unknown> = {
     ...props,
+    autoFocus: resetToken === 0 ? props.autoFocus : focusedRef.current,
     value: localValue,
     onChangeText: (text: string) => {
+      const overriddenText = overriddenTextRef.current;
+      if (overriddenText !== null && overriddenText === text && text !== propValue) {
+        // 父组件已经清空/改写输入框，这里收到的是输入法回写的旧文本：忽略掉，并把原生输入框拉回父组件的值
+        localValueRef.current = propValue;
+        setLocalValue(propValue);
+        setResetToken((current) => current + 1);
+        return;
+      }
+      overriddenTextRef.current = null;
+      editedPropValueRef.current = propValue;
       if (Platform.OS === 'web' && composingRef.current) {
         syncText(text);
         return;
@@ -245,10 +272,16 @@ export function SheetTextInput({ value, onChangeText, onBlur, sheet = true, ...p
       syncText(text);
       onChangeText?.(text);
     },
+    onFocus: (event) => {
+      focusedRef.current = true;
+      props.onFocus?.(event);
+    },
     onBlur: (event) => {
+      focusedRef.current = false;
       composingRef.current = false;
-      const propValue = value == null ? '' : String(value);
-      if (localValueRef.current !== propValue) {
+      const editedPropValue = editedPropValueRef.current;
+      editedPropValueRef.current = null;
+      if (editedPropValue !== null && editedPropValue === propValue && localValueRef.current !== propValue) {
         onChangeText?.(localValueRef.current);
       }
       onBlur?.(event);
@@ -266,7 +299,7 @@ export function SheetTextInput({ value, onChangeText, onBlur, sheet = true, ...p
     };
   }
 
-  return <InputComponent {...inputProps} />;
+  return <InputComponent key={resetToken} {...inputProps} />;
 }
 
 export function Field({ label, sheet = true, ...props }: TextInputProps & { label: string; sheet?: boolean }) {

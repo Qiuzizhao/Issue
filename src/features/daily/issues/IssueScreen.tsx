@@ -66,7 +66,8 @@ function IssueQuickAdd({
     submittingRef.current = true;
     try {
       const created = await onSubmit(trimmedDraft);
-      if (created) setDraft('');
+      // 写入过程中用户可以继续输入：只清掉已经提交的那条内容，不覆盖新输入
+      if (created) setDraft((current) => (current.trim() === trimmedDraft ? '' : current));
     } finally {
       submittingRef.current = false;
     }
@@ -441,13 +442,13 @@ export function IssueScreen() {
       </ScrollView>
       <IssueQuickAdd
         accentColor={themeColors.primary}
-        disabled={saving || !selectedProjectKey}
+        disabled={!selectedProjectKey}
         onSubmit={addQuickIssue}
         placeholder={selectedProject ? `添加 ${selectedProject.name} 的 Issue...` : '请先添加项目'}
       />
       <StateView error={error} loading={loading && !hydrated} onRetry={loadData} />
     </>
-  ), [addQuickIssue, error, hydrated, loadData, loading, projects, saving, selectedProject, selectedProjectKey, themeColors.primary]);
+  ), [addQuickIssue, error, hydrated, loadData, loading, projects, selectedProject, selectedProjectKey, themeColors.primary]);
 
   const renderIssueEmpty = () => {
     if (!hydrated || error) return null;
