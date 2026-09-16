@@ -8,6 +8,7 @@ import {
 import { getSettingsLocal, saveSettingsFromSync, type IssueSettings } from '@/src/local/settingsRepository';
 import { getSyncMetadata, saveSyncMetadata } from '@/src/local/syncMetadataRepository';
 import { mergeSyncRecords } from './syncMerge';
+import { countProgress, ratioProgress, SYNC_PROGRESS_COMPLETE, type SyncProgressListener } from './syncProgress';
 import { getCurrentSession, getSupabaseClient, isSupabaseConfigured } from './supabaseClient';
 
 type RemoteIssueProject = {
@@ -137,7 +138,12 @@ function toRemoteSettings(settings: IssueSettings, userId: string): RemoteSettin
   };
 }
 
-export async function runManualSync(): Promise<ManualSyncResult> {
+export async function runManualSync({
+  onProgress,
+}: {
+  /** 同步进度回调：只给「同步中」弹窗用，不影响同步结果 */
+  onProgress?: SyncProgressListener;
+} = {}): Promise<ManualSyncResult> {
   if (!isSupabaseConfigured()) {
     throw new Error('还没有配置 Supabase。请设置 EXPO_PUBLIC_SUPABASE_URL 和 EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY。');
   }
@@ -145,6 +151,7 @@ export async function runManualSync(): Promise<ManualSyncResult> {
   const session = await getCurrentSession();
   if (!session?.user) return { status: 'signedOut' };
 
+  const report = onProgress;
   const supabase = getSupabaseClient();
   const userId = session.user.id;
   const syncedAt = new Date().toISOString();
@@ -155,13 +162,16 @@ export async function runManualSync(): Promise<ManualSyncResult> {
   ]);
   const pendingProjects = localProjects.filter((project) => project.sync_status === 'pending' || project.sync_status === 'failed');
   const pendingIssues = localIssues.filter((issue) => issue.sync_status === 'pending' || issue.sync_status === 'failed');
+  const uploadTotal = pendingProjects.length + pendingIssues.length;
 
+  report?.(countProgress('upload', 0, uploadTotal, ' 项'));
   if (pendingProjects.length > 0) {
     const { error } = await supabase
       .from('issue_projects')
       .upsert(pendingProjects.map((project) => toRemoteProject(project, userId)), { onConflict: 'id' });
     if (error) throw error;
   }
+  report?.(countProgress('upload', pendingProjects.length, uploadTotal, ' 项'));
 
   if (pendingIssues.length > 0) {
     const { error } = await supabase
@@ -169,7 +179,9 @@ export async function runManualSync(): Promise<ManualSyncResult> {
       .upsert(pendingIssues.map((issue) => toRemoteIssue(issue, userId)), { onConflict: 'id' });
     if (error) throw error;
   }
+  report?.(countProgress('upload', uploadTotal, uploadTotal, ' 项'));
 
+  report?.(ratioProgress('pull', 0, '拉取云端数据…'));
   const { data: remoteProjectsData, error: remoteProjectsError } = await supabase
     .from('issue_projects')
     .select('id,user_id,project_key,name,created_at,updated_at,deleted_at')
@@ -186,6 +198,7 @@ export async function runManualSync(): Promise<ManualSyncResult> {
   const pendingIssueIds = new Set(pendingIssues.map((issue) => issue.id));
   const remoteProjects = ((remoteProjectsData ?? []) as RemoteIssueProject[]).map(toLocalProject);
   const remoteIssues = ((remoteIssuesData ?? []) as RemoteIssueItem[]).map(toLocalIssue);
+  report?.(countProgress('pull', remoteProjects.length + remoteIssues.length, remoteProjects.length + remoteIssues.length, ' 项'));
 
   const mergedProjects = mergeSyncRecords(
     localProjects.map((project) => ({ ...project, sync_status: pendingProjectIds.has(project.id) ? 'synced' as const : project.sync_status })),
@@ -202,6 +215,7 @@ export async function runManualSync(): Promise<ManualSyncResult> {
     replaceIssuesFromSync(mergedIssues),
   ]);
 
+  report?.(ratioProgress('settings', 0, '同步设置…'));
   const { data: remoteSettingsData, error: remoteSettingsError } = await supabase
     .from('issue_settings')
     .select('user_id,theme_primary_color,issue_projects_order,updated_at')
@@ -240,8 +254,11 @@ export async function runManualSync(): Promise<ManualSyncResult> {
   } else {
     await saveSettingsFromSync(localSettings);
   }
+  report?.(ratioProgress('settings', 1, uploadedSettings ? '设置已上传' : '设置已同步'));
 
+  report?.(ratioProgress('finalize', 0, '写回本地数据…'));
   await saveSyncMetadata({ ...(await getSyncMetadata()), last_synced_at: syncedAt });
+  report?.(SYNC_PROGRESS_COMPLETE);
 
   return {
     status: 'synced',

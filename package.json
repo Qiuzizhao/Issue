@@ -1,6 +1,6 @@
 {
   "name": "issue-standalone-app",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
@@ -10,6 +10,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "test:local-sync": "node scripts/test-issue-local-sync.mjs",
+    "test:sync-progress": "node scripts/test-issue-sync-progress.mjs",
     "test:structure": "node scripts/test-issue-port-structure.mjs"
   },
   "dependencies": {

@@ -19,8 +19,10 @@ import {
 import { FormSheet, Header, IconButton, Screen, SheetTextInput, StateView } from '@/src/shared/components';
 import { colors, useThemeColors } from '@/src/shared/theme';
 import { runManualSync } from '@/src/sync/manualSync';
+import type { SyncProgress } from '@/src/sync/syncProgress';
 import { SwipeDeleteCard } from '../_shared/SwipeDeleteCard';
 import { styles } from './styles';
+import { SyncProgressModal } from './SyncProgressModal';
 import type { IssueItem, IssueProject } from './types';
 import { formatIssueDate, sortIssues } from './utils';
 
@@ -128,6 +130,11 @@ export function IssueScreen() {
   const [hydrated, setHydrated] = useState(Boolean(initialSnapshot));
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  // 「同步中」弹窗：进度来自 runManualSync 的阶段上报
+  const [syncProgress, setSyncProgress] = useState<SyncProgress | null>(null);
+  const [syncCompleted, setSyncCompleted] = useState(false);
+  const [syncSummary, setSyncSummary] = useState<string | undefined>(undefined);
+  const [showSyncProgress, setShowSyncProgress] = useState(false);
   const [scrollEnabled, setScrollEnabled] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [feedbackIssueIds, setFeedbackIssueIds] = useState<string[]>([]);
@@ -154,9 +161,14 @@ export function IssueScreen() {
   const handleManualSync = useCallback(async () => {
     if (syncing) return;
     setSyncing(true);
+    setSyncProgress(null);
+    setSyncCompleted(false);
+    setSyncSummary(undefined);
+    setShowSyncProgress(true);
     try {
-      const result = await runManualSync();
+      const result = await runManualSync({ onProgress: setSyncProgress });
       if (result.status === 'signedOut') {
+        setShowSyncProgress(false);
         Alert.alert('需要登录', '请先登录账号后再同步 Issue 数据。', [
           { text: '去登录', onPress: () => router.push('/auth' as never) },
           { text: '取消', style: 'cancel' },
@@ -164,8 +176,14 @@ export function IssueScreen() {
         return;
       }
       await loadData();
+      setSyncSummary(`已同步 ${result.uploadedProjects + result.uploadedIssues} 项 · 下载 ${result.downloadedProjects + result.downloadedIssues} 项`);
+      setSyncCompleted(true);
+      // 完成态停留一下再关窗，让用户看到最后一步打勾
+      await new Promise((resolve) => setTimeout(resolve, 700));
+      setShowSyncProgress(false);
       Alert.alert('同步完成', `上传 ${result.uploadedProjects + result.uploadedIssues} 项，下载 ${result.downloadedProjects + result.downloadedIssues} 项。`);
     } catch (err) {
+      setShowSyncProgress(false);
       Alert.alert('同步失败', err instanceof Error ? err.message : '请稍后重试');
     } finally {
       setSyncing(false);
@@ -600,6 +618,13 @@ export function IssueScreen() {
           </Pressable>
         </Pressable>
       </Modal>
+
+      <SyncProgressModal
+        visible={showSyncProgress}
+        progress={syncProgress}
+        completed={syncCompleted}
+        summary={syncSummary}
+      />
     </Screen>
   );
 }
