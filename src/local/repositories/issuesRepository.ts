@@ -11,13 +11,9 @@ import { localKeys } from '../keys';
 import { getSettingsLocal, saveSettingsLocal } from '../settingsRepository';
 import { getCachedList, setCachedList } from './localListCache';
 
-const issueTypes: IssueType[] = ['bug', 'chore', 'docs', 'ui'];
+const issueTypes: IssueType[] = ['bug', 'feature', 'chore', 'docs', 'ui'];
 const issuePriorities: IssuePriority[] = ['P0', 'P1', 'P2', 'P3'];
 const issueStatuses: IssueStatus[] = ['open', 'in_progress', 'done'];
-/** 早期版本的 feature 类型已下线，历史数据并入「杂事」 */
-const legacyTypeAliases: Record<string, IssueType> = {
-  feature: 'chore',
-};
 /** 早期版本的 blocked / wontfix 已下线，统一并入「待处理」 */
 const legacyStatusAliases: Record<string, IssueStatus> = {
   blocked: 'open',
@@ -62,9 +58,7 @@ export function normalizeIssueProject(value: StoredProject, index = 0): IssuePro
 }
 
 function normalizeType(value: unknown): IssueType {
-  if (issueTypes.includes(value as IssueType)) return value as IssueType;
-  if (typeof value === 'string' && legacyTypeAliases[value]) return legacyTypeAliases[value];
-  return 'bug';
+  return issueTypes.includes(value as IssueType) ? (value as IssueType) : 'bug';
 }
 
 function normalizePriority(value: unknown): IssuePriority {

@@ -2,6 +2,7 @@ import type { IssueEditForm, IssueFilter, IssueItem, IssuePriority, IssueStatus,
 
 export const issueTypeOptions: { key: IssueType; label: string }[] = [
   { key: 'bug', label: 'Bug' },
+  { key: 'feature', label: '功能' },
   { key: 'chore', label: '杂事' },
   { key: 'docs', label: '文档' },
   { key: 'ui', label: '界面' },

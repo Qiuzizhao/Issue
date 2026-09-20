@@ -8,6 +8,7 @@ import { deriveStatus, formatIssueCode, formatRelativeTime } from '../utils';
 
 const typeIcon: Record<IssueType, keyof typeof Ionicons.glyphMap> = {
   bug: 'bug-outline',
+  feature: 'sparkles-outline',
   chore: 'build-outline',
   docs: 'document-text-outline',
   ui: 'color-wand-outline',

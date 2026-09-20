@@ -1,7 +1,7 @@
 export type SyncStatus = 'pending' | 'synced' | 'failed';
 
-/** Issue 类型：bug / 杂事 / 文档 / 界面 */
-export type IssueType = 'bug' | 'chore' | 'docs' | 'ui';
+/** Issue 类型：bug / 功能 / 杂事 / 文档 / 界面 */
+export type IssueType = 'bug' | 'feature' | 'chore' | 'docs' | 'ui';
 
 /** 优先级：P0 阻塞、P1 影响主流程、P2 普通、P3 有空再说 */
 export type IssuePriority = 'P0' | 'P1' | 'P2' | 'P3';

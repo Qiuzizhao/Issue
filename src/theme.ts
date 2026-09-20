@@ -30,12 +30,13 @@ export const colors = {
   tab: '#FFFFFF',
 };
 
-export type IssueTypeKey = 'bug' | 'chore' | 'docs' | 'ui';
+export type IssueTypeKey = 'bug' | 'feature' | 'chore' | 'docs' | 'ui';
 export type IssuePriorityKey = 'P0' | 'P1' | 'P2' | 'P3';
 export type IssueStatusKey = 'open' | 'in_progress' | 'done';
 
 export const issueTypes: Record<IssueTypeKey, { label: string; color: string; soft: string; icon: string }> = {
   bug: { label: 'Bug', color: '#E5484D', soft: '#FDEFEF', icon: 'bug-outline' },
+  feature: { label: '功能', color: '#0E9E8F', soft: '#E7F6F4', icon: 'sparkles-outline' },
   chore: { label: '杂事', color: '#67707E', soft: '#EEEFF2', icon: 'build-outline' },
   docs: { label: '文档', color: '#3E63DD', soft: '#EDF1FD', icon: 'document-text-outline' },
   ui: { label: '界面', color: '#7048E8', soft: '#F1EDFE', icon: 'color-wand-outline' },

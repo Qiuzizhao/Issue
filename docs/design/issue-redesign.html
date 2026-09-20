@@ -15,6 +15,7 @@
     --accent:#3E63DD; --accent-dark:#2E4BC0; --accent-soft:#EDF1FD;
 
     --bug:#E5484D; --bug-bg:#FDEFEF;
+    --feat:#0E9E8F; --feat-bg:#E7F6F4;
     --chore:#67707E; --chore-bg:#EEEFF2;
     --docs:#3E63DD; --docs-bg:#EDF1FD;
     --ui:#7048E8; --ui-bg:#F1EDFE;
@@ -130,6 +131,7 @@
   .irow.done{background:#FBFCFC}
   .tbadge{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px}
   .tbadge.bug{background:var(--bug-bg);color:var(--bug)}
+  .tbadge.feat{background:var(--feat-bg);color:var(--feat)}
   .tbadge.chore{background:var(--chore-bg);color:var(--chore)}
   .tbadge.docs{background:var(--docs-bg);color:var(--docs)}
   .tbadge.ui{background:var(--ui-bg);color:var(--ui)}
@@ -201,6 +203,7 @@
   .typepick .t{flex:1;height:52px;border-radius:12px;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10.5px;font-weight:650;color:var(--muted)}
   .typepick .t svg{width:16px;height:16px}
   .typepick .t.sel{background:var(--bug-bg);color:var(--bug);box-shadow:inset 0 0 0 1.5px rgba(229,72,77,.35)}
+  .typepick .t.sel.feat{background:var(--feat-bg);color:var(--feat);box-shadow:inset 0 0 0 1.5px rgba(14,158,143,.35)}
   .typepick .t.sel.docs{background:var(--docs-bg);color:var(--docs);box-shadow:inset 0 0 0 1.5px rgba(62,99,221,.35)}
   .typepick .t.sel.ui{background:var(--ui-bg);color:var(--ui);box-shadow:inset 0 0 0 1.5px rgba(112,72,232,.35)}
 
@@ -299,6 +302,7 @@
   .dark .home-ind{background:rgba(255,255,255,.3)}
   .dark .btn.line{background:#171B22;border-color:#2A303C;color:#B6BECC}
   .dark .tbadge.bug{background:rgba(229,72,77,.16)}
+  .dark .tbadge.feat{background:rgba(14,158,143,.16)}
   .dark .tbadge.chore{background:rgba(120,130,145,.18)}
   .dark .tbadge.docs{background:rgba(96,126,240,.18)}
   .dark .tbadge.ui{background:rgba(112,72,232,.2)}
@@ -330,6 +334,7 @@
 </div>
 <script>
 const S = {
+  feat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/><path d="M18.6 16.6l.7 1.7 1.7.7-1.7.7-.7 1.7-.7-1.7-1.7-.7 1.7-.7z"/></svg>',
   bug:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8a4 4 0 0 1 8 0v3a4 4 0 0 1-8 0z"/><path d="M4.5 10h3.5M16 10h3.5M5 15l3-1.6M19 15l-3-1.6M8.6 5 7 3.4M15.4 5 17 3.4M12 15v4"/></svg>',
   chore:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.8 6.2a3.6 3.6 0 0 1-4.9 4.6L5.6 15a2 2 0 1 0 2.8 2.8l4.2-4.3a3.6 3.6 0 0 1 4.6-4.9l-2.1 2.1.6 1.9 1.9.6z"/></svg>',
   docs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5H7.4A2 2 0 0 0 5.4 5.5v13a2 2 0 0 0 2 2h9.2a2 2 0 0 0 2-2V9z"/><path d="M13.5 3.5V9h5.1M8.6 13h6.8M8.6 16.6h4.4"/></svg>',
@@ -358,8 +363,8 @@ const S = {
   info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.2"/></svg>',
 };
 
-const TYPE = {bug:'bug', chore:'chore', docs:'docs', ui:'ui'};
-const TYPE_LABEL = {bug:'BUG', chore:'CHORE', docs:'DOCS', ui:'UI'};
+const TYPE = {bug:'bug', feat:'feat', chore:'chore', docs:'docs', ui:'ui'};
+const TYPE_LABEL = {bug:'BUG', feat:'FEAT', chore:'CHORE', docs:'DOCS', UI:'UI'};
 const PROJ = {
   superme:{name:'SuperMe', color:'#3E63DD'},
   booky:{name:'Booky', color:'#0E9E8F'},
@@ -375,7 +380,7 @@ const ISSUES = [
    title:'iOS 27 上 UIScene 生命周期缺失导致启动白屏', labels:['ios','native'], badge:'2'},
   {id:'ISS-127', type:'bug', prio:'P1', proj:'superme', status:'open', updated:'昨天',
    title:'prebuild 后 MARKETING_VERSION 未同步到 pbxproj', labels:['release']},
-  {id:'ISS-121', type:'chore', prio:'P1', proj:'superme', status:'open', updated:'3 天前',
+  {id:'ISS-121', type:'feat', prio:'P1', proj:'superme', status:'open', updated:'3 天前',
    title:'列表支持按标签与优先级快速筛选', labels:['体验']},
   {id:'ISS-118', type:'chore', prio:'P2', proj:'superme', status:'open', updated:'5 天前',
    title:'升级 expo-audio 到 1.1.1 并回归后台播放', labels:['deps']},
@@ -630,7 +635,7 @@ document.getElementById('rest').insertAdjacentHTML('beforeend',
       '<div class="card-soft"><span class="tag new">视觉基调</span>' +
         '<div class="kv small" style="margin-top:10px;grid-template-columns:110px 1fr">' +
           '<b>克制的中性底</b><span>背景 <code>#F4F5F7</code>、表面纯白，靠 1px 描边分层；阴影只给浮层。</span>' +
-          '<b>彩色只给语义</b><span>类型（bug 红 / chore 灰 / docs 蓝 / UI 紫）与优先级是唯一的强烈色块。</span>' +
+          '<b>彩色只给语义</b><span>类型（bug 红 / feat 青 / chore 灰 / docs 蓝 / UI 紫）与优先级是唯一的强烈色块。</span>' +
           '<b>等宽承载数据</b><span>编号、标签输入、计数用 SF Mono，与正文形成「工具感」对比。</span>' +
           '<b>更小的圆角</b><span>行 12 / 卡片 12 / 面板 26，比现在的 16 更利落，接近 GitHub 与 Linear 的手感。</span>' +
         '</div></div>' +
@@ -644,6 +649,7 @@ document.getElementById('rest').insertAdjacentHTML('beforeend',
     '<h3>类型（Issue type）</h3>' +
     '<div class="swatch-row">' +
       '<div class="sw"><div class="c" style="background:#E5484D"></div><div class="m"><b>bug</b><span>#E5484D</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#0E9E8F"></div><div class="m"><b>feature 功能</b><span>#0E9E8F</span></div></div>' +
       '<div class="sw"><div class="c" style="background:#67707E"></div><div class="m"><b>chore</b><span>#67707E</span></div></div>' +
       '<div class="sw"><div class="c" style="background:#3E63DD"></div><div class="m"><b>docs</b><span>#3E63DD</span></div></div>' +
       '<div class="sw"><div class="c" style="background:#7048E8"></div><div class="m"><b>ui / design</b><span>#7048E8</span></div></div>' +
@@ -769,6 +775,7 @@ function newIssueScreen(){
       '</div>' +
       '<div class="typepick">' +
         '<span class="t sel">' + S.bug + 'Bug</span>' +
+        '<span class="t feat">' + S.feat + '功能</span>' +
         '<span class="t">' + S.chore + '杂事</span>' +
         '<span class="t">' + S.docs + '文档</span>' +
         '<span class="t">' + S.ui + '界面</span>' +
@@ -801,7 +808,7 @@ function filterScreen(){
       '<div><div class="lbl2" style="margin-bottom:7px">类型</div>' +
         '<div class="spec-row" style="gap:7px">' +
           '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px;background:var(--bug-bg);color:var(--bug)">bug 12</span>' +
-          '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">ui 4</span>' +
+          '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">feature 6</span>' +
           '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">chore 2</span>' +
           '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">docs 1</span>' +
         '</div></div>' +
@@ -990,6 +997,7 @@ document.getElementById('rest').insertAdjacentHTML('beforeend',
       '<div class="specimen"><b class="small">类型徽标 / 优先级 / 状态</b>' +
         '<div class="spec-row">' +
           '<span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--doc-muted)">' + tbadge('bug') + 'BUG</span>' +
+          '<span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--doc-muted)">' + tbadge('feat') + 'FEAT</span>' +
           '<span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--doc-muted)">' + tbadge('chore') + 'CHORE</span>' +
           '<span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--doc-muted)">' + tbadge('docs') + 'DOCS</span>' +
           '<span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--doc-muted)">' + tbadge('ui') + 'UI</span>' +
@@ -1110,6 +1118,7 @@ document.getElementById('rest').insertAdjacentHTML('beforeend',
         '<tr><td><code>hairline</code></td><td>#E2E5EA</td><td>#232935</td></tr>' +
         '<tr><td><code>ink</code></td><td>#0F1218</td><td>#EDEFF4</td></tr>' +
         '<tr><td><code>bug</code></td><td>#E5484D</td><td>#FF7B7E（底色 16% 透明）</td></tr>' +
+        '<tr><td><code>feature</code></td><td>#0E9E8F</td><td>#2FD0BE</td></tr>' +
         '<tr><td><code>accent</code></td><td>#3E63DD</td><td>#7C93FF</td></tr>' +
       '</table>' +
       '<p class="small muted" style="margin-top:10px">深色下不用阴影，靠 <code>#232935</code> 描边区分层级；类型色统一提亮并降低底饱和度，避免亮色块刺眼。</p></div>' +
@@ -1135,7 +1144,7 @@ document.getElementById('rest').insertAdjacentHTML('beforeend',
       '<div><h3>IssueItem 需要新增的字段</h3>' +
         '<table>' +
           '<tr><th>字段</th><th>取值</th><th>默认 / 兼容</th></tr>' +
-          '<tr><td><code>type</code></td><td>bug / chore / docs / ui</td><td>旧数据默认 <code>bug</code>；历史 feature 归入 chore</td></tr>' +
+          '<tr><td><code>type</code></td><td>bug / feature / chore / docs / ui</td><td>旧数据默认 <code>bug</code></td></tr>' +
           '<tr><td><code>priority</code></td><td>P0 / P1 / P2 / P3</td><td>默认 <code>P2</code></td></tr>' +
           '<tr><td><code>labels</code></td><td>string[]</td><td>默认 <code>[]</code></td></tr>' +
           '<tr><td><code>status</code></td><td>open / in_progress / done</td><td>由现有 <code>is_completed</code> 推导：true → done，false → open</td></tr>' +
