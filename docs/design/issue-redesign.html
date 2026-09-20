@@ -1,0 +1,1204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Issue · 视觉改版设计稿 v2（开发者 Issue 追踪）</title>
+<style>
+  :root{
+    --doc-ink:#0D1016; --doc-ink-2:#3A424F; --doc-muted:#69717E; --doc-line:#E4E7EC; --doc-soft:#F3F5F8;
+
+    --bg:#F4F5F7; --surface:#FFFFFF; --surface-2:#ECEEF2; --surface-3:#E1E4EA;
+    --hairline:#E2E5EA; --hairline-strong:#D2D7DF;
+    --ink:#0F1218; --ink-2:#3A424F; --muted:#69717E; --faint:#9AA2AE;
+
+    --accent:#3E63DD; --accent-dark:#2E4BC0; --accent-soft:#EDF1FD;
+
+    --bug:#E5484D; --bug-bg:#FDEFEF;
+    --chore:#67707E; --chore-bg:#EEEFF2;
+    --docs:#3E63DD; --docs-bg:#EDF1FD;
+    --ui:#7048E8; --ui-bg:#F1EDFE;
+
+    --p0:#E5484D; --p1:#DE8A0B; --p2:#67707E; --p3:#9AA2AE;
+    --done:#0E9E8F; --done-bg:#E7F6F4; --warn:#DE8A0B; --warn-bg:#FDF3E2;
+
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+
+    --sh-1:0 1px 2px rgba(15,18,24,.05);
+    --sh-2:0 10px 28px rgba(15,18,24,.12);
+    --sh-3:0 20px 52px rgba(15,18,24,.20);
+  }
+
+  *{box-sizing:border-box}
+  svg{width:16px;height:16px;flex:0 0 auto}
+  .tbadge svg{width:13px;height:13px}
+  .rcheck svg{width:12px;height:12px}
+  .searchbar svg{width:15px;height:15px}
+  .btn svg{width:15px;height:15px}
+  .icon-btn svg,.hbtns svg{width:17px;height:17px}
+  .empty svg{width:26px;height:26px}
+  .metric svg{width:13px;height:13px}
+  .stat svg{width:12px;height:12px}
+  .imeta svg,.file svg{width:11px;height:11px}
+  .group svg{width:13px;height:13px}
+  .grip svg{width:15px;height:15px}
+  html,body{margin:0}
+  body{
+    background:#fff;color:var(--doc-ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6;
+  }
+  .page{max-width:1300px;margin:0 auto;padding:64px 44px 96px}
+  .doc-head{border-bottom:1px solid var(--doc-line);padding-bottom:28px}
+  .doc-kicker{font-family:var(--mono);font-size:11.5px;font-weight:700;letter-spacing:.16em;color:var(--accent);text-transform:uppercase}
+  h1{font-size:42px;line-height:1.14;letter-spacing:-.02em;margin:14px 0 10px;font-weight:700}
+  .doc-lead{font-size:17px;line-height:1.7;color:var(--doc-ink-2);max-width:880px;margin:0}
+  .doc-lead code{font-size:15px}
+  .doc-meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:22px;font-size:12.5px;color:var(--doc-muted)}
+  .doc-meta b{display:block;color:var(--doc-ink);font-size:13.5px;font-weight:600;margin-top:2px}
+
+  section{padding-top:56px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--doc-line);padding-bottom:12px;margin-bottom:26px}
+  .sec-num{font-family:var(--mono);font-size:12.5px;font-weight:700;color:#fff;background:var(--doc-ink);border-radius:7px;padding:3px 9px}
+  .sec-head h2{font-size:24px;letter-spacing:-.01em;margin:0;font-weight:700}
+  .sec-head p{margin:0;color:var(--doc-muted);font-size:14px}
+  h3{font-size:16px;margin:30px 0 12px;font-weight:700}
+  h3:first-child{margin-top:0}
+  p{margin:0 0 12px}
+  .muted{color:var(--doc-muted)}
+  .small{font-size:13px}
+  ul.small{line-height:1.75}
+  code{font-family:var(--mono);font-size:12px;background:var(--doc-soft);border-radius:6px;padding:1.5px 6px;color:var(--doc-ink-2)}
+
+  .cols{display:grid;gap:24px}
+  .cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .fig-row{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-start}
+  .fig{display:flex;flex-direction:column;gap:12px}
+  .fig-cap{max-width:390px}
+  .fig-cap b{display:block;font-size:14px;font-weight:650;margin-bottom:3px}
+  .fig-cap span{font-size:12.5px;color:var(--doc-muted);line-height:1.55}
+  .tag{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--doc-muted);background:var(--doc-soft);border:1px solid var(--doc-line);border-radius:6px;padding:2px 8px;text-transform:uppercase}
+  .tag.now{color:#B23B3B;background:#FDEFEF;border-color:#F5D8D8}
+  .tag.new{color:#2E4BC0;background:#EDF1FD;border-color:#D7E0FB}
+
+  .device{width:390px;flex:0 0 auto;background:#0A0C10;border-radius:50px;padding:9px;box-shadow:var(--sh-3)}
+  .device .screen{position:relative;width:100%;height:788px;border-radius:42px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+  .sb{height:46px;flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 6px;font-size:13px;font-weight:650;color:var(--ink)}
+  .sb .right{display:flex;align-items:center;gap:5px}
+  .sb svg{display:block}
+  .home-ind{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:130px;height:5px;border-radius:999px;background:rgba(0,0,0,.26)}
+
+  /* ---------- App 外壳 ---------- */
+  .app{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px;flex:1;min-height:0;overflow:hidden}
+  .app-titlebar{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding-top:2px}
+  .app-title{font-size:26px;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+  .app-sub{font-family:var(--mono);font-size:11.5px;color:var(--muted);font-weight:500;margin-top:2px;letter-spacing:.01em}
+  .hbtns{display:flex;gap:6px;align-items:center}
+  .icon-btn{width:34px;height:34px;border-radius:10px;background:var(--surface);border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+  .icon-btn.plain{background:transparent;border-color:transparent}
+  .badge-dot{width:7px;height:7px;border-radius:999px;background:var(--bug);position:absolute;top:6px;right:6px}
+
+  .searchbar{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--hairline);border-radius:11px;padding:0 11px;height:40px;color:var(--faint)}
+  .searchbar .ph{flex:1;font-size:14px;color:var(--faint)}
+  .searchbar .kbd{font-family:var(--mono);font-size:10.5px;color:var(--faint);border:1px solid var(--hairline);border-radius:5px;padding:1px 5px}
+
+  .seg{display:flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:3px}
+  .seg .item{flex:1;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12.5px;font-weight:650;color:var(--muted)}
+  .seg .item.on{background:var(--surface);color:var(--ink);box-shadow:var(--sh-1)}
+  .seg .item .n{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .seg .item.on .n{color:var(--accent)}
+
+  .chips{display:flex;gap:7px;overflow:hidden;padding:1px 0}
+  .chip{display:flex;align-items:center;gap:6px;height:29px;padding:0 10px;border-radius:999px;background:var(--surface);border:1px solid var(--hairline);font-size:12.5px;font-weight:600;color:var(--ink-2);white-space:nowrap}
+  .chip .cnt{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--faint)}
+  .chip.on{background:var(--accent-soft);border-color:transparent;color:var(--accent-dark);box-shadow:inset 0 0 0 1px rgba(62,99,221,.22)}
+  .chip.on .cnt{color:var(--accent-dark)}
+  .chip,.lbl,.prio,.stat{flex:0 0 auto;white-space:nowrap}
+  .chip .pdot{width:7px;height:7px;border-radius:999px;flex:0 0 auto}
+
+  .group{display:flex;align-items:center;gap:8px;padding:7px 2px 3px}
+  .group .nm{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  .group .line{flex:1;height:1px;background:var(--hairline)}
+  .group .n{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .group.bug .nm{color:var(--bug)}
+  .group.done .nm{color:var(--done)}
+  .list{display:flex;flex-direction:column;gap:7px;overflow:hidden}
+
+  /* ---------- Issue 行 ---------- */
+  .irow{display:flex;gap:10px;background:var(--surface);border:1px solid var(--hairline);border-radius:12px;padding:10px 11px}
+  .irow.done{background:#FBFCFC}
+  .tbadge{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:1px}
+  .tbadge.bug{background:var(--bug-bg);color:var(--bug)}
+  .tbadge.chore{background:var(--chore-bg);color:var(--chore)}
+  .tbadge.docs{background:var(--docs-bg);color:var(--docs)}
+  .tbadge.ui{background:var(--ui-bg);color:var(--ui)}
+  .tbadge svg{width:13px;height:13px}
+  .imain{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+  .itop{display:flex;align-items:baseline;gap:7px}
+  .iid{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--faint);letter-spacing:.02em;flex:0 0 auto}
+  .ititle{font-size:14.5px;font-weight:640;letter-spacing:-.01em;color:var(--ink);line-height:1.32}
+  .ititle.done{color:var(--faint);text-decoration:line-through}
+  .imeta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
+  .imeta .sep{color:var(--surface-3)}
+  .imeta .file{font-family:var(--mono);font-size:11px;color:var(--faint);display:inline-flex;align-items:center;gap:4px}
+  .lbl{display:inline-flex;align-items:center;height:18px;padding:0 7px;border-radius:5px;background:var(--surface-2);color:var(--ink-2);font-size:10.5px;font-weight:600}
+  .prio{display:inline-flex;align-items:center;gap:3px;height:19px;padding:0 7px;border-radius:5px;font-family:var(--mono);font-size:10.5px;font-weight:700}
+  .prio.p0{background:var(--bug-bg);color:var(--bug)}
+  .prio.p1{background:var(--warn-bg);color:var(--p1)}
+  .prio.p2{background:var(--surface-2);color:var(--p2)}
+  .stat{display:inline-flex;align-items:center;gap:4px;height:19px;padding:0 7px;border-radius:5px;font-size:10.5px;font-weight:650}
+  .stat.progress{background:var(--accent-soft);color:var(--accent-dark)}
+  .stat.done{background:var(--done-bg);color:var(--done)}
+  .rcheck{width:22px;height:22px;border-radius:999px;border:1.5px solid var(--hairline-strong);flex:0 0 auto;display:flex;align-items:center;justify-content:center;color:#fff;margin-top:1px}
+  .rcheck.done{background:var(--done);border-color:var(--done)}
+
+  /* ---------- 看板 ---------- */
+  .board{display:flex;gap:10px;overflow:hidden;flex:1;min-height:0}
+  .col{width:214px;flex:0 0 auto;display:flex;flex-direction:column;gap:8px;min-height:0}
+  .col-head{display:flex;align-items:center;gap:7px;padding:2px 2px 0}
+  .col-head .nm{font-size:12.5px;font-weight:700}
+  .col-head .n{font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .col-head .bar{flex:1;height:1px;background:var(--hairline)}
+  .bcard{background:var(--surface);border:1px solid var(--hairline);border-radius:12px;padding:10px 11px;display:flex;flex-direction:column;gap:7px}
+  .bcard .btop{display:flex;align-items:center;gap:7px}
+  .bcard .btitle{font-size:13.5px;font-weight:640;line-height:1.34;color:var(--ink)}
+  .bcard .bfoot{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .col.dragging{opacity:.92}
+  .bcard.ghost{border-style:dashed;border-color:var(--hairline-strong);background:transparent;box-shadow:none;color:var(--faint);align-items:center;justify-content:center;font-size:11.5px;font-weight:600;padding:14px}
+
+  .progress{height:4px;border-radius:999px;background:var(--surface-3);overflow:hidden}
+  .progress i{display:block;height:100%;border-radius:999px;background:var(--accent)}
+  .progress i.done{background:var(--done)}
+  .metric{display:flex;align-items:baseline;gap:5px;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+  .metric b{font-size:15px;color:var(--ink)}
+
+  /* ---------- 浮层 ---------- */
+  .dim{position:absolute;inset:0;background:rgba(11,14,20,.42)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:26px 26px 0 0;padding:9px 18px 24px;box-shadow:var(--sh-3);display:flex;flex-direction:column;gap:12px;max-height:88%;overflow:hidden}
+  .handle{width:36px;height:4px;border-radius:999px;background:var(--surface-3);margin:2px auto 2px}
+  .sheet h4{margin:0;font-size:18px;font-weight:700;letter-spacing:-.01em}
+  .sheet .hint{font-size:12px;color:var(--muted)}
+  .field{background:var(--surface-2);border:1px solid transparent;border-radius:11px;padding:9px 12px;display:flex;flex-direction:column;gap:2px}
+  .lbl2{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  .field .val{font-size:14px;color:var(--ink);line-height:1.45}
+  .field .val.ph{color:var(--faint)}
+  .field.mono .val{font-family:var(--mono);font-size:12.5px}
+  .field.focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-soft)}
+  .fieldrow{display:flex;gap:8px}
+  .fieldrow .field{flex:1}
+  .btn{height:40px;border-radius:11px;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14px;font-weight:650;padding:0 16px}
+  .btn.ghost{background:var(--accent-soft);color:var(--accent-dark)}
+  .btn.line{background:var(--surface);border:1px solid var(--hairline-strong);color:var(--ink-2)}
+  .btn.danger{background:var(--bug-bg);color:var(--bug)}
+  .btn.ok{background:var(--done);color:#fff}
+  .btn.sm{height:30px;font-size:12.5px;border-radius:9px;padding:0 11px}
+  .btn.full{width:100%}
+  .two-btns{display:flex;gap:8px}
+  .two-btns .btn{flex:1}
+
+  .typepick{display:flex;gap:8px}
+  .typepick .t{flex:1;height:52px;border-radius:12px;background:var(--surface-2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:10.5px;font-weight:650;color:var(--muted)}
+  .typepick .t svg{width:16px;height:16px}
+  .typepick .t.sel{background:var(--bug-bg);color:var(--bug);box-shadow:inset 0 0 0 1.5px rgba(229,72,77,.35)}
+  .typepick .t.sel.docs{background:var(--docs-bg);color:var(--docs);box-shadow:inset 0 0 0 1.5px rgba(62,99,221,.35)}
+  .typepick .t.sel.ui{background:var(--ui-bg);color:var(--ui);box-shadow:inset 0 0 0 1.5px rgba(112,72,232,.35)}
+
+  .props{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .prop{background:var(--surface-2);border-radius:10px;padding:8px 11px}
+  .prop .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  .prop .v{font-size:13px;font-weight:600;color:var(--ink);margin-top:2px;display:flex;align-items:center;gap:5px}
+  .prop .v.mono{font-family:var(--mono);font-size:12px;font-weight:600}
+  .timeline{display:flex;flex-direction:column;gap:10px;padding-left:4px}
+  .tl{display:flex;gap:10px;align-items:flex-start}
+  .tl .pt{width:9px;height:9px;border-radius:999px;background:var(--surface-3);margin-top:5px;flex:0 0 auto;position:relative}
+  .tl .pt.open{background:var(--accent)}
+  .tl .pt.done{background:var(--done)}
+  .tl .tx{font-size:12.5px;color:var(--ink-2)}
+  .tl .tx b{color:var(--ink)}
+  .tl .tx span{display:block;font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:1px}
+
+  /* ---------- 空态 / 骨架 ---------- */
+  .empty{display:flex;flex-direction:column;align-items:center;gap:9px;padding:30px 20px;background:var(--surface);border:1px dashed var(--hairline-strong);border-radius:14px;text-align:center;color:var(--faint)}
+  .empty .t{font-size:14.5px;font-weight:650;color:var(--ink)}
+  .empty .d{font-size:12.5px;color:var(--muted);max-width:250px}
+  .skel{background:var(--surface);border:1px solid var(--hairline);border-radius:12px;padding:11px;display:flex;gap:10px;align-items:center}
+  .skel .b{background:linear-gradient(90deg,#E5E8ED 0%,#F2F4F8 50%,#E5E8ED 100%);border-radius:6px}
+
+  .toast{display:flex;align-items:center;gap:9px;background:#0F1218;color:#fff;border-radius:11px;padding:10px 12px;font-size:12.5px;font-weight:600;box-shadow:var(--sh-2)}
+  .toast .mono{font-family:var(--mono);font-size:11.5px;opacity:.75}
+
+  /* ---------- 文档元件 ---------- */
+  .callouts{display:flex;flex-direction:column;gap:11px;max-width:360px}
+  .callout{display:flex;gap:9px;font-size:12.5px;color:var(--doc-ink-2);line-height:1.5}
+  .num{flex:0 0 auto;width:19px;height:19px;border-radius:6px;background:var(--accent);color:#fff;font-family:var(--mono);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .card-soft{background:#FAFBFC;border:1px solid var(--doc-line);border-radius:14px;padding:20px}
+  .swatch-row{display:flex;flex-wrap:wrap;gap:10px}
+  .sw{width:118px;border-radius:11px;overflow:hidden;border:1px solid var(--doc-line);background:#fff}
+  .sw .c{height:50px}
+  .sw .m{padding:7px 9px;font-size:11px;line-height:1.45}
+  .sw .m b{display:block;font-size:11.5px;font-weight:650}
+  .sw .m span{color:var(--doc-muted);font-family:var(--mono);font-size:10.5px}
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--doc-line);vertical-align:top}
+  th{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--doc-muted);font-weight:700}
+  .do-dont{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .dd{border:1px solid var(--doc-line);border-radius:13px;padding:16px}
+  .dd .h{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+  .dd.yes .h{color:var(--done)}
+  .dd.no .h{color:var(--bug)}
+  .dd ul{margin:0;padding-left:18px;font-size:13px;color:var(--doc-ink-2)}
+  .dd li{margin-bottom:6px}
+  .specimen{background:#FAFBFC;border:1px solid var(--doc-line);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:14px}
+  .spec-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .frames{display:flex;gap:18px;flex-wrap:wrap}
+  .frame{width:312px;background:#FAFBFC;border:1px solid var(--doc-line);border-radius:14px;padding:14px}
+  .frame .cap{margin-top:10px;font-size:12px;color:var(--doc-muted)}
+  .frame .cap b{display:block;color:var(--doc-ink);font-size:12.5px;margin-bottom:2px}
+  .mini{width:276px;border-radius:26px;overflow:hidden;border:1px solid var(--doc-line);box-shadow:var(--sh-1)}
+  .mini img{width:100%;display:block}
+  .kv{display:grid;grid-template-columns:120px 1fr;gap:8px 16px;font-size:13px;line-height:1.6}
+  .kv b{font-weight:650}
+  .divider{height:1px;background:var(--doc-line);margin:28px 0}
+  .inline-note{background:var(--accent-soft);border-radius:11px;padding:9px 11px;font-size:12px;color:var(--accent-dark);font-weight:600;display:flex;gap:7px;align-items:center}
+
+  /* ---------- 深色 ---------- */
+  .dark .screen{background:#0C0F14}
+  .dark .sb{color:#E8EBF1}
+  .dark .app-title{color:#F1F3F7}
+  .dark .app-sub{color:#7C8698}
+  .dark .icon-btn{background:#171B22;border-color:#242A34;color:#AEB6C4}
+  .dark .searchbar{background:#151920;border-color:#232935}
+  .dark .searchbar .ph{color:#6A7484}
+  .dark .seg{background:#171B22}
+  .dark .seg .item.on{background:#252B36;color:#F1F3F7;box-shadow:none}
+  .dark .chip{background:#171B22;border-color:#242A34;color:#B6BECC}
+  .dark .chip.on{background:rgba(96,126,240,.18);color:#A9BAFF;box-shadow:inset 0 0 0 1px rgba(129,153,255,.3)}
+  .dark .group .nm{color:#7C8698}
+  .dark .group .line{background:#232935}
+  .dark .irow{background:#13171E;border-color:#232935}
+  .dark .irow.done{background:#11151B}
+  .dark .ititle{color:#ECEFF5}
+  .dark .ititle.done{color:#6A7484}
+  .dark .iid{color:#69717E}
+  .dark .imeta{color:#8B94A3}
+  .dark .imeta .file{color:#69717E}
+  .dark .lbl{background:#212734;color:#B6BECC}
+  .dark .prio.p2{background:#212734;color:#9AA3B1}
+  .dark .rcheck{border-color:#333B49}
+  .dark .bcard{background:#13171E;border-color:#232935}
+  .dark .bcard .btitle{color:#ECEFF5}
+  .dark .field{background:#1A1F28}
+  .dark .field .val{color:#ECEFF5}
+  .dark .sheet{background:#11151B}
+  .dark .sheet h4{color:#F1F3F7}
+  .dark .prop{background:#1A1F28}
+  .dark .prop .v{color:#ECEFF5}
+  .dark .empty{background:#13171E;border-color:#2A303C}
+  .dark .empty .t{color:#ECEFF5}
+  .dark .home-ind{background:rgba(255,255,255,.3)}
+  .dark .btn.line{background:#171B22;border-color:#2A303C;color:#B6BECC}
+  .dark .tbadge.bug{background:rgba(229,72,77,.16)}
+  .dark .tbadge.chore{background:rgba(120,130,145,.18)}
+  .dark .tbadge.docs{background:rgba(96,126,240,.18)}
+  .dark .tbadge.ui{background:rgba(112,72,232,.2)}
+  .dark .metric b{color:#ECEFF5}
+
+  body.only .doc-head,body.only .only-hide{display:none}
+  body.only .page{padding:28px 36px 44px;max-width:none}
+  body.only section{padding-top:0}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="doc-head">
+    <div class="doc-kicker">Visual Redesign · v2</div>
+    <h1>Issue · 开发者 Issue 追踪改版设计稿</h1>
+    <p class="doc-lead">
+      这份稿子面向真实的用途：<b>给自己用的 GitHub Issues</b>。项目 = 你手上的软件项目（SuperMe、Booky、ToDo、Timer、WorkLog……），
+      Issue = 一个 bug、一个要做的功能、一件维护杂事。设计的核心目标是把界面从「待办清单」改造成
+      <b>面向开发者的高密度问题控制台</b>：一眼看清哪个项目、什么类型、多严重、卡了多久，并且能直接引用编号（ISS-128）去写提交信息。
+    </p>
+    <div class="doc-meta">
+      <div>设计方向<b>Console · 高密度开发者控制台</b></div>
+      <div>核心视图<b>列表 / 看板 / 收件箱 / 项目</b></div>
+      <div>版本<b>v2 · 2026-09-17</b></div>
+      <div>落地基线<b>Expo 54 / RN 0.81 / 本地优先 + 手动同步</b></div>
+    </div>
+  </div>
+  <div id="rest"></div>
+</div>
+<script>
+const S = {
+  bug:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8a4 4 0 0 1 8 0v3a4 4 0 0 1-8 0z"/><path d="M4.5 10h3.5M16 10h3.5M5 15l3-1.6M19 15l-3-1.6M8.6 5 7 3.4M15.4 5 17 3.4M12 15v4"/></svg>',
+  chore:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.8 6.2a3.6 3.6 0 0 1-4.9 4.6L5.6 15a2 2 0 1 0 2.8 2.8l4.2-4.3a3.6 3.6 0 0 1 4.6-4.9l-2.1 2.1.6 1.9 1.9.6z"/></svg>',
+  docs:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.5H7.4A2 2 0 0 0 5.4 5.5v13a2 2 0 0 0 2 2h9.2a2 2 0 0 0 2-2V9z"/><path d="M13.5 3.5V9h5.1M8.6 13h6.8M8.6 16.6h4.4"/></svg>',
+  ui:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1-3.6L15.8 5.6a2 2 0 0 1 2.8 0l.8.8a2 2 0 0 1 0 2.8L9.1 19.5l-3.6 1z"/><path d="M14.4 7.1l2.5 2.5"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.6 9.4 18 20 6.4"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 2"/></svg>',
+  file:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 3.8H8a2 2 0 0 0-2 2v12.4a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8.4z"/><path d="M13.5 3.8v4.6h4.5"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.4"/><path d="M15.8 15.8 20 20"/></svg>',
+  filter:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5h16M7 12h10M10 17.5h4"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  sync:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5A8 8 0 0 0 6.3 6.3L4 8.5"/><path d="M4 4.5v4h4"/><path d="M4 12.5A8 8 0 0 0 17.7 17.7L20 15.5"/><path d="M20 19.5v-4h-4"/></svg>',
+  gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.05A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.05A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.05A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.05a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.05a1.7 1.7 0 0 0-1.55 1z"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  grip:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9.5 7V5.5A1.5 1.5 0 0 1 11 4h2a1.5 1.5 0 0 1 1.5 1.5V7"/><path d="M6.5 7l.8 12.2A1.8 1.8 0 0 0 9.1 21h5.8a1.8 1.8 0 0 0 1.8-1.8L17.5 7"/></svg>',
+  inbox:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13.5 5.8 5.6A2 2 0 0 1 7.7 4h8.6a2 2 0 0 1 1.9 1.6l2.3 7.9"/><path d="M3.5 13.5h5l1 2.4h5l1-2.4h5v3.9A2.6 2.6 0 0 1 17.9 20H6.1a2.6 2.6 0 0 1-2.6-2.6z"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5.5l11 6.5-11 6.5z"/></svg>',
+  close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  board:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="5.5" height="15" rx="1.8"/><rect x="10.2" y="4.5" width="5.5" height="10" rx="1.8"/><rect x="16.9" y="4.5" width="3.6" height="7" rx="1.6"/></svg>',
+  list:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>',
+  tag:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11.4 4.5H19a.5.5 0 0 1 .5.5v7.6a2 2 0 0 1-.6 1.4l-5.4 5.4a2 2 0 0 1-2.8 0l-5.1-5.1a2 2 0 0 1 0-2.8l5.4-5.4a2 2 0 0 1 1.4-.6z"/><circle cx="15.2" cy="8.8" r="1.3"/></svg>',
+  branch:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="6" r="2.2"/><circle cx="7" cy="18" r="2.2"/><circle cx="17" cy="9.5" r="2.2"/><path d="M7 8.2v7.6M17 11.7c0 3-3.2 3.4-6.4 4"/></svg>',
+  sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"/></svg>',
+  spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.2"/></svg>',
+};
+
+const TYPE = {bug:'bug', chore:'chore', docs:'docs', ui:'ui'};
+const TYPE_LABEL = {bug:'BUG', chore:'CHORE', docs:'DOCS', ui:'UI'};
+const PROJ = {
+  superme:{name:'SuperMe', color:'#3E63DD'},
+  booky:{name:'Booky', color:'#0E9E8F'},
+  todo:{name:'ToDo', color:'#E8590C'},
+  timer:{name:'Timer', color:'#C2255C'},
+  worklog:{name:'WorkLog', color:'#7048E8'},
+  ws:{name:'WS-RNAPP', color:'#0B7285'},
+};
+
+/* 样例数据取自这台机器上真实在做的事情 */
+const ISSUES = [
+  {id:'ISS-128', type:'bug', prio:'P0', proj:'superme', status:'progress', updated:'2 小时前',
+   title:'iOS 27 上 UIScene 生命周期缺失导致启动白屏', labels:['ios','native'], badge:'2'},
+  {id:'ISS-127', type:'bug', prio:'P1', proj:'superme', status:'open', updated:'昨天',
+   title:'prebuild 后 MARKETING_VERSION 未同步到 pbxproj', labels:['release']},
+  {id:'ISS-121', type:'chore', prio:'P1', proj:'superme', status:'open', updated:'3 天前',
+   title:'列表支持按标签与优先级快速筛选', labels:['体验']},
+  {id:'ISS-118', type:'chore', prio:'P2', proj:'superme', status:'open', updated:'5 天前',
+   title:'升级 expo-audio 到 1.1.1 并回归后台播放', labels:['deps']},
+  {id:'ISS-115', type:'bug', prio:'P1', proj:'booky', status:'in_progress', updated:'6 天前',
+   title:'同步进度窗口在进度上报阶段卡住不刷新', labels:['sync']},
+  {id:'ISS-112', type:'ui', prio:'P2', proj:'booky', status:'open', updated:'1 周前',
+   title:'Web 端应复用桌面布局而不是移动布局', labels:['web','设计']},
+  {id:'ISS-109', type:'bug', prio:'P2', proj:'todo', status:'open', updated:'1 周前',
+   title:'快速添加连续输入时草稿被覆盖', labels:['回归']},
+  {id:'ISS-104', type:'bug', prio:'P1', proj:'timer', status:'open', updated:'2 周前',
+   title:'音频会话切到后台后被系统中断', labels:['audio']},
+  {id:'ISS-101', type:'bug', prio:'P2', proj:'ws', status:'open', updated:'2 周前',
+   title:'Android 上点击遮罩无法关闭底部面板', labels:['android']},
+  {id:'ISS-131', type:'docs', prio:'P3', proj:'worklog', status:'open', updated:'4 小时前',
+   title:'补充 Supabase 表结构与同步字段说明', labels:['docs']},
+  {id:'ISS-096', type:'bug', prio:'P0', proj:'worklog', status:'done', updated:'昨天', closed:'昨天 17:20',
+   title:'Xcode 编译报 .pcm 错误（系统盘空间不足）', labels:['xcode']},
+  {id:'ISS-092', type:'chore', prio:'P2', proj:'booky', status:'done', updated:'3 天前', closed:'09-14 11:05',
+   title:'Web 静态导出产物改为相对路径', labels:['web']},
+  {id:'ISS-089', type:'chore', prio:'P1', proj:'superme', status:'done', updated:'5 天前', closed:'09-12 09:40',
+   title:'轮换 Supabase 密钥并回归同步流程', labels:['security']},
+];
+
+function statusBar(){
+  return '<div class="sb"><span>9:41</span><span class="right">' +
+    '<svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.7" y="5.4" width="3" height="5.6" rx="1"/><rect x="9.4" y="3" width="3" height="8" rx="1"/><rect x="14.1" y="0.4" width="3" height="10.6" rx="1"/></svg>' +
+    '<svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 9.4 6 7.3a2.8 2.8 0 0 1 4 0zM3.2 6.2a6.6 6.6 0 0 1 9.6 0l-1.4 1.4a4.6 4.6 0 0 0-6.8 0zM.5 3.4a10.4 10.4 0 0 1 15 0l-1.4 1.4a8.4 8.4 0 0 0-12.2 0z"/></svg>' +
+    '<svg width="24" height="11" viewBox="0 0 24 11"><rect x="0.6" y="0.6" width="20" height="9.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45"/><rect x="2.2" y="2.2" width="15.4" height="6.6" rx="1.8" fill="currentColor"/><path d="M22.2 3.7v3.6a2 2 0 0 0 0-3.6z" fill="currentColor" fill-opacity=".5"/></svg>' +
+  '</span></div>';
+}
+
+function device(o){
+  return '<div class="device ' + (o.cls || '') + '"><div class="screen">' + o.inner + '<span class="home-ind"></span></div></div>';
+}
+
+function appHeader(o){
+  o = o || {};
+  let right = '';
+  if (o.right === 'back') right = '<span class="icon-btn plain">' + S.back + '</span>';
+  else if (o.right === 'none') right = '';
+  else if (o.right === 'search') right = '<div class="hbtns"><span class="icon-btn plain">' + S.search + '</span><span class="icon-btn plain">' + S.gear + '</span></div>';
+  else right = '<div class="hbtns"><span class="icon-btn plain">' + S.sync + '</span><span class="icon-btn plain">' + S.gear + '</span></div>';
+  const left = o.left === 'back' ? '<span class="icon-btn plain" style="margin:3px 8px 0 0">' + S.back + '</span>' : '';
+  return '<div class="app-titlebar">' + left +
+    '<div style="flex:1;min-width:0"><div class="app-title">' + (o.title || 'Issue') + '</div>' +
+    (o.sub ? '<div class="app-sub">' + o.sub + '</div>' : '') + '</div>' + right + '</div>';
+}
+
+function searchbar(ph, kbd){
+  return '<div class="searchbar">' + S.search + '<span class="ph">' + ph + '</span>' + (kbd ? '<span class="kbd">' + kbd + '</span>' : '') + '</div>';
+}
+
+function seg(items){
+  return '<div class="seg">' + items.map(function(it){
+    return '<span class="item ' + (it.on ? 'on' : '') + '">' + it.name + (it.n !== undefined ? '<span class="n">' + it.n + '</span>' : '') + '</span>';
+  }).join('') + '</div>';
+}
+
+function projChips(list){
+  return '<div class="chips">' + list.map(function(it){
+    const p = PROJ[it.key];
+    return '<span class="chip ' + (it.on ? 'on' : '') + '"><span class="pdot" style="background:' + (p ? p.color : '#9AA2AE') + '"></span>' +
+      (p ? p.name : it.name) + '<span class="cnt">' + (it.n === undefined ? '' : it.n) + '</span></span>';
+  }).join('') + '</div>';
+}
+
+function groupHead(name, count, cls){
+  return '<div class="group ' + (cls || '') + '"><span class="nm">' + name + '</span><span class="line"></span><span class="n">' + count + '</span></div>';
+}
+
+function tbadge(type){
+  return '<span class="tbadge ' + type + '">' + S[type] + '</span>';
+}
+
+function labels(list){
+  return list.map(function(t){ return '<span class="lbl">' + t + '</span>'; }).join('');
+}
+
+/* Issue 行：type / ID / 标题 / 项目 · 标签 · 文件 · 更新时间 + 优先级（或状态） */
+function irow(o){
+  const p = PROJ[o.proj];
+  const right = o.right === 'status'
+    ? (o.status === 'done' ? '<span class="stat done">' + S.check + '已完成</span>'
+      : o.status === 'progress' ? '<span class="stat progress">进行中</span>'
+      : '')
+    : (o.prio ? '<span class="prio ' + o.prio.toLowerCase() + '">' + o.prio + '</span>' : '');
+  return '<div class="irow ' + (o.status === 'done' ? 'done' : '') + '">' +
+    (o.checkbox ? '<span class="rcheck ' + (o.status === 'done' ? 'done' : '') + '">' + (o.status === 'done' ? S.check.replace('stroke-width="3.4"', 'stroke-width="3.6"').replace('viewBox="0 0 24 24"', 'viewBox="0 0 24 24" width="12" height="12"') : '') + '</span>' : tbadge(o.type)) +
+    '<div class="imain">' +
+      '<div class="itop"><span class="iid">' + o.id + '</span><span class="ititle ' + (o.status === 'done' ? 'done' : '') + '">' + o.title + '</span></div>' +
+      '<div class="imeta">' +
+        (p ? '<span style="display:inline-flex;align-items:center;gap:4px"><span class="pdot" style="width:6px;height:6px;border-radius:999px;background:' + p.color + '"></span>' + p.name + '</span>' : '') +
+        (o.labels && o.labels.length ? '<span class="sep">·</span>' + labels(o.labels) : '') +
+        (o.meta ? '<span class="sep">·</span><span>' + o.meta + '</span>' : '') +
+      '</div>' +
+    '</div>' +
+    '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto">' + right +
+      '<span style="font-family:var(--mono);font-size:10px;color:var(--faint)">' + o.updated + '</span>' +
+    '</div>' +
+  '</div>';
+}
+
+/* ---------- 屏幕：列表视图 ---------- */
+function listBody(opts){
+  const o = opts || {};
+  const by = function(id){ return ISSUES.filter(function(x){ return x.id === id; })[0]; };
+  const rows = function(ids, extra){
+    return ids.map(function(id){
+      const it = by(id);
+      return irow(Object.assign({}, it, extra || {}));
+    }).join('');
+  };
+  return '<div class="app">' +
+    appHeader({sub:'12 待处理 · 2 进行中 · 8 已完成', right:o.right || 'default'}) +
+    searchbar('搜索标题 / ISS-128 / 标签', S.filter) +
+    projChips([
+      {name:'全部', n:22},
+      {key:'superme', n:12, on:true},
+      {key:'booky', n:5},
+      {key:'todo', n:3},
+      {key:'worklog', n:4},
+    ]) +
+    '<div class="list">' +
+      groupHead('进行中', '1') +
+      rows(['ISS-128'], {right:'status'}) +
+      groupHead('待处理', '8') +
+      rows(['ISS-115','ISS-127','ISS-121','ISS-118']) +
+      '<div class="group done"><span class="nm">已完成</span><span class="line"></span><span class="n">8</span></div>' +
+    '</div>' +
+  '</div>';
+}
+function listScreen(opts){ return device({inner: statusBar() + listBody(opts)}); }
+
+/* ---------- 屏幕：看板视图 ---------- */
+function bcard(o){
+  const p = PROJ[o.proj];
+  return '<div class="bcard">' +
+    '<div class="btop">' + tbadge(o.type) + '<span class="iid">' + o.id + '</span>' +
+      '<span style="flex:1"></span><span class="prio ' + o.prio.toLowerCase() + '">' + o.prio + '</span></div>' +
+    '<div class="btitle">' + o.title + '</div>' +
+    '<div class="bfoot">' +
+      '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)"><span class="pdot" style="width:6px;height:6px;border-radius:999px;background:' + p.color + '"></span>' + p.name + '</span>' +
+      labels((o.labels || []).slice(0, 2)) +
+    '</div>' +
+  '</div>';
+}
+function boardScreen(){
+  const by = function(id){ return ISSUES.filter(function(x){ return x.id === id; })[0]; };
+  return device({inner: statusBar() +
+    '<div class="app">' +
+      appHeader({sub:'看板 · 全部项目 · 21 条', right:'search'}) +
+      seg([{name:'列表'}, {name:'看板', on:true}]) +
+      '<div class="board">' +
+        '<div class="col">' +
+          '<div class="col-head"><span class="nm">待处理</span><span class="n">11</span><span class="bar"></span></div>' +
+          bcard(by('ISS-127')) + bcard(by('ISS-121')) + bcard(by('ISS-104')) +
+        '</div>' +
+        '<div class="col" style="width:150px">' +
+          '<div class="col-head"><span class="nm">进行中</span><span class="n">2</span><span class="bar"></span></div>' +
+          bcard(by('ISS-128')) +
+          '<div class="bcard ghost">拖到「已完成」即关闭</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>'});
+}
+
+/* ---------- 屏幕：收件箱 / 深色 ---------- */
+function inboxScreen(){
+  const rows = [
+    {id:'ISS-134', type:'bug', title:'postinstall 之后 Metro 缓存没有失效', labels:['metro'], meta:'3 分钟前'},
+    {id:'ISS-133', type:'chore', title:'App Store 截图需要按新机型重新生成', labels:['release'], meta:'1 小时前'},
+    {id:'ISS-132', type:'chore', title:'讨论：是否引入 Zustand 替换现有 Context', labels:['讨论'], meta:'今天 09:10'},
+  ].map(function(it){ return irow(Object.assign({}, it, {prio:'', updated:''})); }).join('');
+  return device({inner: statusBar() +
+    '<div class="app">' +
+      appHeader({title:'收件箱', sub:'3 条待归类 · 先记下，再决定归属', right:'search'}) +
+      '<div class="inline-note">' + S.info + ' 新建的 Issue 会先落到这里，指定项目后进入正式列表</div>' +
+      '<div class="list">' + rows +
+        '<div class="irow" style="border-style:dashed;background:transparent">' +
+          '<span class="tbadge" style="background:var(--surface-2);color:var(--faint)">' + S.inbox + '</span>' +
+          '<div class="imain"><div class="ititle" style="color:var(--faint);font-weight:600">拖到项目上即可归类</div>' +
+          '<div class="imeta"><span>可用项目：SuperMe / Booky / ToDo / Timer / WorkLog</span></div></div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;margin-top:auto">' +
+        '<span class="btn ghost sm" style="flex:1;height:34px">批量指定项目</span>' +
+        '<span class="btn sm" style="flex:1;height:34px">' + S.plus + ' 快速记录</span>' +
+      '</div>' +
+    '</div>'});
+}
+
+function darkListScreen(){
+  return device({cls:'dark', inner: statusBar() +
+    '<div class="app">' +
+      appHeader({sub:'12 待处理 · 2 进行中 · 8 已完成'}) +
+      searchbar('搜索标题 / ISS-128 / 标签', S.filter) +
+      projChips([{name:'全部', n:22}, {key:'superme', n:12, on:true}, {key:'booky', n:5}]) +
+      '<div class="list">' +
+        groupHead('进行中', '1') +
+        irow(Object.assign({}, ISSUES[0], {right:'status'})) +
+        groupHead('待处理', '8') +
+        irow(ISSUES[1]) + irow(ISSUES[2]) + irow(ISSUES[3]) +
+      '</div>' +
+    '</div>'});
+}
+
+/* ---------- 00 速览 ---------- */
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-hero" data-section style="padding-top:44px">' +
+    '<div class="sec-head"><span class="sec-num">00</span><h2>改版速览</h2><p>列表 / 看板 / 深色，同一套数据</p></div>' +
+    '<div class="fig-row">' +
+      '<div class="fig"><span class="tag new">列表 · 按状态分组</span>' + listScreen() +
+        '<div class="fig-cap"><b>开发者的默认视图</b><span>类型徽标 + 等宽编号 + 项目色点 + 标签 + 相对时间，右侧固定优先级。一屏 6–7 条，是目前的两倍。</span></div></div>' +
+      '<div class="fig"><span class="tag new">看板 · 按状态流转</span>' + boardScreen() +
+        '<div class="fig-cap"><b>待处理 / 进行中 / 已完成</b><span>个人开发不需要 Scrum，但「手上正在做什么」值得一个独立视图；横向滑动，卡片可拖动改状态。</span></div></div>' +
+      '<div class="fig"><span class="tag new">深色</span>' + darkListScreen() +
+        '<div class="fig-cap"><b>夜里写代码的默认外观</b><span>深色不是反色：表面抬升靠描边而非阴影，类型色整体提亮，GitHub 式的低饱和底让彩色徽标成为唯一亮点。</span></div></div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 01 方向 ---------- */
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-direction" data-section>' +
+    '<div class="sec-head"><span class="sec-num">01</span><h2>设计方向</h2><p>先看清现状，再给主张</p></div>' +
+    '<div class="fig-row" style="margin-bottom:26px">' +
+      '<div class="fig"><span class="tag now">现状 · 真实渲染</span>' +
+        '<div class="mini" style="width:300px"><img src="preview/current-main-crop.png" alt="当前版本主界面" /></div>' +
+        '<div class="fig-cap"><b>清单感，而不是 issue 感</b><span>当前版本按「待办清单」组织：没有类型、优先级、标签，长 bug 标题会占两行，一条 issue 说不清「是什么、多严重」。</span></div></div>' +
+      '<div style="flex:1;min-width:340px">' +
+        '<h3>现状诊断</h3>' +
+        '<ul class="small" style="padding-left:18px;color:var(--doc-ink-2)">' +
+          '<li><b>没有「这是什么问题」。</b>bug 和功能需求长得一样，没有类型、优先级，也没有标签——个人开发最常用的区分维度全部缺失。</li>' +
+          '<li><b>编号不可见。</b>列表里看不到 Issue 编号，也没法在提交信息里引用（<code>fix: 启动白屏 (ISS-128)</code>）。</li>' +
+          '<li><b>密度太低。</b>14.5–17px 粗体标题 + 大圆角卡片，长标题换行后一屏只能放 4 条；而 bug 标题天然很长。</li>' +
+          '<li><b>字段冗余。</b>数据里有 <code>location</code>，用地理定位图标展示一个路径，语义错位；这一版直接把该字段从界面下线。</li>' +
+          '<li><b>没有搜索与筛选。</b>几十条 issue 之后只能靠眼睛扫；项目多了只能横向滑纯文字 tab。</li>' +
+          '<li><b>完成即消失。</b>关闭的 issue 混排在列表末尾，既不进「已完成」，也没有关闭时间线。</li>' +
+          '<li><b>没有「正在做什么」的视角。</b>列表只有一条时间线，看不出哪几个正在处理、哪几个已经完成。</li>' +
+        '</ul>' +
+      '</div>' +
+    '</div>' +
+    '<div class="cols cols-2">' +
+      '<div class="card-soft"><span class="tag new">改版主张</span>' +
+        '<ul class="small" style="margin:8px 0 0;padding-left:18px;color:var(--doc-ink-2)">' +
+          '<li><b>先分类，再阅读。</b>类型徽标 + 优先级 + 标签三件套前置，让「这是什么、多严重」在扫视中完成。</li>' +
+          '<li><b>编号是一等公民。</b>等宽字体显示 <code>ISS-128</code>，可长按复制，直接粘进 commit / 分支名。</li>' +
+          '<li><b>提高密度。</b>行高 72–78pt、标题 14.5/19，一屏 6–7 条；把纵向空间还给信息本身。</li>' +
+          '<li><b>只留必要字段。</b>砍掉用不上的版本、关联文件，表单只保留类型 / 标题 / 项目 / 优先级 / 标签 / 描述。</li>' +
+          '<li><b>两种视图。</b>列表（全量扫视 + 状态分组）、看板（当前在做什么），够用就好。</li>' +
+          '<li><b>收件箱兜底。</b>先记下来不打断思路，之后再归类到项目。</li>' +
+        '</ul></div>' +
+      '<div class="card-soft"><span class="tag new">视觉基调</span>' +
+        '<div class="kv small" style="margin-top:10px;grid-template-columns:110px 1fr">' +
+          '<b>克制的中性底</b><span>背景 <code>#F4F5F7</code>、表面纯白，靠 1px 描边分层；阴影只给浮层。</span>' +
+          '<b>彩色只给语义</b><span>类型（bug 红 / chore 灰 / docs 蓝 / UI 紫）与优先级是唯一的强烈色块。</span>' +
+          '<b>等宽承载数据</b><span>编号、标签输入、计数用 SF Mono，与正文形成「工具感」对比。</span>' +
+          '<b>更小的圆角</b><span>行 12 / 卡片 12 / 面板 26，比现在的 16 更利落，接近 GitHub 与 Linear 的手感。</span>' +
+        '</div></div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 02 Token ---------- */
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-tokens" data-section>' +
+    '<div class="sec-head"><span class="sec-num">02</span><h2>设计 Token</h2><p>类型 · 优先级 · 状态 · 中性色 · 字阶</p></div>' +
+    '<h3>类型（Issue type）</h3>' +
+    '<div class="swatch-row">' +
+      '<div class="sw"><div class="c" style="background:#E5484D"></div><div class="m"><b>bug</b><span>#E5484D</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#67707E"></div><div class="m"><b>chore</b><span>#67707E</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#3E63DD"></div><div class="m"><b>docs</b><span>#3E63DD</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#7048E8"></div><div class="m"><b>ui / design</b><span>#7048E8</span></div></div>' +
+    '</div>' +
+    '<h3 style="margin-top:26px">优先级与状态</h3>' +
+    '<div class="swatch-row">' +
+      '<div class="sw"><div class="c" style="background:#E5484D"></div><div class="m"><b>P0</b><span>立刻处理 / 数据损失</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#DE8A0B"></div><div class="m"><b>P1</b><span>影响主流程</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#67707E"></div><div class="m"><b>P2</b><span>普通</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#9AA2AE"></div><div class="m"><b>P3</b><span>有空再说</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#3E63DD"></div><div class="m"><b>进行中</b><span>#3E63DD</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#0E9E8F"></div><div class="m"><b>已完成</b><span>#0E9E8F</span></div></div>' +
+    '</div>' +
+    '<h3 style="margin-top:26px">中性色与项目色板</h3>' +
+    '<div class="swatch-row">' +
+      '<div class="sw"><div class="c" style="background:#F4F5F7"></div><div class="m"><b>bg</b><span>#F4F5F7</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#FFFFFF"></div><div class="m"><b>surface</b><span>#FFFFFF</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#ECEEF2"></div><div class="m"><b>surface-2</b><span>#ECEEF2</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#E2E5EA"></div><div class="m"><b>hairline</b><span>#E2E5EA</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#0F1218"></div><div class="m"><b>ink</b><span>#0F1218</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#69717E"></div><div class="m"><b>muted</b><span>#69717E</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#3E63DD"></div><div class="m"><b>accent</b><span>#3E63DD</span></div></div>' +
+      '<div class="sw"><div class="c" style="background:#0B7285"></div><div class="m"><b>project 6</b><span>#0B7285</span></div></div>' +
+    '</div>' +
+    '<div class="cols cols-2" style="margin-top:26px">' +
+      '<div><h3>字阶与字体</h3>' +
+        '<table>' +
+          '<tr><th>角色</th><th>字号 / 行高</th><th>字重</th><th>字体</th></tr>' +
+          '<tr><td>页面标题</td><td>26 / 32</td><td>700</td><td>系统</td></tr>' +
+          '<tr><td>行标题</td><td>14.5 / 19</td><td>640</td><td>系统</td></tr>' +
+          '<tr><td>正文 / 详情</td><td>14 / 21</td><td>400–500</td><td>系统</td></tr>' +
+          '<tr><td>编号 / 标签</td><td>10.5–12.5</td><td>600</td><td><b>等宽</b></td></tr>' +
+          '<tr><td>标签 / 优先级</td><td>10.5</td><td>650–700</td><td>系统 / 等宽</td></tr>' +
+          '<tr><td>元信息</td><td>11.5 / 16</td><td>500</td><td>系统</td></tr>' +
+        '</table>' +
+        '<p class="small muted" style="margin-top:10px">等宽字体同时统一数字宽度，计数变化时不会跳动。</p>' +
+      '</div>' +
+      '<div><h3>密度 / 圆角 / 层级</h3>' +
+        '<table>' +
+          '<tr><th>Token</th><th>值</th><th>说明</th></tr>' +
+          '<tr><td><code>page-x</code></td><td>16</td><td>页面左右留白</td></tr>' +
+          '<tr><td><code>row-min</code></td><td>72</td><td>单行 Issue（含两行标题）</td></tr>' +
+          '<tr><td><code>row-gap</code></td><td>7</td><td>行间距</td></tr>' +
+          '<tr><td><code>radius-row</code></td><td>12</td><td>Issue 行 / 看板卡</td></tr>' +
+          '<tr><td><code>radius-sheet</code></td><td>26</td><td>底部面板</td></tr>' +
+          '<tr><td><code>badge</code></td><td>22 × 22</td><td>类型徽标（7px 圆角）</td></tr>' +
+          '<tr><td><code>touch-min</code></td><td>44</td><td>可点区域下限</td></tr>' +
+        '</table>' +
+        '<p class="small muted" style="margin-top:10px">阴影只有两级：浮起 <code>0 10 28 /.12</code>、模态 <code>0 20 52 /.20</code>；列表一律描边。</p>' +
+      '</div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 03 对比 ---------- */
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-compare" data-section>' +
+    '<div class="sec-head"><span class="sec-num">03</span><h2>现状 vs 改版</h2><p>同一批 issue，两种阅读方式</p></div>' +
+    '<div class="fig-row">' +
+      '<div class="fig"><span class="tag now">现状 · 真实渲染</span>' +
+        '<div class="device"><div class="screen"><div style="position:absolute;inset:0;overflow:hidden">' +
+          '<img src="preview/current-main.png" alt="当前版本主界面" style="width:100%;height:100%;display:block;object-fit:cover;object-position:top left" />' +
+        '</div></div></div>' +
+        '<div class="fig-cap"><b>4 条 / 屏，看不出轻重</b><span>标题 17px 粗体换行，元信息只有「时间 + 位置」；项目是纯文字 tab，完成项混排在最后。</span></div></div>' +
+      '<div class="fig"><span class="tag new">改版</span>' + listScreen() +
+        '<div class="fig-cap"><b>7 条 / 屏，信息分层</b><span>类型 → 编号 → 标题 → 项目 / 标签 / 文件 / 时间 → 优先级，右侧对齐；状态分组替代平铺列表。</span></div></div>' +
+      '<div class="fig" style="max-width:340px"><div class="callouts" style="margin-top:46px">' +
+        '<div class="callout"><span class="num">1</span><div><b>类型徽标</b><br/>圆角方块 + 图形符号，颜色即类型；扫视时不需要读文字。</div></div>' +
+        '<div class="callout"><span class="num">2</span><div><b>等宽编号</b><br/><code>ISS-128</code> 可直接引用进 commit、分支名、聊天记录。</div></div>' +
+        '<div class="callout"><span class="num">3</span><div><b>项目色点</b><br/>跨项目视图里第一时间知道这条属于哪个仓库。</div></div>' +
+        '<div class="callout"><span class="num">4</span><div><b>标签</b><br/>标签做横向筛选（ios / sync / release…），比多一层目录更轻。</div></div>' +
+        '<div class="callout"><span class="num">5</span><div><b>优先级固定在右侧</b><br/>形成一条可扫视的竖列，P0 永远最先被眼睛抓住。</div></div>' +
+        '<div class="callout"><span class="num">6</span><div><b>状态分组</b><br/>进行中 / 待处理 / 已完成，取代原来「完成项堆在末尾」。</div></div>' +
+      '</div></div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 屏幕：项目 / 新建 / 筛选 / 搜索 ---------- */
+function projectsScreen(){
+  const rows = [
+    {key:'superme', open:12, prog:3, pct:38, when:'2 小时前'},
+    {key:'booky', open:5, prog:1, pct:22, when:'昨天'},
+    {key:'worklog', open:4, prog:1, pct:40, when:'4 小时前'},
+    {key:'todo', open:3, prog:0, pct:0, when:'1 周前'},
+    {key:'timer', open:2, prog:0, pct:0, when:'2 周前'},
+    {key:'ws', open:6, prog:0, pct:0, when:'3 周前'},
+  ].map(function(r){
+    const p = PROJ[r.key];
+    return '<div class="irow" style="align-items:center;gap:11px">' +
+      '<span style="width:11px;height:11px;border-radius:999px;background:' + p.color + ';flex:0 0 auto"></span>' +
+      '<div class="imain">' +
+        '<div class="itop"><span class="ititle" style="font-size:14.5px">' + p.name + '</span>' +
+        '<span style="flex:1"></span><span style="font-family:var(--mono);font-size:10px;color:var(--faint)">' + r.when + '</span></div>' +
+        '<div class="imeta"><span>' + r.open + ' 未关闭</span><span class="sep">·</span><span>' + r.prog + ' 进行中</span></div>' +
+        '<div class="progress" style="margin-top:7px"><i style="width:' + r.pct + '%;background:' + p.color + '"></i></div>' +
+      '</div>' +
+      '<span class="grip" style="color:var(--faint)">' + S.grip + '</span>' +
+    '</div>';
+  }).join('');
+  return device({inner: statusBar() +
+    '<div class="app">' +
+      appHeader({title:'项目', sub:'6 个项目 · 21 条未关闭', right:'search'}) +
+      '<div class="searchbar" style="height:36px">' + S.search + '<span class="ph" style="font-size:13px">搜索项目</span><span style="flex:1"></span><span class="kbd">' + S.plus + '</span></div>' +
+      '<div class="list">' + rows +
+        '<div class="irow" style="border-style:dashed;background:transparent;justify-content:center;color:var(--faint);font-size:12.5px;font-weight:600;gap:7px">' + S.plus + ' 新增项目</div>' +
+      '</div>' +
+      '<div style="margin-top:auto;font-size:11px;color:var(--faint);display:flex;gap:6px;align-items:center;padding:0 2px">' + S.info + ' 长按拖动排序，左侧色点即列表里的项目标识色</div>' +
+    '</div>'});
+}
+
+function newIssueScreen(){
+  return device({inner: statusBar() +
+    listBody({}) +
+    '<div class="dim"></div>' +
+    '<div class="sheet">' +
+      '<div class="handle"></div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between">' +
+        '<h4>新建 Issue</h4><span style="color:var(--faint)">' + S.close + '</span>' +
+      '</div>' +
+      '<div style="display:flex;gap:7px;align-items:center">' +
+        '<span class="chip on" style="height:28px"><span class="pdot" style="background:#3E63DD"></span>SuperMe</span>' +
+        '<span class="chip" style="height:28px"><span class="pdot" style="background:#0E9E8F"></span>Booky</span>' +
+        '<span class="chip" style="height:28px">收件箱</span>' +
+      '</div>' +
+      '<div class="typepick">' +
+        '<span class="t sel">' + S.bug + 'Bug</span>' +
+        '<span class="t">' + S.chore + '杂事</span>' +
+        '<span class="t">' + S.docs + '文档</span>' +
+        '<span class="t">' + S.ui + '界面</span>' +
+      '</div>' +
+      '<div class="field focus"><span class="lbl2">标题</span><span class="val">启动时白屏，控制台无报错<span class="caret" style="display:inline-block;width:1.6px;height:16px;background:var(--accent);vertical-align:-3px;margin-left:2px"></span></span></div>' +
+      '<div class="field"><span class="lbl2">描述</span><span class="val ph">复现步骤 / 期望结果 / 报错栈…</span></div>' +
+      '<div style="display:flex;gap:6px;align-items:center">' +
+        '<span class="prio p1">P1</span><span class="lbl">ios</span><span class="lbl">native</span>' +
+        '<span class="lbl" style="background:transparent;border:1px dashed var(--hairline-strong);color:var(--faint)">+ 标签</span>' +
+        '<span style="flex:1"></span><span class="metric">保存到 <b style="font-size:12px">SuperMe</b></span>' +
+      '</div>' +
+      '<div class="two-btns"><span class="btn line">存草稿</span><span class="btn">' + S.plus + ' 创建</span></div>' +
+    '</div>'});
+}
+
+function filterScreen(){
+  const tagRow = function(list, on){
+    return list.map(function(t, i){
+      return '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px;' +
+        ((on || []).indexOf(t) >= 0 ? 'background:var(--accent-soft);color:var(--accent-dark)' : '') + '">' + t + '</span>';
+    }).join('');
+  };
+  return device({inner: statusBar() +
+    listBody({}) +
+    '<div class="dim"></div>' +
+    '<div class="sheet">' +
+      '<div class="handle"></div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between"><h4>筛选</h4>' +
+        '<span style="font-size:12.5px;color:var(--accent-dark);font-weight:650">重置</span></div>' +
+      '<div><div class="lbl2" style="margin-bottom:7px">类型</div>' +
+        '<div class="spec-row" style="gap:7px">' +
+          '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px;background:var(--bug-bg);color:var(--bug)">bug 12</span>' +
+          '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">ui 4</span>' +
+          '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">chore 2</span>' +
+          '<span class="lbl" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">docs 1</span>' +
+        '</div></div>' +
+      '<div><div class="lbl2" style="margin-bottom:7px">优先级</div>' +
+        '<div class="spec-row" style="gap:7px">' +
+          '<span class="prio p0" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">P0 2</span>' +
+          '<span class="prio p1" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">P1 5</span>' +
+          '<span class="prio p2" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">P2 6</span>' +
+          '<span class="prio p3" style="height:26px;padding:0 10px;font-size:11.5px;border-radius:8px">P3 1</span>' +
+        '</div></div>' +
+      '<div><div class="lbl2" style="margin-bottom:7px">标签</div>' +
+        '<div class="spec-row" style="gap:7px">' + tagRow(['ios','native','sync','release','web','deps','xcode'], ['ios']) + '</div></div>' +
+      '<div><div class="lbl2" style="margin-bottom:7px">时间</div>' +
+        '<div class="spec-row" style="gap:7px">' + tagRow(['今天更新','本周更新','超过 2 周未动','已关闭'], ['超过 2 周未动']) + '</div></div>' +
+      '<div class="two-btns" style="margin-top:2px"><span class="btn line">存为常用筛选</span><span class="btn">应用 · 12 条</span></div>' +
+    '</div>'});
+}
+
+function searchScreen(){
+  return device({inner: statusBar() +
+    '<div class="app">' +
+      appHeader({title:'搜索结果', sub:'“生命周期” · 3 条', right:'search'}) +
+      '<div class="searchbar" style="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)">' +
+        S.search + '<span class="ph" style="color:var(--ink)">生命周期</span><span style="flex:1"></span>' +
+        '<span style="font-family:var(--mono);font-size:11px;color:var(--faint)">3</span></div>' +
+      '<div class="chips">' +
+        '<span class="chip on" style="height:26px;font-size:11.5px">类型：bug</span>' +
+        '<span class="chip on" style="height:26px;font-size:11.5px">项目：SuperMe</span>' +
+        '<span class="chip" style="height:26px;font-size:11.5px">+ 筛选</span>' +
+      '</div>' +
+      '<div class="list">' +
+        irow(Object.assign({}, ISSUES[0], {meta:'命中标题'})) +
+        irow(Object.assign({}, ISSUES[11], {meta:'命中描述'})) +
+        irow(Object.assign({}, ISSUES[4], {meta:'命中标签'})) +
+      '</div>' +
+      '<div style="margin-top:12px"><div class="group"><span class="nm">无匹配</span><span class="line"></span></div>' +
+        '<div class="empty" style="padding:22px">' + S.search + '<div class="t">没有更多结果</div>' +
+        '<div class="d">试试只搜编号（<b style="font-family:var(--mono)">128</b>）或标签（<b style="font-family:var(--mono)">ios</b>）</div></div></div>' +
+    '</div>'});
+}
+
+function detailScreen(){
+  const it = ISSUES[0];
+  return device({inner: statusBar() +
+    listBody({}) +
+    '<div class="dim"></div>' +
+    '<div class="sheet" style="gap:11px">' +
+      '<div class="handle"></div>' +
+      '<div style="display:flex;align-items:center;gap:8px">' +
+        tbadge('bug') + '<span class="iid" style="font-size:12px">' + it.id + '</span>' +
+        '<span class="stat progress">进行中</span>' +
+        '<span style="flex:1"></span><span class="prio p0">P0</span><span style="color:var(--faint)">' + S.close + '</span>' +
+      '</div>' +
+      '<div style="font-size:18px;font-weight:700;line-height:1.32;letter-spacing:-.01em">' + it.title + '</div>' +
+      '<div class="props">' +
+        '<div class="prop"><div class="k">项目</div><div class="v"><span class="pdot" style="width:8px;height:8px;border-radius:999px;background:#3E63DD"></span>SuperMe</div></div>' +
+        '<div class="prop"><div class="k">优先级</div><div class="v"><span class="prio p0">P0</span></div></div>' +
+        '<div class="prop"><div class="k">编号</div><div class="v mono">' + it.id + '</div></div>' +
+        '<div class="prop"><div class="k">标签</div><div class="v">' + labels(it.labels) + '</div></div>' +
+      '</div>' +
+      '<div class="field"><span class="lbl2">描述</span><span class="val">iOS 27 上构建后启动白屏，控制台无报错。需要在 config plugin 里保留 UIApplicationSceneManifest，并在 prebuild 后回归验证。</span></div>' +
+      '<div><div class="lbl2" style="margin-bottom:8px">时间线</div>' +
+        '<div class="timeline">' +
+          '<div class="tl"><span class="pt done"></span><div class="tx"><b>创建</b> 由快速添加<span>09-15 21:40</span></div></div>' +
+          '<div class="tl"><span class="pt open"></span><div class="tx"><b>标记为进行中</b><span>2 小时前</span></div></div>' +
+          '<div class="tl"><span class="pt"></span><div class="tx">等待关闭</div></div>' +
+        '</div></div>' +
+      '<div class="two-btns"><span class="btn line">' + S.branch + ' 复制编号</span><span class="btn ok">' + S.check + ' 标记完成</span></div>' +
+      '<div class="two-btns"><span class="btn danger" style="flex:1">' + S.trash + ' 删除</span><span class="btn line" style="flex:1.6">关闭详情</span></div>' +
+    '</div>'});
+}
+
+function syncScreen(){
+  return device({inner: statusBar() +
+    listBody({}) +
+    '<div class="dim"></div>' +
+    '<div style="position:absolute;inset:0;display:flex">' +
+      '<div style="margin:auto 18px;background:var(--surface);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:13px;box-shadow:var(--sh-3);width:100%">' +
+        '<div><div style="font-size:16.5px;font-weight:700">正在同步</div>' +
+        '<div class="metric" style="margin-top:3px">Supabase · 6 项目 / 21 条 Issue</div></div>' +
+        '<div class="progress"><i style="width:62%"></i></div>' +
+        '<div class="timeline" style="gap:9px">' +
+          '<div class="tl"><span class="pt done"></span><div class="tx">上传本地改动 <span style="display:inline;font-family:var(--mono)">4 / 4</span></div></div>' +
+          '<div class="tl"><span class="pt open"></span><div class="tx">拉取云端数据 <span style="display:inline;font-family:var(--mono)">12 / 20</span></div></div>' +
+          '<div class="tl"><span class="pt"></span><div class="tx">同步设置与项目顺序</div></div>' +
+          '<div class="tl"><span class="pt"></span><div class="tx">写回本地缓存</div></div>' +
+        '</div>' +
+        '<div class="two-btns"><span class="btn line">后台继续</span><span class="btn">完成</span></div>' +
+      '</div>' +
+    '</div>'});
+}
+
+function settingsScreen(){
+  const row = function(icon, title, sub, right){
+    return '<div class="irow" style="align-items:center;gap:11px;padding:11px 12px">' +
+      '<span class="tbadge" style="background:var(--surface-2);color:var(--ink-2)">' + icon + '</span>' +
+      '<div class="imain"><div class="itop"><span class="ititle" style="font-size:14px">' + title + '</span></div>' +
+      (sub ? '<div class="imeta"><span>' + sub + '</span></div>' : '') + '</div>' +
+      (right || ('<span style="color:var(--faint)">' + S.chev + '</span>')) +
+    '</div>';
+  };
+  return device({inner: statusBar() +
+    '<div class="app">' +
+      appHeader({title:'设置', sub:'本机数据 · 上次同步 2 小时前', left:'back', right:'none'}) +
+      '<div class="list">' +
+        '<div class="group"><span class="nm">外观</span><span class="line"></span></div>' +
+        row(S.sun, '外观', '跟随系统 / 浅色 / 深色', '<span class="stat wont" style="height:22px">跟随系统</span>') +
+        row(S.list, '紧凑模式', '行高改为 56，一屏 9 条', '<span class="stat progress" style="height:22px">关闭</span>') +
+        '<div class="group"><span class="nm">默认值</span><span class="line"></span></div>' +
+        row(S.tag, '默认项目', '新建时预选', '<span style="display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)"><span class="pdot" style="width:7px;height:7px;border-radius:999px;background:#3E63DD"></span>SuperMe' + S.chev + '</span>') +
+        row(S.bug, '默认类型', '新建时预选', '<span style="display:flex;align-items:center;gap:6px"><span class="lbl" style="background:var(--bug-bg);color:var(--bug)">bug</span>' + S.chev + '</span>') +
+        row(S.inbox, '新 Issue 先进收件箱', '不打断当前思路', '<span class="stat progress" style="height:22px">开启</span>') +
+        '<div class="group"><span class="nm">同步</span><span class="line"></span></div>' +
+        row(S.sync, '账号与同步', 'me@superme.dev · 已登录') +
+        '<div class="group"><span class="nm">关于</span><span class="line"></span></div>' +
+        row(S.info, '关于 Issue', '版本 1.0.3 (4)') +
+      '</div>' +
+    '</div>'});
+}
+
+/* ---------- 04 / 05 ---------- */
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-views" data-section>' +
+    '<div class="sec-head"><span class="sec-num">04</span><h2>核心视图</h2><p>列表 · 看板 · 收件箱 · 项目</p></div>' +
+    '<div class="fig-row">' +
+      '<div class="fig"><span class="tag new">收件箱</span>' + inboxScreen() +
+        '<div class="fig-cap"><b>先把问题记下来</b><span>写代码时冒出的 bug 不必当场决定归属；收件箱暂存，之后再指定项目。这是现有「快速添加」的自然延伸。</span></div></div>' +
+      '<div class="fig"><span class="tag new">项目</span>' + projectsScreen() +
+        '<div class="fig-cap"><b>每个项目是一条“仓库”</b><span>项目色点、未关闭数、进行中数、完成进度一条行内说完；长按拖动排序，对应现有的项目排序逻辑。</span></div></div>' +
+    '</div>' +
+  '</section>');
+
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-flows" data-section>' +
+    '<div class="sec-head"><span class="sec-num">05</span><h2>流程与浮层</h2><p>新建 · 详情 · 搜索 · 筛选 · 同步 · 设置</p></div>' +
+    '<div class="fig-row">' +
+      '<div class="fig"><span class="tag new">新建 Issue</span>' + newIssueScreen() +
+        '<div class="fig-cap"><b>类型前置，字段可留空</b><span>第一行决定这是什么；描述、标签都可以先空着。默认值与「是否先进收件箱」在设置里配置。</span></div></div>' +
+      '<div class="fig"><span class="tag new">详情</span>' + detailScreen() +
+        '<div class="fig-cap"><b>GitHub issue 的移动端形态</b><span>属性网格 + 描述 + 时间线 + 三个动作（完成 / 转类型 / 删除）；编号可用等宽字体直接复制进 commit 信息。</span></div></div>' +
+      '<div class="fig"><span class="tag new">搜索</span>' + searchScreen() +
+        '<div class="fig-cap"><b>先有搜索，才敢积累</b><span>支持标题、编号、标签；命中位置会标注出来（命中标题 / 描述 / 标签）。</span></div></div>' +
+    '</div>' +
+    '<div class="fig-row" style="margin-top:36px">' +
+      '<div class="fig"><span class="tag new">筛选</span>' + filterScreen() +
+        '<div class="fig-cap"><b>按开发语言思考的筛选</b><span>类型 / 优先级 / 标签 / 时间，再加上「超过 2 周未动」这类只有开发者会在意的条件；可存为常用筛选。</span></div></div>' +
+      '<div class="fig"><span class="tag new">同步</span>' + syncScreen() +
+        '<div class="fig-cap"><b>沿用现有四阶段同步</b><span>文案改成开发者语义（项目数 / Issue 数），保留「后台继续」，不阻塞你继续看列表。</span></div></div>' +
+      '<div class="fig"><span class="tag new">设置</span>' + settingsScreen() +
+        '<div class="fig-cap"><b>默认值与外观集中管理</b><span>默认项目 / 默认类型 / 是否先进收件箱 / 紧凑模式 / 外观，行内直接显示当前值。</span></div></div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 深色看板（07） ---------- */
+function darkBoardScreen(){
+  const by = function(id){ return ISSUES.filter(function(x){ return x.id === id; })[0]; };
+  return device({cls:'dark', inner: statusBar() +
+    '<div class="app">' +
+      appHeader({title:'Issue', sub:'看板 · SuperMe · 12 条', right:'search'}) +
+      seg([{name:'列表'}, {name:'看板', on:true}]) +
+      '<div class="board">' +
+        '<div class="col">' +
+          '<div class="col-head"><span class="nm" style="color:#E8EBF1">待处理</span><span class="n">8</span><span class="bar"></span></div>' +
+          bcard(by('ISS-127')) + bcard(by('ISS-104')) + bcard(by('ISS-121')) + bcard(by('ISS-118')) +
+        '</div>' +
+        '<div class="col" style="width:160px">' +
+          '<div class="col-head"><span class="nm" style="color:#E8EBF1">进行中</span><span class="n">2</span></div>' +
+          bcard(by('ISS-128')) + bcard(by('ISS-115')) +
+        '</div>' +
+      '</div>' +
+    '</div>'});
+}
+
+/* ---------- 06 组件库 ---------- */
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-components" data-section>' +
+    '<div class="sec-head"><span class="sec-num">06</span><h2>组件库</h2><p>全部基于现有组件栈（Ionicons + 自绘），不新增依赖</p></div>' +
+    '<div class="cols cols-2">' +
+      '<div class="specimen"><b class="small">Issue 行 · 舒适（72pt）与紧凑（56pt）</b>' +
+        irow(ISSUES[1]) +
+        '<div class="irow" style="padding:8px 11px;gap:9px">' + tbadge('chore') +
+          '<div class="imain"><div class="itop"><span class="iid">ISS-121</span><span class="ititle" style="font-size:13.5px">列表支持按标签与优先级快速筛选</span></div>' +
+          '<div class="imeta"><span>SuperMe</span><span class="sep">·</span><span>3 天前</span></div></div>' +
+          '<span class="prio p1">P1</span></div>' +
+        '<span class="small muted">紧凑模式在设置里开启，适合只有标题的短 issue。</span></div>' +
+      '<div class="specimen"><b class="small">类型徽标 / 优先级 / 状态</b>' +
+        '<div class="spec-row">' +
+          '<span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--doc-muted)">' + tbadge('bug') + 'BUG</span>' +
+          '<span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--doc-muted)">' + tbadge('chore') + 'CHORE</span>' +
+          '<span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--doc-muted)">' + tbadge('docs') + 'DOCS</span>' +
+          '<span style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--doc-muted)">' + tbadge('ui') + 'UI</span>' +
+        '</div>' +
+        '<div class="spec-row">' +
+          '<span class="prio p0">P0</span><span class="prio p1">P1</span><span class="prio p2">P2</span><span class="prio p3">P3</span>' +
+          '<span style="width:12px"></span>' +
+          '<span class="stat progress">进行中</span><span class="stat done">' + S.check + '已完成</span>' +
+        '</div>' +
+        '<div class="spec-row">' +
+          labels(['ios','native','sync','release','web','deps']) +
+          '<span class="lbl" style="background:transparent;border:1px dashed var(--hairline-strong);color:var(--faint)">+ 标签</span>' +
+        '</div></div>' +
+      '<div class="specimen"><b class="small">项目 chip / 视图分段</b>' +
+        projChips([{name:'全部', n:22}, {key:'superme', n:12, on:true}, {key:'booky', n:5}, {key:'todo', n:3}]) +
+        '<div class="spec-row">' +
+          '<div style="width:250px">' + seg([{name:'列表'}, {name:'看板', on:true}]) + '</div>' +
+          '<div style="width:170px">' + seg([{name:'我', on:true}, {name:'全部'}]) + '</div>' +
+        '</div></div>' +
+      '<div class="specimen"><b class="small">看板列与卡片</b>' +
+        '<div style="display:flex;gap:10px">' +
+          '<div class="col" style="width:200px">' +
+            '<div class="col-head"><span class="nm">进行中</span><span class="n">2</span><span class="bar"></span></div>' +
+            bcard(ISSUES[0]) +
+            '<div class="bcard ghost">拖到「已完成」即关闭</div>' +
+          '</div>' +
+          '<div class="col" style="width:200px">' +
+            '<div class="col-head"><span class="nm">已完成</span><span class="n">8</span><span class="bar"></span></div>' +
+            bcard(ISSUES[10]) +
+          '</div>' +
+        '</div></div>' +
+    '</div>' +
+    '<div class="cols cols-2" style="margin-top:24px">' +
+      '<div class="specimen"><b class="small">按钮与输入（等宽用于数据字段）</b>' +
+        '<div class="spec-row">' +
+          '<span class="btn">' + S.plus + ' 新建 Issue</span>' +
+          '<span class="btn ok">' + S.check + ' 标记完成</span>' +
+          '<span class="btn line">复制编号</span>' +
+          '<span class="btn danger">' + S.trash + ' 删除</span>' +
+          '<span class="btn ghost">次要</span>' +
+        '</div>' +
+        '<div class="spec-row">' +
+          '<div class="field" style="width:210px"><span class="lbl2">标题</span><span class="val">prebuild 后版本号未同步</span></div>' +
+          '<div class="field mono" style="width:150px"><span class="lbl2">标签</span><span class="val">ios, sync</span></div>' +
+          '<div class="field mono" style="width:150px"><span class="lbl2">编号</span><span class="val">ISS-127</span></div>' +
+        '</div></div>' +
+      '<div class="specimen"><b class="small">反馈：Toast / 属性网格 / 时间线 / 空态</b>' +
+        '<div class="spec-row">' +
+          '<span class="toast">' + S.check + ' ISS-128 已标记完成 <span class="mono">撤销</span></span>' +
+          '<span class="toast" style="background:#151920;border:1px solid #232935">' + S.sync + ' 同步中 <span class="mono">62%</span></span>' +
+        '</div>' +
+        '<div class="props" style="max-width:330px">' +
+          '<div class="prop"><div class="k">项目</div><div class="v"><span class="pdot" style="width:8px;height:8px;border-radius:999px;background:#3E63DD"></span>SuperMe</div></div>' +
+          '<div class="prop"><div class="k">编号</div><div class="v mono">ISS-128</div></div>' +
+        '</div>' +
+        '<div class="empty" style="padding:20px">' + S.inbox + '<div class="t">还没有 Issue</div>' +
+          '<div class="d">先记下第一个问题，之后可以随时归类到项目</div><span class="btn sm">' + S.plus + ' 新建</span></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="divider"></div>' +
+    '<div class="do-dont">' +
+      '<div class="dd yes"><div class="h">Do</div><ul>' +
+        '<li>类型与优先级用固定色，不跟随主题色变化。</li>' +
+        '<li>编号与标签统一等宽字体，可直接复制使用。</li>' +
+        '<li>标题最多两行，超出截断——详情页看全文。</li>' +
+        '<li>列表行使用 1px 描边；阴影只出现在浮层与模态。</li>' +
+        '<li>一屏至少 6 条，优先级列右对齐形成可扫视的竖线。</li>' +
+      '</ul></div>' +
+      '<div class="dd no"><div class="h">Don\'t</div><ul>' +
+        '<li>不要用主题色表示类型——主题色是「选中」，不是「语义」。</li>' +
+        '<li>不要把「项目」显示成纯文字 tab，项目色必须一直可见。</li>' +
+        '<li>不要在列表里塞正文描述，那会把密度打回原形。</li>' +
+        '<li>不要用地理定位图标表示文件路径。</li>' +
+        '<li>不要为动效牺牲可读性：任何状态变化都要同时有色彩 + 文案。</li>' +
+      '</ul></div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 07 动效与深色 ---------- */
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-motion" data-section>' +
+    '<div class="sec-head"><span class="sec-num">07</span><h2>动效与深色模式</h2><p>关闭一个 issue 应该有回响；深色是主力外观</p></div>' +
+    '<h3>关闭 Issue：一次操作，三段时间</h3>' +
+    '<div class="frames">' +
+      '<div class="frame"><div class="irow">' + tbadge('bug') +
+        '<div class="imain"><div class="itop"><span class="iid">ISS-128</span><span class="ititle">iOS 27 启动白屏</span></div>' +
+        '<div class="imeta"><span style="color:var(--done)">关闭中…</span></div></div>' +
+        '<span class="stat progress">进行中</span></div>' +
+        '<div class="cap"><b>0 – 120ms · 命中</b>类型徽标形变为对勾，行描边转为完成青，触感反馈同时触发。</div></div>' +
+      '<div class="frame"><div class="irow" style="opacity:.6;transform:scale(.985)">' +
+        '<span class="rcheck done">' + S.check.replace('viewBox="0 0 24 24"', 'viewBox="0 0 24 24" width="12" height="12"') + '</span>' +
+        '<div class="imain"><div class="itop"><span class="iid">ISS-128</span><span class="ititle done">iOS 27 启动白屏</span></div>' +
+        '<div class="imeta"><span class="stat done">' + S.check + '刚刚关闭</span></div></div></div>' +
+        '<div class="cap"><b>120 – 260ms · 确认</b>标题划线渐隐，状态胶囊变为「刚刚关闭」，其余行整体上移。</div></div>' +
+      '<div class="frame"><div class="irow"><span class="stat">' +
+      '<div class="frame"><div class="irow" style="justify-content:space-between;align-items:center">' +
+        '<span class="metric">未关闭 <b>20</b></span>' +
+        '<span class="metric">v1.0.4 <b>8/12</b></span></div>' +
+        '<div class="progress" style="margin-top:8px"><i style="width:67%;background:var(--done)"></i></div>' +
+        '<div class="cap" style="margin-top:12px"><b>260 – 360ms · 归位</b>顶部「待处理 / 已完成」计数同步前进，Toast 提供 3 秒撤销窗口。</div></div>' +
+    '</div>' +
+    '<div class="cols cols-2" style="margin-top:26px">' +
+      '<div><h3>时序与曲线</h3><table>' +
+        '<tr><th>动作</th><th>时长</th><th>曲线</th></tr>' +
+        '<tr><td>徽标形变 + 描边转色</td><td>120ms</td><td>spring(0.32, 0.6)</td></tr>' +
+        '<tr><td>行折叠 + 列表上移</td><td>140–260ms</td><td>cubic-bezier(.2,0,0,1)</td></tr>' +
+        '<tr><td>计数 / 进度条更新</td><td>260–360ms</td><td>ease-in-out</td></tr>' +
+        '<tr><td>看板卡片换列</td><td>跟手 + 200ms 回弹</td><td>decelerate</td></tr>' +
+        '<tr><td>底部面板进出</td><td>260ms</td><td>系统 spring</td></tr>' +
+        '<tr><td>撤销 Toast 停留</td><td>3000ms</td><td>线性倒计时</td></tr>' +
+      '</table>' +
+      '<p class="small muted" style="margin-top:10px">音效沿用现有 <code>todo-complete-ding.wav</code>；开启「减弱动效」时折叠改为 120ms 淡出。</p></div>' +
+      '<div><h3>深色模式映射</h3><table>' +
+        '<tr><th>Token</th><th>浅色</th><th>深色</th></tr>' +
+        '<tr><td><code>bg</code></td><td>#F4F5F7</td><td>#0C0F14</td></tr>' +
+        '<tr><td><code>surface</code></td><td>#FFFFFF</td><td>#13171E</td></tr>' +
+        '<tr><td><code>surface-2</code></td><td>#ECEEF2</td><td>#1A1F28</td></tr>' +
+        '<tr><td><code>hairline</code></td><td>#E2E5EA</td><td>#232935</td></tr>' +
+        '<tr><td><code>ink</code></td><td>#0F1218</td><td>#EDEFF4</td></tr>' +
+        '<tr><td><code>bug</code></td><td>#E5484D</td><td>#FF7B7E（底色 16% 透明）</td></tr>' +
+        '<tr><td><code>accent</code></td><td>#3E63DD</td><td>#7C93FF</td></tr>' +
+      '</table>' +
+      '<p class="small muted" style="margin-top:10px">深色下不用阴影，靠 <code>#232935</code> 描边区分层级；类型色统一提亮并降低底饱和度，避免亮色块刺眼。</p></div>' +
+    '</div>' +
+    '<div class="fig-row" style="margin-top:34px">' +
+      '<div class="fig"><span class="tag new">深色 · 看板</span>' + darkBoardScreen() +
+        '<div class="fig-cap"><b>深色是主力，不是附属</b><span>夜里写代码时列表与看板都应在深色下成立；语义色提亮后仍然一眼可辨。</span></div></div>' +
+      '<div style="max-width:560px"><h3>动效原则</h3>' +
+        '<div class="callouts" style="max-width:none">' +
+          '<div class="callout"><span class="num">1</span><div><b>状态变化才动。</b>关闭、改状态、换列、同步这几类有终点的动作才给动效；滚动与翻页保持克制。</div></div>' +
+          '<div class="callout"><span class="num">2</span><div><b>先给结论。</b>点击后 120ms 内必须看到「已命中」，折叠与计数可以慢半拍。</div></div>' +
+          '<div class="callout"><span class="num">3</span><div><b>关闭可撤销。</b>误关一条 bug 的代价很高，3 秒撤销是底线；删除则走「归档」语义。</div></div>' +
+          '<div class="callout"><span class="num">4</span><div><b>跟随系统。</b>读取 <code>AccessibilityInfo.isReduceMotionEnabled()</code>，同时支持动态字体到最大档不截断。</div></div>' +
+        '</div></div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 08 落地映射 ---------- */
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-impl" data-section>' +
+    '<div class="sec-head"><span class="sec-num">08</span><h2>落地映射与数据模型</h2><p>设计稿需要哪些字段，代码改在哪里</p></div>' +
+    '<div class="cols cols-2">' +
+      '<div><h3>IssueItem 需要新增的字段</h3>' +
+        '<table>' +
+          '<tr><th>字段</th><th>取值</th><th>默认 / 兼容</th></tr>' +
+          '<tr><td><code>type</code></td><td>bug / chore / docs / ui</td><td>旧数据默认 <code>bug</code>；历史 feature 归入 chore</td></tr>' +
+          '<tr><td><code>priority</code></td><td>P0 / P1 / P2 / P3</td><td>默认 <code>P2</code></td></tr>' +
+          '<tr><td><code>labels</code></td><td>string[]</td><td>默认 <code>[]</code></td></tr>' +
+          '<tr><td><code>status</code></td><td>open / in_progress / done</td><td>由现有 <code>is_completed</code> 推导：true → done，false → open</td></tr>' +
+          '<tr><td><code>closed_at</code></td><td>ISO 时间</td><td>复用现有 <code>completed_at</code>，界面改名展示</td></tr>' +
+        '</table>' +
+        '<p class="small muted" style="margin-top:10px">IssueProject 增加 <code>color</code>（6 色板之一，默认按创建顺序分配）与 <code>archived_at</code>（可选）。</p>' +
+      '</div>' +
+      '<div><h3>Supabase 变更</h3>' +
+        '<div class="card-soft" style="padding:16px"><code style="display:block;white-space:pre;font-size:11.5px;line-height:1.7;background:transparent;padding:0">alter table issue_projects\n  add column color text default \'#3E63DD\';\n\nalter table issues\n  add column type text default \'bug\',\n  add column priority text default \'P2\',\n  add column status text default \'open\',\n  add column labels jsonb default \'[]\'::jsonb,\n  add column version text;\n\n-- 旧数据回填：已完成 → status = done\nupdate issues set status = \'done\'\n  where is_completed = true and status = \'open\';</code></div>' +
+        '<p class="small muted" style="margin-top:10px">同步合并逻辑（<code>syncMerge</code>）需要带上新字段；本地 <code>normalizeIssueItem</code> 里补默认值，保证老缓存可以直接读。</p>' +
+      '</div>' +
+    '</div>' +
+    '<div class="divider"></div>' +
+    '<div class="cols cols-2">' +
+      '<div><h3>UI 落点</h3><table>' +
+        '<tr><th>设计项</th><th>代码位置</th></tr>' +
+        '<tr><td>Token / 类型色 / 等宽字阶</td><td><code>src/theme.ts</code> 新增 <code>issueTypes</code>、<code>priority</code>、<code>typeface.mono</code></td></tr>' +
+        '<tr><td>Issue 行 / 类型徽标 / 标签 / 优先级</td><td>新组件 <code>src/features/daily/issues/components/IssueRow.tsx</code></td></tr>' +
+        '<tr><td>列表 / 看板 双视图</td><td><code>IssueScreen.tsx</code> 增加 <code>view</code> 状态，看板复用 <code>SwipeActionCard</code> 的手势封装</td></tr>' +
+        '<tr><td>收件箱</td><td>用 <code>project_key = null</code> 表示未归类，新增 <code>listInboxIssuesLocal()</code></td></tr>' +
+        '<tr><td>搜索 / 筛选</td><td>本地过滤函数 <code>filterIssues()</code>，无需改同步层</td></tr>' +
+        '<tr><td>详情面板</td><td>把现有编辑 <code>Modal</code> 换成 <code>FormSheet</code>，接入已存在但未使用的 <code>IssueEditForm</code> 字段</td></tr>' +
+        '<tr><td>深色模式</td><td><code>ThemeProvider</code> 增加 <code>scheme</code>，按 <code>useColorScheme()</code> 输出两套 Token</td></tr>' +
+      '</table></div>' +
+      '<div><h3>实施顺序</h3><table>' +
+        '<tr><th>阶段</th><th>内容</th><th>风险</th></tr>' +
+        '<tr><td>P0 · 数据与 Token</td><td>字段扩展 + 默认值 + 类型色 / 等宽字阶</td><td>低：全部可回退为默认值</td></tr>' +
+        '<tr><td>P1 · 列表重构</td><td>Issue 行、状态分组、搜索、项目色点</td><td>中：需要回归 <code>sortIssues</code> 与既有测试脚本</td></tr>' +
+        '<tr><td>P2 · 新视图</td><td>看板、收件箱、筛选</td><td>中：手势与拖拽状态机</td></tr>' +
+        '<tr><td>P3 · 深色与打磨</td><td>深色 Token、关闭动效与撤销、无障碍与动态字体</td><td>中：需逐屏回归</td></tr>' +
+      '</table>' +
+      '<h3 style="margin-top:22px">验收清单</h3>' +
+      '<ul class="small" style="padding-left:18px;color:var(--doc-ink-2)">' +
+        '<li>390 × 844 首屏至少 6 条 Issue，类型 / 编号 / 项目 / 优先级四要素齐全。</li>' +
+        '<li>把主题色改成绿色，bug 仍是红色、杂事仍是灰色。</li>' +
+        '<li>搜索「128」「ios」「_layout」都能命中同一条 issue。</li>' +
+        '<li>关闭一条 issue 后：列表分组与顶部计数同步更新，且 3 秒内可撤销。</li>' +
+        '<li>深色模式下所有类型徽标与标签对比度 ≥ 4.5:1。</li>' +
+        '<li>旧版本本地缓存（无 type / status 字段）升级后不丢数据、不报错。</li>' +
+      '</ul></div>' +
+    '</div>' +
+    '<div class="divider"></div>' +
+    '<div class="do-dont">' +
+      '<div class="dd yes"><div class="h">保持不动</div><ul>' +
+        '<li>本地优先的存储结构与手动同步流程（<code>manualSync</code> / <code>syncMerge</code>）。</li>' +
+        '<li>快速添加「提交后不覆盖新输入」的行为与对应回归脚本。</li>' +
+        '<li>项目 → Issue 的归属模型与 Supabase 表名，只在既有表上新增列。</li>' +
+      '</ul></div>' +
+      '<div class="dd no"><div class="h">需要你决策</div><ul>' +
+        '<li>状态刻意只保留「待处理 / 进行中 / 已完成」三种；曾经的 blocked / wontfix 已下线（老数据并入待处理）。</li>' +
+        '<li>是否需要多端协作字段（负责人、评论）；一旦引入，这个 app 的定位会变。</li>' +
+        '<li>是否要记录 git 分支 / commit 关联（需要输入或剪贴板解析，属于 P3 增强）。</li>' +
+      '</ul></div>' +
+    '</div>' +
+  '</section>');
+
+/* ?only=<section> 只渲染一节，便于导出图片 */
+(function(){
+  const only = new URLSearchParams(location.search).get('only');
+  if (!only) return;
+  document.body.classList.add('only');
+  document.querySelectorAll('[data-section]').forEach(function(el){ if (el.id !== only) el.remove(); });
+})();
+</script>
+</body>
+</html>

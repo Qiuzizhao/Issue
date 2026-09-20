@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import { colors, radius, shadow, spacing } from '@/src/shared/theme';
+import { colors, radius, shadow, spacing, typeface } from '@/src/shared/theme';
 
 export const styles = StyleSheet.create({
   screen: {
@@ -21,7 +21,11 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerCentered: {
-    // 移除 gap，由 side 元素控制平衡
+    // 保持左右两侧等宽，标题居中
+  },
+  headerLarge: {
+    height: 68,
+    paddingHorizontal: spacing.lg,
   },
   headerSide: {
     alignItems: 'center',
@@ -31,12 +35,23 @@ export const styles = StyleSheet.create({
   headerSideLeft: {
     alignItems: 'flex-start',
   },
+  headerSideLargeLeft: {
+    width: 44,
+  },
   headerSideRight: {
     alignItems: 'flex-end',
+  },
+  headerSideLargeRight: {
+    minWidth: 0,
+    width: 'auto',
   },
   headerTextCentered: {
     alignItems: 'center',
     marginHorizontal: spacing.sm,
+  },
+  headerTextLeft: {
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   title: {
     color: colors.text, // 标题栏字体改为黑色
@@ -45,15 +60,25 @@ export const styles = StyleSheet.create({
     letterSpacing: -0.4,
     textAlign: 'center',
   },
+  titleLarge: {
+    fontSize: 26,
+    letterSpacing: -0.5,
+    lineHeight: 32,
+    textAlign: 'left',
+  },
+  titleLeft: {
+    textAlign: 'left',
+  },
   subtitle: {
-    color: colors.text, // 副标题改为黑色
-    opacity: 0.6,
-    fontSize: 11,
-    fontWeight: '600',
-    marginTop: 1,
+    color: colors.muted,
+    fontFamily: typeface.mono,
+    fontSize: 11.5,
+    fontWeight: '500',
+    marginTop: 2,
     textAlign: 'center',
-    textTransform: 'uppercase', // 教务感
-    letterSpacing: 0.5,
+  },
+  subtitleLeft: {
+    textAlign: 'left',
   },
   button: {
     alignItems: 'center',

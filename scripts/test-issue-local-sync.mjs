@@ -20,7 +20,7 @@ assert.match(repo, /deleted_at:\s*now/, 'Deletes should be soft deletes.');
 assert.doesNotMatch(repo, /filter\(\(item\) => item\.id !== id\)/, 'Deletes should not hard-remove issue rows.');
 
 const settings = read('src/local/settingsRepository.ts');
-assert.match(settings, /defaultThemePrimaryColor = '#E03131'/, 'Default theme should match SuperMe.');
+assert.match(settings, /defaultThemePrimaryColor = '#3E63DD'/, 'Default theme should match the Console redesign palette.');
 assert.match(settings, /issue_projects_order:\s*\[\]/, 'Default project order should be empty.');
 assert.match(settings, /saveSettingsFromSync/, 'Settings should support remote download.');
 

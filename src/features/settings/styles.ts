@@ -56,6 +56,11 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '800',
   },
+  helperText: {
+    color: colors.muted,
+    fontSize: 12.5,
+    marginTop: 4,
+  },
   bottomSpacer: {
     height: 16,
   },

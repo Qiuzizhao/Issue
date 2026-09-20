@@ -1,169 +1,360 @@
 import { Platform, StyleSheet } from 'react-native';
 
-import { colors, radius, shadow, spacing } from '@/src/shared/theme';
+import { colors, radius, shadow, spacing, typeface } from '@/src/shared/theme';
 
 export const styles = StyleSheet.create({
   content: {
-    gap: spacing.md,
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.xxl,
+    gap: spacing.sm + 2,
+    paddingBottom: 96,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+  },
+  /** 列表用：间距由每个单元格自己控制（原来的 7 / 10 节奏），不再依赖容器 gap */
+  listContent: {
+    paddingBottom: 96,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+  },
+  /** 列表头部区块：与原来的容器 gap 一致 */
+  headerBlock: {
+    gap: spacing.sm + 2,
+    marginBottom: spacing.sm - 1,
+  },
+  /** 分组标题行：距上一条 10、距本组第一条 10（与改造前一致） */
+  groupRow: {
+    marginBottom: spacing.sm + 2,
+    marginTop: spacing.xs - 1,
   },
   noScrollBounce: Platform.select({
     web: { overscrollBehaviorY: 'none' } as any,
     default: {},
   }),
-  headerEdit: {
-    fontSize: 15,
-    fontWeight: '700',
-    textAlign: 'center',
-  },
-  headerEditButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 36,
-    minWidth: 40,
-  },
   headerActions: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  projectScroller: {
-    marginHorizontal: -spacing.md,
-  },
-  projectTabs: {
-    gap: spacing.lg,
-    paddingHorizontal: spacing.md,
-  },
-  projectTab: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 36,
-    paddingHorizontal: 2,
-  },
-  projectTabText: {
-    color: colors.textSoft,
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  projectTabTextSelected: {
-    color: colors.primary,
-  },
-  quickAdd: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: radius.xl,
-    flexDirection: 'row',
-    gap: spacing.sm,
-    padding: spacing.xs,
-    paddingLeft: spacing.md,
-    ...shadow,
-  },
-  quickInput: {
-    color: colors.text,
-    flex: 1,
-    fontSize: 15,
-    minHeight: 48,
-  },
-  addButton: {
-    alignItems: 'center',
-    borderRadius: radius.xl,
-    height: 44,
-    justifyContent: 'center',
-    width: 44,
-  },
-  disabled: {
-    opacity: 0.45,
-  },
-  list: {
     gap: spacing.xs,
   },
-  issueCard: {
+  searchRow: {
     alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: radius.xl,
     flexDirection: 'row',
     gap: spacing.sm,
-    minHeight: 54,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    ...shadow,
   },
-  checkCircle: {
-    alignItems: 'center',
-    borderColor: colors.border,
-    borderRadius: radius.full,
-    borderWidth: 1.5,
-    height: 22,
-    justifyContent: 'center',
-    width: 22,
-  },
-  checkCircleDone: {
-  },
-  issueMain: {
-    flex: 1,
-    gap: 3,
-  },
-  issueTitle: {
-    color: colors.text,
-    fontSize: 17,
-    fontWeight: '700',
-    lineHeight: 23,
-  },
-  completed: {
-    color: colors.faint,
-    textDecorationLine: 'line-through',
-  },
-  description: {
-    color: colors.muted,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  metadata: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-  metadataItem: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 4,
-  },
-  metadataText: {
-    color: colors.muted,
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  emptyState: {
+  searchBar: {
     alignItems: 'center',
     backgroundColor: colors.surface,
     borderColor: colors.border,
     borderRadius: radius.xl,
     borderWidth: 1,
-    gap: spacing.xs,
+    flex: 1,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    height: 40,
+    paddingHorizontal: spacing.md,
+  },
+  searchBarFocused: {
+    borderColor: colors.primary,
+  },
+  searchInput: {
+    color: colors.text,
+    flex: 1,
+    fontSize: 14,
+    height: 40,
+    padding: 0,
+  },
+  filterButton: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radius.xl,
+    borderWidth: 1,
+    height: 40,
+    justifyContent: 'center',
+    width: 40,
+  },
+  filterButtonActive: {
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
+  },
+  filterBadge: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.full,
+    height: 15,
+    justifyContent: 'center',
+    minWidth: 15,
+    paddingHorizontal: 3,
+    position: 'absolute',
+    right: -4,
+    top: -4,
+  },
+  filterBadgeText: {
+    color: '#fff',
+    fontFamily: typeface.mono,
+    fontSize: 9.5,
+    fontWeight: '700',
+  },
+  chipsRow: {
+    gap: spacing.sm - 1,
+  },
+  chip: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderRadius: radius.full,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 6,
+    height: 29,
+    paddingHorizontal: spacing.sm + 2,
+  },
+  chipSelected: {
+    backgroundColor: colors.primarySoft,
+    borderColor: colors.primary,
+  },
+  chipDot: {
+    borderRadius: radius.full,
+    height: 7,
+    width: 7,
+  },
+  chipText: {
+    color: colors.textSoft,
+    fontSize: 12.5,
+    fontWeight: '600',
+  },
+  chipTextSelected: {
+    color: colors.primaryDark,
+  },
+  chipCount: {
+    color: colors.faint,
+    fontFamily: typeface.mono,
+    fontSize: 11,
+  },
+  chipCountSelected: {
+    color: colors.primaryDark,
+  },
+  viewSwitch: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  viewSwitchItem: {
+    alignItems: 'center',
+    borderRadius: radius.lg,
+    flex: 1,
+    gap: 4,
+    paddingVertical: spacing.sm,
+  },
+  viewSwitchItemActive: {
+    backgroundColor: colors.surface,
+  },
+  viewSwitchText: {
+    color: colors.textSoft,
+    fontSize: 12.5,
+    fontWeight: '600',
+  },
+  viewSwitchTextActive: {
+    color: colors.text,
+    fontWeight: '700',
+  },
+  group: {
+    gap: spacing.sm - 1,
+  },
+  listStack: {
+    gap: spacing.sm - 1,
+  },
+  rowWrap: {
+    marginBottom: spacing.sm - 1,
+  },
+  rowFeedback: {
+    opacity: 0.92,
+  },
+  boardRow: {
+    gap: spacing.sm,
+    paddingRight: spacing.lg,
+  },
+  boardColumn: {
+    gap: spacing.sm - 1,
+    width: 232,
+  },
+  boardColumnEmpty: {
+    borderColor: colors.borderStrong,
+    borderRadius: radius.row,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    padding: spacing.md,
+  },
+  boardColumnEmptyText: {
+    color: colors.faint,
+    fontSize: 11.5,
+    textAlign: 'center',
+  },
+  emptyState: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.borderStrong,
+    borderRadius: radius.row,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    gap: spacing.sm,
+    marginTop: spacing.sm,
     padding: spacing.xl,
   },
   emptyTitle: {
     color: colors.text,
-    fontSize: 16,
+    fontSize: 14.5,
     fontWeight: '600',
   },
   emptyText: {
     color: colors.muted,
-    fontSize: 13,
+    fontSize: 12.5,
     textAlign: 'center',
   },
-  modalContent: {
+  fab: {
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    borderRadius: radius.full,
+    bottom: 28,
+    height: 52,
+    justifyContent: 'center',
+    position: 'absolute',
+    right: spacing.lg,
+    width: 52,
+    ...shadow,
+  },
+  sheetContent: {
     gap: spacing.md,
-    padding: spacing.xl,
     paddingBottom: spacing.xxl,
+    paddingHorizontal: spacing.lg,
+  },
+  sheetHead: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
   },
   sheetTitle: {
     color: colors.text,
-    fontSize: 20,
+    flex: 1,
+    fontSize: 17,
+    fontWeight: '700',
+  },
+  sheetCode: {
+    color: colors.muted,
+    fontFamily: typeface.mono,
+    fontSize: 12,
     fontWeight: '600',
+  },
+  fieldLabel: {
+    color: colors.muted,
+    fontFamily: typeface.mono,
+    fontSize: 10,
+    fontWeight: '600',
+    letterSpacing: 0.6,
+    marginBottom: spacing.xs + 2,
+    textTransform: 'uppercase',
+  },
+  input: {
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radius.lg,
+    color: colors.text,
+    fontSize: 14,
+    minHeight: 44,
+    paddingHorizontal: spacing.md,
+  },
+  textArea: {
+    minHeight: 88,
+    paddingTop: spacing.sm + 2,
+    textAlignVertical: 'top',
+  },
+  monoInput: {
+    fontFamily: typeface.mono,
+    fontSize: 13,
+  },
+  pickRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm - 2,
+  },
+  pickChip: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceMuted,
+    borderColor: 'transparent',
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: 5,
+    height: 32,
+    paddingHorizontal: spacing.sm + 2,
+  },
+  pickChipText: {
+    color: colors.textSoft,
+    fontSize: 12.5,
+    fontWeight: '600',
+  },
+  typePicker: {
+    flexDirection: 'row',
+    gap: spacing.sm - 2,
+  },
+  typeCard: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceMuted,
+    borderColor: 'transparent',
+    borderRadius: radius.lg,
+    borderWidth: 1.5,
+    flex: 1,
+    gap: 4,
+    paddingVertical: spacing.sm,
+  },
+  typeCardText: {
+    color: colors.textSoft,
+    fontSize: 10.5,
+    fontWeight: '600',
+  },
+  sheetActions: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+  },
+  lineHeaderRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.sm,
+  },
+  swipeCompleteAction: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    backgroundColor: colors.success,
+    justifyContent: 'center',
+    width: 56,
+  },
+  actionButton: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceMuted,
+    borderRadius: radius.lg,
+    flex: 1,
+    flexDirection: 'row',
+    gap: 6,
+    height: 44,
+    justifyContent: 'center',
+  },
+  actionPrimary: {
+    backgroundColor: colors.primary,
+  },
+  actionSuccess: {
+    backgroundColor: colors.success,
+  },
+  actionDanger: {
+    backgroundColor: colors.dangerSoft,
+  },
+  actionText: {
+    color: colors.textSoft,
+    fontSize: 13.5,
+    fontWeight: '600',
+  },
+  actionTextLight: {
+    color: '#fff',
+  },
+  actionTextDanger: {
+    color: colors.danger,
   },
   projectRow: {
     alignItems: 'center',
@@ -175,8 +366,8 @@ export const styles = StyleSheet.create({
     borderRadius: radius.lg,
     color: colors.text,
     flex: 1,
-    fontSize: 15,
-    minHeight: 48,
+    fontSize: 14,
+    minHeight: 44,
     paddingHorizontal: spacing.md,
   },
   projectAction: {
@@ -184,9 +375,9 @@ export const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radius.md,
     borderWidth: 1,
-    height: 42,
+    height: 38,
     justifyContent: 'center',
-    width: 42,
+    width: 38,
   },
   projectDelete: {
     borderColor: colors.dangerSoft,
@@ -196,82 +387,48 @@ export const styles = StyleSheet.create({
     height: 1,
     marginVertical: spacing.sm,
   },
-  issueEditorOverlay: {
+  inlineNote: {
     alignItems: 'center',
-    backgroundColor: 'rgba(15, 23, 42, 0.28)',
-    flex: 1,
-    justifyContent: 'center',
-    padding: spacing.lg,
-  },
-  issueEditorPanel: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.xl,
-    gap: spacing.md,
-    maxWidth: 420,
-    padding: spacing.lg,
-    width: '100%',
-    ...shadow,
-  },
-  issueEditorHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  issueEditorTitle: {
-    color: colors.text,
-    fontSize: 18,
-    fontWeight: '700',
-  },
-  issueEditorClose: {
-    alignItems: 'center',
-    backgroundColor: colors.surfaceMuted,
-    borderRadius: radius.full,
-    height: 34,
-    justifyContent: 'center',
-    width: 34,
-  },
-  issueEditorInput: {
-    backgroundColor: colors.surfaceMuted,
+    backgroundColor: colors.primarySoft,
     borderRadius: radius.lg,
-    color: colors.text,
-    fontSize: 15,
-    minHeight: 52,
-    paddingHorizontal: spacing.md,
-  },
-  issueEditorActions: {
     flexDirection: 'row',
     gap: spacing.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm + 2,
   },
-  issueEditorButton: {
-    alignItems: 'center',
-    borderColor: colors.border,
-    borderRadius: radius.lg,
-    borderWidth: 1,
+  inlineNoteText: {
+    color: colors.primaryDark,
     flex: 1,
-    flexDirection: 'row',
-    gap: spacing.xs,
-    justifyContent: 'center',
-    minHeight: 46,
-    paddingHorizontal: spacing.sm,
+    fontSize: 12,
+    fontWeight: '600',
   },
-  issueEditorButtonText: {
+  detailBody: {
     color: colors.textSoft,
     fontSize: 14,
-    fontWeight: '700',
+    lineHeight: 21,
   },
-  issueEditorDeleteButton: {
-    backgroundColor: colors.dangerSoft,
-    borderColor: colors.dangerSoft,
+  timeline: {
+    gap: spacing.sm + 2,
   },
-  issueEditorDeleteText: {
-    color: colors.danger,
+  timelineRow: {
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    gap: spacing.sm + 2,
   },
-  issueEditorSaveButton: {
-    borderWidth: 1,
+  timelineDot: {
+    borderRadius: radius.full,
+    height: 9,
+    marginTop: 5,
+    width: 9,
   },
-  issueEditorSaveText: {
-    color: colors.surface,
-    fontSize: 14,
-    fontWeight: '700',
+  timelineText: {
+    color: colors.textSoft,
+    fontSize: 12.5,
+  },
+  timelineTime: {
+    color: colors.faint,
+    fontFamily: typeface.mono,
+    fontSize: 10.5,
+    marginTop: 1,
   },
 });

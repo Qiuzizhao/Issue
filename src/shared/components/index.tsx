@@ -38,24 +38,34 @@ export function Screen({ children }: PropsWithChildren) {
 
 export function Header({
   title,
-  subtitle: _subtitle,
+  subtitle,
   action,
   rightAction,
-  centered: _centered,
+  centered,
+  align = 'center',
+  size = 'default',
 }: {
   title: string;
   subtitle?: React.ReactNode;
   action?: React.ReactNode;
   rightAction?: React.ReactNode;
   centered?: boolean;
+  /** 标题对齐：Issue 主界面用左对齐大标题，设置/登录页保持居中 */
+  align?: 'center' | 'left';
+  size?: 'default' | 'large';
 }) {
+  const leftAligned = align === 'left' || size === 'large';
+  const large = size === 'large';
   return (
-    <View style={styles.header}>
-      <View style={[styles.headerSide, styles.headerSideLeft]}>{action}</View>
-      <View style={styles.headerText}>
-        <Text style={styles.title} numberOfLines={1}>{title}</Text>
+    <View style={[styles.header, large && styles.headerLarge, centered && styles.headerCentered]}>
+      <View style={[styles.headerSide, styles.headerSideLeft, large && styles.headerSideLargeLeft]}>{action}</View>
+      <View style={[styles.headerText, leftAligned && styles.headerTextLeft]}>
+        <Text style={[styles.title, large && styles.titleLarge, leftAligned && styles.titleLeft]} numberOfLines={1}>{title}</Text>
+        {subtitle ? (
+          <Text style={[styles.subtitle, leftAligned && styles.subtitleLeft]} numberOfLines={1}>{subtitle}</Text>
+        ) : null}
       </View>
-      <View style={[styles.headerSide, styles.headerSideRight]}>{rightAction}</View>
+      <View style={[styles.headerSide, styles.headerSideRight, large && styles.headerSideLargeRight]}>{rightAction}</View>
     </View>
   );
 }

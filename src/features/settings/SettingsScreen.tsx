@@ -7,6 +7,8 @@ import { Header, IconButton, Screen } from '@/src/shared/components';
 import { colors, useThemeColors } from '@/src/shared/theme';
 import { styles } from './styles';
 
+const appVersion = '1.0.3 (4)';
+
 export function SettingsScreen() {
   const themeColors = useThemeColors();
 
@@ -37,6 +39,13 @@ export function SettingsScreen() {
             </View>
             <Ionicons name="chevron-forward" size={19} color={colors.muted} />
           </Pressable>
+
+          <View style={styles.settingsSection}>
+            <View style={styles.settingRowText}>
+              <Text style={styles.sectionTitle}>关于 Issue</Text>
+              <Text style={styles.helperText}>本地优先的开发者 Issue 追踪 · 版本 {appVersion}</Text>
+            </View>
+          </View>
           <View style={styles.bottomSpacer} />
         </ScrollView>
       </View>

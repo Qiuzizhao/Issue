@@ -1,0 +1,1305 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Issue · 视觉改版设计稿 v1</title>
+<style>
+  :root{
+    --doc-ink:#0E1116;
+    --doc-ink-2:#3B4553;
+    --doc-muted:#69737F;
+    --doc-line:#E6E9EF;
+    --doc-soft:#F4F6F9;
+
+    --bg:#F5F6F8;
+    --surface:#FFFFFF;
+    --surface-2:#F0F2F6;
+    --surface-3:#E8EBF0;
+    --hairline:#E4E7ED;
+    --hairline-strong:#D6DAE3;
+
+    --ink:#12151B;
+    --ink-2:#3D4653;
+    --muted:#6B7480;
+    --faint:#9BA3B0;
+
+    --accent:#3B5BDB;
+    --accent-dark:#2C46B4;
+    --accent-soft:#EDF1FE;
+
+    --overdue:#E5484D;
+    --overdue-bg:#FDF0F0;
+    --today:#DE8A0B;
+    --today-bg:#FFF7E7;
+    --plan:#66707F;
+    --plan-bg:#F1F3F7;
+    --done:#0E9E8F;
+    --done-bg:#E8F7F5;
+
+    --p1:#3B5BDB; --p2:#0CA678; --p3:#E8590C; --p4:#C2255C; --p5:#7048E8; --p6:#0B7285;
+
+    --sh-1:0 1px 2px rgba(16,24,40,.06);
+    --sh-2:0 8px 24px rgba(16,24,40,.10);
+    --sh-3:0 18px 48px rgba(16,24,40,.18);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:#fff;color:var(--doc-ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Helvetica Neue",Arial,"Noto Sans SC",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    font-size:15px;line-height:1.6;
+  }
+  .page{max-width:1280px;margin:0 auto;padding:64px 44px 96px}
+  .doc-head{border-bottom:1px solid var(--doc-line);padding-bottom:28px}
+  .doc-kicker{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}
+  h1{font-size:42px;line-height:1.14;letter-spacing:-.02em;margin:14px 0 10px;font-weight:700}
+  .doc-lead{font-size:17px;line-height:1.7;color:var(--doc-ink-2);max-width:860px;margin:0}
+  .doc-meta{display:flex;flex-wrap:wrap;gap:26px;margin-top:22px;font-size:12.5px;color:var(--doc-muted)}
+  .doc-meta b{display:block;color:var(--doc-ink);font-size:13.5px;font-weight:600;margin-top:2px}
+
+  section{padding-top:56px;scroll-margin-top:24px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;border-bottom:1px solid var(--doc-line);padding-bottom:12px;margin-bottom:26px}
+  .sec-num{font-size:13px;font-weight:700;color:#fff;background:var(--doc-ink);border-radius:8px;padding:3px 9px;letter-spacing:.04em}
+  .sec-head h2{font-size:24px;letter-spacing:-.01em;margin:0;font-weight:700}
+  .sec-head p{margin:0;color:var(--doc-muted);font-size:14px}
+  h3{font-size:16px;margin:30px 0 12px;font-weight:700}
+  h3:first-child{margin-top:0}
+  p{margin:0 0 12px}
+  .muted{color:var(--doc-muted)}
+  .small{font-size:13px}
+  ul.small{line-height:1.75}
+
+  .cols{display:grid;gap:24px}
+  .cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .fig-row{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-start}
+
+  .fig{display:flex;flex-direction:column;gap:12px}
+  .fig-cap{max-width:390px}
+  .fig-cap b{display:block;font-size:14px;font-weight:650;margin-bottom:3px}
+  .fig-cap span{font-size:12.5px;color:var(--doc-muted);line-height:1.55}
+  .tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--doc-muted);background:var(--doc-soft);border:1px solid var(--doc-line);border-radius:999px;padding:2px 9px}
+  .tag.now{color:#B23B3B;background:#FDF0F0;border-color:#F6D9D9}
+  .tag.new{color:#2C46B4;background:#EDF1FE;border-color:#D9E1FB}
+
+  .device{width:390px;flex:0 0 auto;background:#0B0D11;border-radius:50px;padding:9px;box-shadow:var(--sh-3)}
+  .device .screen{
+    position:relative;width:100%;height:788px;border-radius:42px;overflow:hidden;
+    background:var(--bg);display:flex;flex-direction:column;
+  }
+  .sb{height:46px;flex:0 0 auto;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 6px;font-size:13px;font-weight:650;color:var(--ink)}
+  .sb .right{display:flex;align-items:center;gap:5px}
+  .sb svg{display:block}
+  .home-ind{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);width:130px;height:5px;border-radius:999px;background:rgba(0,0,0,.26)}
+
+  .app{padding:0 18px 18px;display:flex;flex-direction:column;gap:12px;flex:1;min-height:0;overflow:hidden}
+  .app-titlebar{display:flex;align-items:flex-end;justify-content:space-between;padding-top:2px}
+  .app-title{font-size:29px;font-weight:700;letter-spacing:-.02em}
+  .app-sub{font-size:12.5px;color:var(--muted);font-weight:500;margin-top:1px}
+  .hbtns{display:flex;gap:8px;align-items:center}
+  .icon-btn{width:36px;height:36px;border-radius:12px;background:var(--surface);border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+  .icon-btn.plain{background:transparent;border-color:transparent}
+  .txt-btn{font-size:13.5px;font-weight:650;color:var(--ink-2);padding:6px 8px;border-radius:10px}
+
+  .overview{background:var(--surface);border:1px solid var(--hairline);border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:center;box-shadow:var(--sh-1)}
+  .ov-cell{flex:1;display:flex;flex-direction:column;gap:3px}
+  .ov-top{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:var(--muted)}
+  .ov-num{font-size:20px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .ov-num.red{color:var(--overdue)}
+  .ov-num.amber{color:var(--today)}
+  .ov-sep{width:1px;align-self:stretch;background:var(--hairline);margin:2px}
+  .ring{width:46px;height:46px;flex:0 0 auto}
+  .dot{width:7px;height:7px;border-radius:999px;background:var(--faint);flex:0 0 auto}
+  .dot.red{background:var(--overdue)}.dot.amber{background:var(--today)}.dot.blue{background:var(--accent)}.dot.done{background:var(--done)}
+
+  .chips{display:flex;gap:8px;overflow:hidden;padding:1px 0}
+  .chip{display:flex;align-items:center;gap:6px;height:32px;padding:0 11px;border-radius:999px;background:var(--surface);border:1px solid var(--hairline);font-size:13px;font-weight:600;color:var(--ink-2);white-space:nowrap}
+  .chip .cnt{font-size:11.5px;font-weight:700;color:var(--faint);font-variant-numeric:tabular-nums}
+  .chip.on{background:var(--accent-soft);border-color:transparent;color:var(--accent-dark);box-shadow:inset 0 0 0 1px rgba(59,91,219,.22)}
+  .chip.on .cnt{color:var(--accent-dark)}
+  .chip.p1 .dot{background:var(--p1)}.chip.p2 .dot{background:var(--p2)}.chip.p3 .dot{background:var(--p3)}
+  .chip.p4 .dot{background:var(--p4)}.chip.p5 .dot{background:var(--p5)}.chip.p6 .dot{background:var(--p6)}
+
+  .composer{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--hairline);border-radius:15px;padding:6px 6px 6px 14px;box-shadow:var(--sh-1)}
+  .composer .ph{flex:1;font-size:14.5px;color:var(--faint)}
+  .composer .add{width:38px;height:38px;border-radius:12px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center}
+  .composer.open{flex-direction:column;align-items:stretch;padding:12px 12px 10px;gap:10px;box-shadow:var(--sh-2);border-color:var(--hairline-strong)}
+  .composer.open .row1{display:flex;align-items:center;gap:9px}
+  .composer.open .value{font-size:14.5px;color:var(--ink)}
+  .caret{width:1.6px;height:18px;background:var(--accent);border-radius:2px}
+  .quickrow{display:flex;gap:7px;align-items:center;border-top:1px solid var(--hairline);padding-top:10px}
+  .qbtn{display:flex;align-items:center;gap:6px;height:29px;padding:0 10px;border-radius:9px;background:var(--surface-2);font-size:12.5px;font-weight:600;color:var(--ink-2);white-space:nowrap}
+  .qbtn.accent{background:var(--accent-soft);color:var(--accent-dark)}
+  .qbtn.solid{background:var(--accent);color:#fff}
+
+  .list{display:flex;flex-direction:column;gap:8px;overflow:hidden}
+  .grp{display:flex;align-items:center;gap:8px;padding:7px 2px 1px}
+  .grp .name{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .grp .line{flex:1;height:1px;background:var(--hairline)}
+  .grp .n{font-size:12px;font-weight:700;color:var(--faint);font-variant-numeric:tabular-nums}
+  .grp.overdue .name{color:var(--overdue)}
+  .grp.done .name{color:var(--done)}
+
+  .icard{display:flex;background:var(--surface);border:1px solid var(--hairline);border-radius:16px;padding:12px 13px 12px 0;box-shadow:var(--sh-1);gap:11px}
+  .icard .bar{width:3px;border-radius:0 3px 3px 0;background:var(--plan);flex:0 0 auto;align-self:stretch;margin:-12px 0}
+  .icard .bar.overdue{background:var(--overdue)}
+  .icard .bar.today{background:var(--today)}
+  .icard .bar.done{background:var(--done)}
+  .icard .body{flex:1;display:flex;gap:10px;min-width:0}
+  .check{width:23px;height:23px;border-radius:999px;border:1.6px solid var(--hairline-strong);flex:0 0 auto;display:flex;align-items:center;justify-content:center;margin-top:1px;color:#fff}
+  .check.done{background:var(--done);border-color:var(--done)}
+  .check.accent{background:var(--accent);border-color:var(--accent)}
+  .cmain{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+  .ctitle{font-size:15.5px;font-weight:640;letter-spacing:-.01em;color:var(--ink);line-height:1.32}
+  .ctitle.done{color:var(--faint);text-decoration:line-through}
+  .cdesc{font-size:12.5px;color:var(--muted);line-height:1.45;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .metas{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:4px;height:21px;padding:0 8px;border-radius:999px;font-size:11.5px;font-weight:650;background:var(--plan-bg);color:var(--plan);font-variant-numeric:tabular-nums}
+  .pill.overdue{background:var(--overdue-bg);color:var(--overdue)}
+  .pill.today{background:var(--today-bg);color:var(--today)}
+  .pill.done{background:var(--done-bg);color:var(--done)}
+  .pill.accent{background:var(--accent-soft);color:var(--accent-dark)}
+  .pill.ghost{background:transparent;color:var(--faint);font-weight:600;padding:0 2px}
+  .icard.done{box-shadow:none}
+  .icard.shifted{transform:translateX(-152px)}
+
+  .swipe-wrap{position:relative;border-radius:16px;overflow:hidden;background:#FDF0F0}
+  .swipe-actions{position:absolute;right:0;top:0;bottom:0;display:flex;align-items:center;gap:8px;padding:0 10px}
+  .act{width:70px;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#fff;font-size:11.5px;font-weight:700}
+  .swipe-actions .act{height:calc(100% - 12px)}
+  .act.done{background:var(--done)}
+  .act.del{background:var(--overdue)}
+  .icard.shifted{margin-right:-158px}
+
+  .seg{display:flex;background:var(--surface-2);border-radius:12px;padding:3px;gap:3px}
+  .seg .item{flex:1;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:650;color:var(--muted)}
+  .seg .item.on{background:var(--surface);color:var(--ink);box-shadow:var(--sh-1)}
+  .seg .item .n{font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+  .seg .item.on .n{color:var(--accent)}
+
+  .progress{height:5px;border-radius:999px;background:var(--surface-3);overflow:hidden}
+  .progress i{display:block;height:100%;border-radius:999px;background:var(--accent)}
+  .progress i.done{background:var(--done)}
+
+  .empty{display:flex;flex-direction:column;align-items:center;gap:10px;padding:34px 22px;background:var(--surface);border:1px dashed var(--hairline-strong);border-radius:18px;text-align:center;color:var(--faint)}
+  .empty .t{font-size:15.5px;font-weight:650;color:var(--ink)}
+  .empty .d{font-size:12.5px;color:var(--muted);max-width:250px}
+  .btn{height:42px;border-radius:13px;background:var(--accent);color:#fff;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:14.5px;font-weight:650;padding:0 18px}
+  .btn.ghost{background:var(--accent-soft);color:var(--accent-dark)}
+  .btn.line{background:var(--surface);border:1px solid var(--hairline-strong);color:var(--ink-2)}
+  .btn.danger{background:var(--overdue-bg);color:var(--overdue)}
+  .btn.sm{height:34px;font-size:13px;border-radius:10px;padding:0 12px}
+  .btn.full{width:100%}
+  .skel{background:var(--surface);border:1px solid var(--hairline);border-radius:16px;padding:13px;display:flex;gap:12px;align-items:center}
+  .skel .b{background:linear-gradient(90deg,#E6E9EF 0%,#F3F5F9 50%,#E6E9EF 100%);border-radius:8px}
+
+  .dim{position:absolute;inset:0;background:rgba(12,16,24,.42)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:28px 28px 0 0;padding:10px 20px 26px;box-shadow:var(--sh-3);display:flex;flex-direction:column;gap:12px}
+  .handle{width:38px;height:4.5px;border-radius:999px;background:var(--surface-3);margin:2px auto 4px}
+  .sheet h4{margin:0;font-size:19px;font-weight:700;letter-spacing:-.01em}
+  .sheet .hint{font-size:12.5px;color:var(--muted);margin-top:-6px}
+  .field{background:var(--surface-2);border:1px solid transparent;border-radius:14px;padding:10px 13px;display:flex;flex-direction:column;gap:3px}
+  .field .lbl{font-size:11.5px;font-weight:650;color:var(--muted)}
+  .field .val{font-size:14.5px;color:var(--ink)}
+  .field .val.ph{color:var(--faint)}
+  .field.focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 3px var(--accent-soft)}
+  .fieldrow{display:flex;gap:8px}
+  .fieldrow .field{flex:1}
+  .srow{display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--surface-2);border-radius:14px}
+  .srow .grip{color:var(--faint);display:flex}
+  .srow .pdot{width:10px;height:10px;border-radius:999px;flex:0 0 auto}
+  .srow .nm{flex:1;font-size:14.5px;font-weight:600}
+  .srow .cnt{font-size:12px;color:var(--faint);font-weight:650;font-variant-numeric:tabular-nums}
+  .srow.new{background:transparent;border:1px dashed var(--hairline-strong)}
+  .two-btns{display:flex;gap:9px}
+  .two-btns .btn{flex:1}
+
+  .modal-card{margin:auto 20px;background:var(--surface);border-radius:22px;padding:22px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--sh-3)}
+  .steps{display:flex;flex-direction:column;gap:11px}
+  .step{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--muted)}
+  .step .st{width:19px;height:19px;border-radius:999px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--faint);flex:0 0 auto}
+  .step.on{color:var(--ink);font-weight:600}
+  .step.on .st{background:var(--accent-soft);color:var(--accent-dark)}
+  .step.done .st{background:var(--done);color:#fff}
+  .step .cnt{margin-left:auto;font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums}
+  .bigcheck{width:56px;height:56px;border-radius:999px;background:var(--done-bg);color:var(--done);display:flex;align-items:center;justify-content:center;margin:0 auto}
+
+  .callouts{display:flex;flex-direction:column;gap:11px;max-width:360px}
+  .callout{display:flex;gap:9px;font-size:12.5px;color:var(--doc-ink-2);line-height:1.5}
+  .num{flex:0 0 auto;width:19px;height:19px;border-radius:999px;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
+
+  .card-soft{background:#FBFCFD;border:1px solid var(--doc-line);border-radius:16px;padding:20px}
+  .swatch-row{display:flex;flex-wrap:wrap;gap:10px}
+  .sw{width:118px;border-radius:12px;overflow:hidden;border:1px solid var(--doc-line);background:#fff}
+  .sw .c{height:52px}
+  .sw .m{padding:7px 9px;font-size:11px;line-height:1.4}
+  .sw .m b{display:block;font-size:11.5px;font-weight:650}
+  .sw .m span{color:var(--doc-muted);font-variant-numeric:tabular-nums}
+  table{border-collapse:collapse;width:100%;font-size:13px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--doc-line);vertical-align:top}
+  th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--doc-muted);font-weight:700}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;background:var(--doc-soft);border-radius:6px;padding:1.5px 6px;color:var(--doc-ink-2)}
+  .kv{display:grid;grid-template-columns:170px 1fr;gap:7px 16px;font-size:13px}
+  .do-dont{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .dd{border:1px solid var(--doc-line);border-radius:14px;padding:16px}
+  .dd .h{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:10px}
+  .dd.yes .h{color:var(--done)}
+  .dd.no .h{color:var(--overdue)}
+  .dd ul{margin:0;padding-left:18px;font-size:13px;color:var(--doc-ink-2)}
+  .dd li{margin-bottom:6px}
+  .specimen{background:#FBFCFD;border:1px solid var(--doc-line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
+  .spec-row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .iconcell{width:38px;height:38px;border-radius:12px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+  .iconcell svg{width:18px;height:18px}
+  .mini{width:276px;border-radius:26px;overflow:hidden;border:1px solid var(--doc-line);box-shadow:var(--sh-1)}
+  .mini img{width:100%;display:block}
+  .divider{height:1px;background:var(--doc-line);margin:28px 0}
+
+  .setgroup{background:var(--surface);border:1px solid var(--hairline);border-radius:16px;overflow:hidden;box-shadow:var(--sh-1)}
+  .setrow{display:flex;align-items:center;gap:12px;padding:13px 14px}
+  .setrow + .setrow{border-top:1px solid var(--hairline)}
+  .ictile{width:31px;height:31px;border-radius:10px;background:var(--accent-soft);color:var(--accent-dark);display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .ictile.solid{background:var(--accent);color:#fff}
+  .setrow .lb{flex:1;min-width:0}
+  .setrow .lb b{display:block;font-size:14.5px;font-weight:600}
+  .setrow .lb span{font-size:11.5px;color:var(--muted);font-weight:500}
+  .swatchgrid{display:grid;grid-template-columns:repeat(8,1fr);gap:9px}
+  .swatchgrid i{display:block;aspect-ratio:1;border-radius:999px}
+  .swatchgrid i.sel{box-shadow:0 0 0 2px #fff, 0 0 0 4px var(--ink)}
+  .presetrow{display:flex;gap:8px;margin-bottom:12px}
+  .presetrow i{flex:1;height:34px;border-radius:11px}
+  .preview-card{border:1px solid var(--hairline);border-radius:16px;padding:12px 13px;background:var(--surface);box-shadow:var(--sh-1)}
+  .frames{display:flex;gap:20px;flex-wrap:wrap}
+  .frame{width:310px;background:#FBFCFD;border:1px solid var(--doc-line);border-radius:16px;padding:14px}
+  .frame .cap{margin-top:10px;font-size:12px;color:var(--doc-muted)}
+  .frame .cap b{display:block;color:var(--doc-ink);font-size:12.5px;margin-bottom:2px}
+  .toast{display:flex;align-items:center;gap:9px;background:#12151B;color:#fff;border-radius:13px;padding:11px 13px;font-size:13px;font-weight:600;box-shadow:var(--sh-2)}
+  .inline-note{background:var(--accent-soft);border-radius:12px;padding:9px 11px;font-size:12px;color:var(--accent-dark);font-weight:600;display:flex;gap:7px;align-items:center}
+
+  .dark .screen{background:#0E1117}
+  .dark .sb{color:#EDF0F5}
+  .dark .app-title{color:#F2F4F8}
+  .dark .app-sub{color:#8B94A3}
+  .dark .icon-btn{background:#181C24;border-color:#242A35;color:#B8C0CD}
+  .dark .overview{background:#14181F;border-color:#222833;box-shadow:none}
+  .dark .ov-top{color:#8B94A3}
+  .dark .ov-num{color:#EDF0F5}
+  .dark .ov-sep{background:#222833}
+  .dark .chip{background:#181C24;border-color:#242A35;color:#B8C0CD}
+  .dark .chip.on{background:rgba(94,124,240,.18);color:#A9BAFF;box-shadow:inset 0 0 0 1px rgba(129,153,255,.3)}
+  .dark .composer{background:#14181F;border-color:#242A35;box-shadow:none}
+  .dark .composer .ph{color:#6D7684}
+  .dark .qbtn{background:#1D2430;color:#C3CAD5}
+  .dark .grp .name{color:#8B94A3}
+  .dark .grp .line{background:#222833}
+  .dark .icard{background:#14181F;border-color:#222833;box-shadow:none}
+  .dark .ctitle{color:#EDF0F5}
+  .dark .cdesc{color:#8B94A3}
+  .dark .check{border-color:#333B49}
+  .dark .pill{background:#1D2430;color:#9AA3B1}
+  .dark .pill.overdue{background:rgba(229,72,77,.16);color:#FF8A8E}
+  .dark .pill.today{background:rgba(222,138,11,.16);color:#F3B15B}
+  .dark .seg{background:#181C24}
+  .dark .seg .item.on{background:#242A35;color:#F2F4F8;box-shadow:none}
+  .dark .sheet{background:#12161D}
+  .dark .sheet h4{color:#F2F4F8}
+  .dark .field{background:#1A1F28}
+  .dark .field .val{color:#EDF0F5}
+  .dark .home-ind{background:rgba(255,255,255,.3)}
+  .dark .empty{background:#14181F;border-color:#2A303C}
+  .dark .empty .t{color:#EDF0F5}
+  .dark .btn.line{background:#181C24;border-color:#2A303C;color:#C3CAD5}
+
+  body.only .doc-head,body.only .only-hide{display:none}
+  body.only .page{padding:28px 36px 44px;max-width:none}
+  body.only section{padding-top:0}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="doc-head">
+    <div class="doc-kicker">Visual Redesign Proposal</div>
+    <h1>Issue · 视觉改版设计稿</h1>
+    <p class="doc-lead">
+      面向「个人 Issue 追踪」这一单一用途的界面重构方案。目标不是换一层皮，而是让
+      <b>还剩什么、什么时候到期、属于哪个项目</b> 三件事在 1 秒内被看见，并把「完成一项」这个动作做出反馈闭环。
+      稿内含设计方向、Token、逐屏视觉稿、组件库、动效与落地映射。
+    </p>
+    <div class="doc-meta">
+      <div>设计方向<b>Signal · 以时间语义驱动的工作台</b></div>
+      <div>覆盖屏幕<b>主界面 · 详情 · 项目 · 同步 · 设置 · 登录 · 深色</b></div>
+      <div>版本<b>v1 · 2026-09-17</b></div>
+      <div>落地基线<b>Expo 54 / RN 0.81 / src/theme.ts</b></div>
+    </div>
+  </div>
+
+  <section id="s-direction" data-section>
+    <div class="sec-head"><span class="sec-num">01</span><h2>设计方向</h2><p>先诊断现状，再给出主张</p></div>
+    <div class="cols cols-2">
+      <div class="card-soft">
+        <span class="tag now">现状诊断</span>
+        <ul class="small" style="margin:8px 0 0;padding-left:18px;color:var(--doc-ink-2)">
+          <li><b>信息密度均匀，没有优先级。</b>卡片全是白底 + 阴影 + 12px 圆角，逾期项和无关项长得一样，列表一长就“糊”。</li>
+          <li><b>时间不可读。</b><code>09-17 14:00</code> 这类绝对时间要用户自己换算今天 / 逾期。</li>
+          <li><b>头部信息浪费。</b><code>Header</code> 组件实际没有渲染 subtitle，「N 项待处理」根本看不到。</li>
+          <li><b>项目靠纯文字 Tab 切换。</b>无选中指示、无计数、无项目色，多项目时不知道自己在哪里。</li>
+          <li><b>三套色系混用。</b>企微蓝 <code>#EBF2FF</code> 做表头、主题色（默认红 <code>#E03131</code>）做强调、又一套语义色，互相抢戏。</li>
+          <li><b>完成感弱。</b>仅打勾 + 划线，卡片仍留在同一列表，勾完即“消失无踪”。</li>
+          <li><b>深色模式缺设计。</b><code>userInterfaceStyle: automatic</code>，但色值全部硬编码浅色。</li>
+          <li><b>编辑能力被压缩。</b>数据模型有日期 / 时间 / 地点 / 描述，编辑弹窗却只有一个标题输入框。</li>
+        </ul>
+      </div>
+      <div class="card-soft">
+        <span class="tag new">改版主张</span>
+        <ul class="small" style="margin:8px 0 0;padding-left:18px;color:var(--doc-ink-2)">
+          <li><b>时间语义化。</b>逾期 / 今天 / 计划 / 无期限四态，用色 + 相对文案（「逾期 2 天」「今天 14:00」）直接给结论，列表按时间分组。</li>
+          <li><b>项目色锚点。</b>每个项目分配一个色相，出现在 chip、卡片色条与详情页，跨屏可识别。</li>
+          <li><b>降噪分层。</b>平面卡（1px hairline，无阴影）承担列表；阴影只留给浮层，用分组标题制造节奏。</li>
+          <li><b>状态可见。</b>顶部换成左对齐大标题 + 概览条（待处理 / 逾期 / 今日完成环），Header 副标题真正生效。</li>
+          <li><b>反馈闭环。</b>勾选 → 环形扩散 + 音效 → 卡片折叠 → 顶部进度环前进 → 落入「已完成」分段。</li>
+          <li><b>主题色只做交互强调。</b>语义状态色固定不随主题漂移，保证「红 = 逾期」永远成立。</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>视觉基调</h3>
+    <div class="cols cols-4">
+      <div class="card-soft"><b>冷静的中性底</b><p class="small muted" style="margin:6px 0 0">背景 <code>#F5F6F8</code>，表面纯白与 <code>#F0F2F6</code> 两级；用描边而不是阴影做分层。</p></div>
+      <div class="card-soft"><b>一个强调色</b><p class="small muted" style="margin:6px 0 0">默认墨蓝 <code>#3B5BDB</code>，工具感强、深色模式友好，仍可由用户在设置中更换。</p></div>
+      <div class="card-soft"><b>语义四态</b><p class="small muted" style="margin:6px 0 0">红 = 逾期、琥珀 = 今天、蓝灰 = 计划中、青绿 = 完成；不随主题色变化。</p></div>
+      <div class="card-soft"><b>克制的字重</b><p class="small muted" style="margin:6px 0 0">标题 640–700、正文 400–500，不再全篇粗体；数字统一等宽。</p></div>
+    </div>
+  </section>
+
+  <section id="s-tokens" data-section>
+    <div class="sec-head"><span class="sec-num">02</span><h2>设计 Token</h2><p>颜色 · 字阶 · 间距 · 圆角 · 层级</p></div>
+
+    <h3>中性色与表面</h3>
+    <div class="swatch-row">
+      <div class="sw"><div class="c" style="background:#F5F6F8"></div><div class="m"><b>bg</b><span>#F5F6F8</span></div></div>
+      <div class="sw"><div class="c" style="background:#FFFFFF"></div><div class="m"><b>surface</b><span>#FFFFFF</span></div></div>
+      <div class="sw"><div class="c" style="background:#F0F2F6"></div><div class="m"><b>surface-2</b><span>#F0F2F6</span></div></div>
+      <div class="sw"><div class="c" style="background:#E4E7ED"></div><div class="m"><b>hairline</b><span>#E4E7ED</span></div></div>
+      <div class="sw"><div class="c" style="background:#12151B"></div><div class="m"><b>ink</b><span>#12151B</span></div></div>
+      <div class="sw"><div class="c" style="background:#3D4653"></div><div class="m"><b>ink-2</b><span>#3D4653</span></div></div>
+      <div class="sw"><div class="c" style="background:#6B7480"></div><div class="m"><b>muted</b><span>#6B7480</span></div></div>
+      <div class="sw"><div class="c" style="background:#9BA3B0"></div><div class="m"><b>faint</b><span>#9BA3B0</span></div></div>
+    </div>
+
+    <h3>强调色与语义状态</h3>
+    <div class="swatch-row">
+      <div class="sw"><div class="c" style="background:#3B5BDB"></div><div class="m"><b>accent</b><span>#3B5BDB</span></div></div>
+      <div class="sw"><div class="c" style="background:#2C46B4"></div><div class="m"><b>accent-dark</b><span>#2C46B4</span></div></div>
+      <div class="sw"><div class="c" style="background:#EDF1FE"></div><div class="m"><b>accent-soft</b><span>#EDF1FE</span></div></div>
+      <div class="sw"><div class="c" style="background:#E5484D"></div><div class="m"><b>overdue 逾期</b><span>#E5484D</span></div></div>
+      <div class="sw"><div class="c" style="background:#DE8A0B"></div><div class="m"><b>today 今天</b><span>#DE8A0B</span></div></div>
+      <div class="sw"><div class="c" style="background:#66707F"></div><div class="m"><b>plan 计划</b><span>#66707F</span></div></div>
+      <div class="sw"><div class="c" style="background:#0E9E8F"></div><div class="m"><b>done 完成</b><span>#0E9E8F</span></div></div>
+      <div class="sw"><div class="c" style="background:#FDF0F0"></div><div class="m"><b>overdue-bg</b><span>#FDF0F0</span></div></div>
+    </div>
+
+    <h3>项目色板（新建项目时自动分配，可更换）</h3>
+    <div class="swatch-row">
+      <div class="sw"><div class="c" style="background:#3B5BDB"></div><div class="m"><b>indigo</b><span>#3B5BDB</span></div></div>
+      <div class="sw"><div class="c" style="background:#0CA678"></div><div class="m"><b>teal</b><span>#0CA678</span></div></div>
+      <div class="sw"><div class="c" style="background:#E8590C"></div><div class="m"><b>orange</b><span>#E8590C</span></div></div>
+      <div class="sw"><div class="c" style="background:#C2255C"></div><div class="m"><b>pink</b><span>#C2255C</span></div></div>
+      <div class="sw"><div class="c" style="background:#7048E8"></div><div class="m"><b>violet</b><span>#7048E8</span></div></div>
+      <div class="sw"><div class="c" style="background:#0B7285"></div><div class="m"><b>cyan-dark</b><span>#0B7285</span></div></div>
+    </div>
+
+    <div class="cols cols-2" style="margin-top:26px">
+      <div>
+        <h3>字阶</h3>
+        <table>
+          <tr><th>角色</th><th>字号 / 行高</th><th>字重</th><th>用法</th></tr>
+          <tr><td>Display</td><td>29 / 34</td><td>700</td><td>页面大标题（Issue / 设置）</td></tr>
+          <tr><td>Section</td><td>12.5 / 16</td><td>700</td><td>分组标题（逾期 · 今天）</td></tr>
+          <tr><td>Card title</td><td>15.5 / 20.5</td><td>640</td><td>Issue 标题</td></tr>
+          <tr><td>Body</td><td>14.5 / 20</td><td>500</td><td>输入、按钮、设置项</td></tr>
+          <tr><td>Meta</td><td>11.5 / 15</td><td>650</td><td>时间 / 地点胶囊，等宽数字</td></tr>
+          <tr><td>Caption</td><td>12.5 / 18</td><td>500</td><td>描述、说明文字</td></tr>
+        </table>
+        <p class="small muted" style="margin-top:10px">数字与时间统一 <code>tabular-nums</code>，避免跳字；中文行高比英文放宽 4–6%。</p>
+      </div>
+      <div>
+        <h3>间距 / 圆角 / 层级</h3>
+        <table>
+          <tr><th>Token</th><th>值</th><th>用在哪</th></tr>
+          <tr><td><code>page-x</code></td><td>18</td><td>页面左右留白（现为 12）</td></tr>
+          <tr><td><code>gap-card</code></td><td>8–12</td><td>卡片间距（现为固定 12）</td></tr>
+          <tr><td><code>pad-card</code></td><td>12 × 13</td><td>卡片内边距</td></tr>
+          <tr><td><code>radius-card</code></td><td>16</td><td>卡片、概览条、输入框</td></tr>
+          <tr><td><code>radius-sheet</code></td><td>28</td><td>底部面板</td></tr>
+          <tr><td><code>touch-min</code></td><td>44</td><td>所有可点区域下限</td></tr>
+        </table>
+        <p class="small muted" style="margin-top:10px">阴影只出现三处：平面卡 <code>0 1 2 /.06</code>、浮起面板 <code>0 8 24 /.10</code>、模态 <code>0 18 48 /.18</code>。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="s-compare" data-section>
+    <div class="sec-head"><span class="sec-num">03</span><h2>主界面：现状 vs 改版</h2><p>同一份数据，两种叙事方式</p></div>
+    <div class="fig-row" id="fig-compare"></div>
+  </section>
+
+  <div id="rest"></div>
+</div>
+
+<script>
+const S = {
+  check:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.6 9.4 18 20 6.4"/></svg>',
+  clock:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3 2"/></svg>',
+  pin:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg>',
+  plus:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  sync:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5A8 8 0 0 0 6.3 6.3L4 8.5"/><path d="M4 4.5v4h4"/><path d="M4 12.5A8 8 0 0 0 17.7 17.7L20 15.5"/><path d="M20 19.5v-4h-4"/></svg>',
+  gear:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.05A1.7 1.7 0 0 0 9 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.05A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.05A1.7 1.7 0 0 0 15 4.6a1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9v.05a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.05a1.7 1.7 0 0 0-1.55 1z"/></svg>',
+  chev:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  back:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  grip:'<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>',
+  trash:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9.5 7V5.5A1.5 1.5 0 0 1 11 4h2a1.5 1.5 0 0 1 1.5 1.5V7"/><path d="M6.5 7l.8 12.2A1.8 1.8 0 0 0 9.1 21h5.8a1.8 1.8 0 0 0 1.8-1.8L17.5 7"/></svg>',
+  cal:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="16" rx="3"/><path d="M3.5 10h17M8 3.5v3M16 3.5v3"/></svg>',
+  flag:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4M6 4.8h10.5l-1.6 3.6 1.6 3.6H6"/></svg>',
+  palette:'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 1 9-9c0 2.4-1.9 3.6-3.6 3.6h-1.6a1.8 1.8 0 0 0-1.3 3.1A1.8 1.8 0 0 1 12 21z"/><circle cx="7.6" cy="12" r="1.1" fill="currentColor" stroke="none"/><circle cx="10.2" cy="8.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.6" cy="8.2" r="1.1" fill="currentColor" stroke="none"/></svg>',
+  user:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20a7.4 7.4 0 0 1 14.4 0"/></svg>',
+  info:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.8v.2"/></svg>',
+  sparkle:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.9 4.9 4.9 1.9-4.9 1.9L12 17.1l-1.9-4.9L5.2 10.3l4.9-1.9z"/><path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>',
+  inbox:'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 13.5 5.8 5.6A2 2 0 0 1 7.7 4h8.6a2 2 0 0 1 1.9 1.6l2.3 7.9"/><path d="M3.5 13.5h5l1 2.4h5l1-2.4h5v3.9A2.6 2.6 0 0 1 17.9 20H6.1a2.6 2.6 0 0 1-2.6-2.6z"/></svg>',
+  sun:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4 17 7M7 17l-1.6 1.6"/></svg>',
+  loop:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5A6 6 0 0 1 15.7 7l1.6 1.6"/><path d="M17.3 4.8v4h-4"/><path d="M20 14.5A6 6 0 0 1 8.3 17l-1.6-1.6"/><path d="M6.7 19.2v-4h4"/></svg>',
+};
+
+function statusBar(){
+  return '<div class="sb"><span>9:41</span><span class="right">' +
+    '<svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7.5" width="3" height="3.5" rx="1"/><rect x="4.7" y="5.4" width="3" height="5.6" rx="1"/><rect x="9.4" y="3" width="3" height="8" rx="1"/><rect x="14.1" y="0.4" width="3" height="10.6" rx="1"/></svg>' +
+    '<svg width="16" height="11" viewBox="0 0 16 11" fill="currentColor"><path d="M8 9.4 6 7.3a2.8 2.8 0 0 1 4 0zM3.2 6.2a6.6 6.6 0 0 1 9.6 0l-1.4 1.4a4.6 4.6 0 0 0-6.8 0zM.5 3.4a10.4 10.4 0 0 1 15 0l-1.4 1.4a8.4 8.4 0 0 0-12.2 0z"/></svg>' +
+    '<svg width="24" height="11" viewBox="0 0 24 11"><rect x="0.6" y="0.6" width="20" height="9.8" rx="3" fill="none" stroke="currentColor" stroke-opacity=".45"/><rect x="2.2" y="2.2" width="15.4" height="6.6" rx="1.8" fill="currentColor"/><path d="M22.2 3.7v3.6a2 2 0 0 0 0-3.6z" fill="currentColor" fill-opacity=".5"/></svg>' +
+  '</span></div>';
+}
+
+function device(opt){
+  return '<div class="device ' + (opt.cls || '') + '"><div class="screen">' + opt.inner + '<span class="home-ind"></span></div></div>';
+}
+
+function overview(o){
+  o = o || {};
+  const open = o.open === undefined ? 12 : o.open;
+  const overdue = o.overdue === undefined ? 2 : o.overdue;
+  const today = o.today === undefined ? 3 : o.today;
+  const total = o.total === undefined ? 5 : o.total;
+  const pct = Math.round(today / total * 100);
+  const C = 2 * Math.PI * 19;
+  return '<div class="overview">' +
+    '<div class="ov-cell"><div class="ov-top"><span class="dot blue"></span>待处理</div><div class="ov-num">' + open + '</div></div>' +
+    '<div class="ov-sep"></div>' +
+    '<div class="ov-cell"><div class="ov-top"><span class="dot red"></span>逾期</div><div class="ov-num red">' + overdue + '</div></div>' +
+    '<div class="ov-sep"></div>' +
+    '<div class="ov-cell"><div class="ov-top"><span class="dot amber"></span>今天</div><div class="ov-num amber">' + today + '</div></div>' +
+    '<div class="ov-sep"></div>' +
+    '<div class="ov-cell" style="flex:0 0 auto;align-items:center;justify-content:center">' +
+      '<svg class="ring" viewBox="0 0 46 46">' +
+        '<circle cx="23" cy="23" r="19" fill="none" stroke="#E4E7ED" stroke-width="4.5"/>' +
+        '<circle cx="23" cy="23" r="19" fill="none" stroke="#0E9E8F" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + (C * (1 - pct / 100)) + '" transform="rotate(-90 23 23)"/>' +
+        '<text x="23" y="27.5" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0E9E8F">' + today + '/' + total + '</text>' +
+      '</svg>' +
+    '</div>' +
+  '</div>';
+}
+
+function chips(items){
+  return '<div class="chips">' + items.map(function(it){
+    return '<div class="chip ' + (it.cls || '') + ' ' + (it.on ? 'on' : '') + '"><span class="dot"></span>' + it.name + '<span class="cnt">' + it.count + '</span></div>';
+  }).join('') + '</div>';
+}
+
+function composer(open){
+  if (!open) {
+    return '<div class="composer"><span class="ph">添加「教学工作」的 Issue…</span><span class="add">' + S.plus + '</span></div>';
+  }
+  return '<div class="composer open">' +
+    '<div class="row1"><span class="value">周三课后课家长回电</span><span class="caret"></span></div>' +
+    '<div class="quickrow">' +
+      '<span class="qbtn accent">' + S.cal + ' 今天 14:00</span>' +
+      '<span class="qbtn">' + S.pin + ' 地点</span>' +
+      '<span class="qbtn">' + S.flag + ' 优先</span>' +
+      '<span style="flex:1"></span>' +
+      '<span class="qbtn solid">' + S.plus + ' 添加</span>' +
+    '</div>' +
+  '</div>';
+}
+
+function groupHead(name, count, cls){
+  return '<div class="grp ' + (cls || '') + '"><span class="name">' + name + '</span><span class="line"></span><span class="n">' + count + '</span></div>';
+}
+
+function issueCard(o){
+  const pills = (o.pills || []).map(function(p){
+    if (p.type === 'time') return '<span class="pill ' + (p.tone || '') + '">' + S.clock + p.text + '</span>';
+    if (p.type === 'place') return '<span class="pill ghost">' + S.pin + p.text + '</span>';
+    if (p.type === 'project') return '<span class="pill ghost"><span class="dot" style="background:' + p.color + ';width:6px;height:6px"></span>' + p.text + '</span>';
+    return '<span class="pill ' + (p.tone || '') + '">' + p.text + '</span>';
+  }).join('');
+  return '<div class="icard ' + (o.done ? 'done' : '') + '">' +
+    '<span class="bar ' + (o.state || 'plan') + '"></span>' +
+    '<div class="body">' +
+      '<span class="check ' + (o.done ? 'done' : '') + '">' + (o.done ? S.check : '') + '</span>' +
+      '<div class="cmain">' +
+        '<div class="ctitle ' + (o.done ? 'done' : '') + '">' + o.title + '</div>' +
+        (o.desc ? '<div class="cdesc">' + o.desc + '</div>' : '') +
+        (pills ? '<div class="metas">' + pills + '</div>' : '') +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function appHeader(o){
+  o = o || {};
+  const title = o.title || 'Issue';
+  const sub = o.sub === undefined ? '教学工作 · 12 项待处理' : o.sub;
+  let right = '';
+  if (o.right === 'back') right = '<span class="icon-btn plain">' + S.back + '</span>';
+  else if (o.right !== 'none') right = '<div class="hbtns"><span class="txt-btn">项目</span><span class="icon-btn plain">' + S.sync + '</span></div>';
+  const left = o.left === 'back' ? '<span class="icon-btn plain" style="margin:2px 10px 0 0;align-self:flex-start">' + S.back + '</span>' : '';
+  return '<div class="app-titlebar">' + left + '<div style="flex:1"><div class="app-title">' + title + '</div>' + (sub ? '<div class="app-sub">' + sub + '</div>' : '') + '</div>' + right + '</div>';
+}
+
+/* 浮层背后仍保留真实列表，避免出现「空屏 + 弹窗」的失真示意 */
+function backdropList(){
+  return '<div class="app">' +
+      appHeader({sub:'教学工作 · 12 项待处理'}) +
+      overview({}) +
+      chips([{name:'教学工作', count:12, cls:'p1', on:true}, {name:'班务', count:5, cls:'p2'}]) +
+      composer(false) +
+      '<div class="list">' +
+        groupHead('逾期', '2', 'overdue') +
+        issueCard({title:'季度报销单据还没提交', state:'overdue', pills:[{type:'time', text:'逾期 7 天', tone:'overdue'}, {type:'place', text:'财务室'}]}) +
+        groupHead('今天', '3') +
+        issueCard({title:'给家长回电话确认周三课后课', state:'today', pills:[{type:'time', text:'今天 14:00', tone:'today'}, {type:'place', text:'教导处'}]}) +
+        issueCard({title:'整理上周课堂记录', state:'today', pills:[{type:'time', text:'今天 18:00', tone:'today'}]}) +
+      '</div>' +
+    '</div>';
+}
+
+/* ---------- 现状（还原当前实现） ---------- */
+function currentScreen(){
+  const rows = [
+    ['季度报销单据还没提交', '09-10 · 财务室', true],
+    ['体检预约需要改期', '09-15', true],
+    ['给家长回电话确认周三课后课', '09-17 14:00 · 教导处', false],
+    ['整理上周课堂记录', '09-17 18:00', false],
+    ['联系供应商确认教具到货', '09-19 · 电话', false],
+    ['准备家长会 PPT', '09-22', false],
+    ['调研教室投影仪型号', '', false],
+  ];
+  return device({inner:
+    statusBar() +
+    '<div style="height:44px;display:flex;align-items:center;padding:0 16px;background:#EBF2FF">' +
+      '<div style="width:88px;display:flex"><span style="width:34px;height:34px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#6B7480">' + S.gear + '</span></div>' +
+      '<div style="flex:1;text-align:center;font-size:17px;font-weight:700;letter-spacing:-.4px;color:#1A1A1A">Issue</div>' +
+      '<div style="width:88px;display:flex;justify-content:flex-end;align-items:center;gap:6px">' +
+        '<span style="font-size:15px;font-weight:700;color:#E03131">编辑</span>' +
+        '<span style="width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#E03131">' + S.sync + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<div style="flex:1;padding:16px 12px 0;display:flex;flex-direction:column;gap:12px;overflow:hidden">' +
+      '<div style="display:flex;gap:16px;padding:0 2px;align-items:center">' +
+        '<span style="font-size:16px;font-weight:700;color:#E03131">教学工作</span>' +
+        '<span style="font-size:16px;font-weight:700;color:#495057">班务</span>' +
+        '<span style="font-size:16px;font-weight:700;color:#495057">财务</span>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:4px 4px 4px 12px;box-shadow:0 4px 12px rgba(0,0,0,.05)">' +
+        '<span style="flex:1;font-size:15px;color:#ADB5BD">添加 教学工作 的 Issue...</span>' +
+        '<span style="width:44px;height:44px;border-radius:12px;background:#E03131;display:flex;align-items:center;justify-content:center;color:#fff">' + S.plus + '</span>' +
+      '</div>' +
+      rows.map(function(r){
+        return '<div style="display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:6px 12px;min-height:54px;box-shadow:0 4px 12px rgba(0,0,0,.05)">' +
+          '<span style="width:22px;height:22px;border-radius:999px;border:1.5px solid #E9ECEF;flex:0 0 auto"></span>' +
+          '<div style="flex:1;min-width:0">' +
+            '<div style="font-size:17px;font-weight:700;line-height:23px;color:#1A1A1A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + r[0] + '</div>' +
+            (r[1] ? '<div style="display:flex;align-items:center;gap:4px;margin-top:3px;color:#868E96"><span style="display:flex">' + S.clock + '</span><span style="font-size:13px;font-weight:500">' + r[1] + '</span></div>' : '') +
+          '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>'});
+}
+
+/* ---------- 改版主界面 ---------- */
+function newScreen(){
+  return device({inner:
+    statusBar() +
+    '<div class="app">' +
+      appHeader({}) +
+      overview({}) +
+      chips([
+        {name:'全部', count:22},
+        {name:'教学工作', count:12, cls:'p1', on:true},
+        {name:'班务', count:5, cls:'p2'},
+        {name:'财务', count:2, cls:'p3'},
+        {name:'个人', count:3, cls:'p4'},
+      ]) +
+      composer(false) +
+      '<div class="list">' +
+        groupHead('逾期', '2', 'overdue') +
+        issueCard({title:'季度报销单据还没提交', state:'overdue', pills:[{type:'time', text:'逾期 7 天', tone:'overdue'}, {type:'place', text:'财务室'}]}) +
+        issueCard({title:'体检预约需要改期', state:'overdue', pills:[{type:'time', text:'逾期 2 天', tone:'overdue'}]}) +
+        groupHead('今天', '3') +
+        issueCard({title:'给家长回电话确认周三课后课', state:'today', desc:'确认 15:30 能否加开一节，需要在班群里回复结果', pills:[{type:'time', text:'今天 14:00', tone:'today'}, {type:'place', text:'教导处'}]}) +
+        issueCard({title:'整理上周课堂记录', state:'today', pills:[{type:'time', text:'今天 18:00', tone:'today'}]}) +
+        groupHead('接下来', '3') +
+        issueCard({title:'联系供应商确认教具到货', state:'plan', pills:[{type:'time', text:'后天 09-19'}, {type:'place', text:'电话'}]}) +
+      '</div>' +
+    '</div>'});
+}
+
+/* 「现状」直接使用当前构建在 iPhone 视口下的真实渲染截图 */
+function realCurrentScreen(){
+  return '<div class="device"><div class="screen">' +
+    '<div style="position:absolute;inset:0;overflow:hidden">' +
+      '<img src="preview/current-main.png" alt="当前版本 Issue 主界面" style="width:100%;height:100%;display:block;object-fit:cover;object-position:top left" />' +
+    '</div>' +
+  '</div></div>';
+}
+
+document.getElementById('fig-compare').innerHTML =
+  '<div class="fig"><span class="tag now">现状 · Current（真实渲染）</span>' + realCurrentScreen() +
+    '<div class="fig-cap"><b>问题：所有卡片同样重要</b><span>纯文字项目 Tab 无选中指示；时间写成绝对日期，逾期项和普通项长得一模一样；表头蓝、强调红、语义灰三套色系并存。</span></div></div>' +
+  '<div class="fig"><span class="tag new">改版 · Redesign</span>' + newScreen() +
+    '<div class="fig-cap"><b>结论先行的三层结构</b><span>概览条 → 项目 chip → 时间分组列表。卡片左侧 3px 色条讲状态，胶囊讲「逾期 7 天 / 今天 14:00」，项目色点贯穿全局。</span></div></div>' +
+  '<div class="fig" style="max-width:360px"><div class="callouts" style="margin-top:46px">' +
+    '<div class="callout"><span class="num">1</span><div><b>概览条</b><br/>待处理 / 逾期 / 今天 三个数字加今日完成环，点数字即可筛选，替代原先被吞掉的副标题。</div></div>' +
+    '<div class="callout"><span class="num">2</span><div><b>项目 chip + 项目色</b><br/>选中态用主题色浅底加内描边，未选中保持中性；右侧计数直接给出各项目待办量。</div></div>' +
+    '<div class="callout"><span class="num">3</span><div><b>时间分组</b><br/>逾期 / 今天 / 接下来 / 无期限，分组标题贴顶滚动，扫一眼就知道轻重缓急。</div></div>' +
+    '<div class="callout"><span class="num">4</span><div><b>卡片：色条 + 相对时间</b><br/>左侧色条代表状态，标题下方胶囊写「逾期 7 天」「今天 14:00」，描述最多两行。</div></div>' +
+    '<div class="callout"><span class="num">5</span><div><b>阴影只留一处</b><br/>列表卡片改用 1px 描边，只有浮层保留阴影，长时间浏览不再疲劳。</div></div>' +
+  '</div></div>';
+
+/* ---------- 04 · 主界面屏组 ---------- */
+function pendingFullScreen(){
+  return device({inner:
+    statusBar() +
+    '<div class="app">' +
+      appHeader({sub:'教学工作 · 12 项待处理'}) +
+      overview({}) +
+      chips([
+        {name:'全部', count:22},
+        {name:'教学工作', count:12, cls:'p1', on:true},
+        {name:'班务', count:5, cls:'p2'},
+        {name:'财务', count:2, cls:'p3'},
+      ]) +
+      composer(false) +
+      '<div class="list">' +
+        groupHead('今天', '3') +
+        issueCard({title:'给家长回电话确认周三课后课', state:'today', desc:'确认 15:30 能否加开一节，需要在班群里回复结果', pills:[{type:'time', text:'今天 14:00', tone:'today'}, {type:'place', text:'教导处'}]}) +
+        issueCard({title:'整理上周课堂记录', state:'today', pills:[{type:'time', text:'今天 18:00', tone:'today'}]}) +
+        groupHead('接下来', '3') +
+        issueCard({title:'联系供应商确认教具到货', state:'plan', pills:[{type:'time', text:'后天 09-19'}, {type:'place', text:'电话'}]}) +
+        issueCard({title:'准备家长会 PPT', state:'plan', pills:[{type:'time', text:'09-22 · 周二'}]}) +
+        groupHead('无期限', '2') +
+        issueCard({title:'调研教室投影仪型号', state:'plan', pills:[{type:'project', text:'教学工作', color:'#3B5BDB'}]}) +
+        issueCard({title:'整理教具室盘点表', state:'plan'}) +
+      '</div>' +
+    '</div>'});
+}
+
+function doneScreen(){
+  return device({inner:
+    statusBar() +
+    '<div class="app">' +
+      appHeader({sub:'本周已完成 8 项'}) +
+      '<div class="seg"><span class="item">待处理<span class="n">12</span></span><span class="item on">已完成<span class="n">8</span></span></div>' +
+      '<div class="preview-card">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">' +
+          '<span style="font-size:13px;font-weight:650">今日进度</span>' +
+          '<span style="font-size:12.5px;font-weight:700;color:var(--done);font-variant-numeric:tabular-nums">3 / 5</span>' +
+        '</div>' +
+        '<div class="progress"><i class="done" style="width:60%"></i></div>' +
+      '</div>' +
+      '<div class="list">' +
+        groupHead('今天', '3', 'done') +
+        issueCard({title:'打印三年级课表', state:'done', done:true, pills:[{type:'time', text:'09:20 完成', tone:'done'}, {type:'project', text:'班务', color:'#0CA678'}]}) +
+        issueCard({title:'回复家委会关于秋游的通知', state:'done', done:true, pills:[{type:'time', text:'昨天完成', tone:'done'}]}) +
+        issueCard({title:'提交教室维修申请单', state:'done', done:true, pills:[{type:'time', text:'昨天完成', tone:'done'}]}) +
+        groupHead('本周更早', '5', 'done') +
+        issueCard({title:'核对本学期课表', state:'done', done:true, pills:[{type:'time', text:'09-15 完成', tone:'done'}]}) +
+        issueCard({title:'联系校车公司确认路线', state:'done', done:true, pills:[{type:'time', text:'09-14 完成', tone:'done'}]}) +
+      '</div>' +
+    '</div>'});
+}
+
+function quickAddOpenScreen(){
+  return device({inner:
+    statusBar() +
+    '<div class="app">' +
+      appHeader({sub:'教学工作 · 12 项待处理'}) +
+      overview({}) +
+      chips([{name:'教学工作', count:12, cls:'p1', on:true}, {name:'班务', count:5, cls:'p2'}, {name:'财务', count:2, cls:'p3'}]) +
+      composer(true) +
+      '<div class="list">' +
+        groupHead('今天', '3') +
+        issueCard({title:'给家长回电话确认周三课后课', state:'today', desc:'确认 15:30 能否加开一节，需要在班群里回复结果', pills:[{type:'time', text:'今天 14:00', tone:'today'}, {type:'place', text:'教导处'}]}) +
+        issueCard({title:'整理上周课堂记录', state:'today', pills:[{type:'time', text:'今天 18:00', tone:'today'}]}) +
+        groupHead('接下来', '3') +
+        issueCard({title:'联系供应商确认教具到货', state:'plan', pills:[{type:'time', text:'后天 09-19'}]}) +
+      '</div>' +
+      '<div style="margin-top:auto;display:flex;gap:6px;align-items:center;color:var(--faint);font-size:11.5px;padding:2px 4px">' +
+        S.sparkle + ' 输入内容后可直接拖到任意项目' +
+      '</div>' +
+    '</div>'});
+}
+
+function emptyScreen(){
+  return device({inner:
+    statusBar() +
+    '<div class="app">' +
+      appHeader({sub:'还没有项目'}) +
+      chips([{name:'+ 新建项目', count:''}]) +
+      '<div class="empty">' + S.inbox +
+        '<div class="t">先建一个项目</div>' +
+        '<div class="d">Issue 按项目归档，例如「教学工作」「班务」「财务」。项目会自动分配一个识别色。</div>' +
+        '<span class="btn sm" style="margin-top:4px">' + S.plus + ' 新建项目</span>' +
+      '</div>' +
+      '<div class="skel" style="opacity:.5"><span class="b" style="width:23px;height:23px;border-radius:999px"></span><div style="flex:1"><div class="b" style="height:12px;width:62%"></div><div class="b" style="height:9px;width:38%;margin-top:8px"></div></div></div>' +
+      '<div class="skel" style="opacity:.3"><span class="b" style="width:23px;height:23px;border-radius:999px"></span><div style="flex:1"><div class="b" style="height:12px;width:48%"></div><div class="b" style="height:9px;width:30%;margin-top:8px"></div></div></div>' +
+    '</div>'});
+}
+
+function skeletonScreen(){
+  const row = function(w, m){
+    return '<div class="skel"><span class="b" style="width:23px;height:23px;border-radius:999px"></span>' +
+      '<div style="flex:1"><div class="b" style="height:12px;width:' + w + '%"></div>' +
+      (m ? '<div class="b" style="height:9px;width:' + m + '%;margin-top:9px"></div>' : '') + '</div></div>';
+  };
+  return device({inner:
+    statusBar() +
+    '<div class="app">' +
+      '<div class="app-titlebar"><div><div class="app-title">Issue</div><div class="app-sub">正在载入本地数据…</div></div></div>' +
+      '<div class="overview" style="opacity:.55">' +
+        '<div class="ov-cell"><div class="b" style="height:9px;width:44px;background:#EDEFF4;border-radius:6px"></div><div class="b" style="height:18px;width:30px;background:#EDEFF4;border-radius:6px;margin-top:8px"></div></div>' +
+        '<div class="ov-sep"></div>' +
+        '<div class="ov-cell"><div class="b" style="height:9px;width:36px;background:#EDEFF4;border-radius:6px"></div><div class="b" style="height:18px;width:24px;background:#EDEFF4;border-radius:6px;margin-top:8px"></div></div>' +
+        '<div class="ov-sep"></div>' +
+        '<div class="ov-cell"><div class="b" style="height:9px;width:36px;background:#EDEFF4;border-radius:6px"></div><div class="b" style="height:18px;width:24px;background:#EDEFF4;border-radius:6px;margin-top:8px"></div></div>' +
+      '</div>' +
+      '<div class="chips"><span class="chip" style="width:92px"></span><span class="chip" style="width:76px"></span><span class="chip" style="width:68px"></span></div>' +
+      '<div class="composer" style="opacity:.6"><span class="ph">添加 Issue…</span><span class="add" style="background:#EDEFF4"></span></div>' +
+      '<div class="list">' + row(64, 40) + row(52, 0) + row(70, 34) + row(46, 0) + '</div>' +
+      '<div style="margin-top:auto;text-align:center;font-size:11.5px;color:var(--faint)">骨架屏只在首次冷启动出现，命中本地缓存时直接出内容</div>' +
+    '</div>'});
+}
+
+/* ---------- 05 · 浮层与流程 ---------- */
+function issueDetailSheet(){
+  return device({inner:
+    statusBar() +
+    backdropList() +
+    '<div class="dim"></div>' +
+    '<div class="sheet">' +
+      '<div class="handle"></div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between">' +
+        '<h4>Issue 详情</h4>' +
+        '<span style="font-size:12.5px;font-weight:650;color:var(--accent-dark)">完成</span>' +
+      '</div>' +
+      '<div class="field focus"><span class="lbl">标题</span><span class="val">给家长回电话确认周三课后课</span></div>' +
+      '<div class="fieldrow">' +
+        '<div class="field"><span class="lbl">日期</span><span class="val">今天 · 09-17</span></div>' +
+        '<div class="field"><span class="lbl">时间</span><span class="val">14:00</span></div>' +
+      '</div>' +
+      '<div class="field"><span class="lbl">地点</span><span class="val">教导处</span></div>' +
+      '<div class="field"><span class="lbl">描述</span><span class="val">确认 15:30 能否加开一节，需要在班群里回复结果</span></div>' +
+      '<div class="two-btns">' +
+        '<span class="btn danger">' + S.trash + ' 删除</span>' +
+        '<span class="btn" style="flex:2">' + S.check + ' 保存</span>' +
+      '</div>' +
+    '</div>'});
+}
+
+function projectSheetScreen(){
+  return device({inner:
+    statusBar() +
+    backdropList() +
+    '<div class="dim"></div>' +
+    '<div class="sheet">' +
+      '<div class="handle"></div>' +
+      '<div><h4>项目</h4><div class="hint">长按右侧手柄拖动排序，色点即项目在列表中的识别色</div></div>' +
+      '<div class="srow"><span class="pdot" style="background:#3B5BDB"></span><span class="nm">教学工作</span><span class="cnt">12</span><span class="grip">' + S.grip + '</span></div>' +
+      '<div class="srow"><span class="pdot" style="background:#0CA678"></span><span class="nm">班务</span><span class="cnt">5</span><span class="grip">' + S.grip + '</span></div>' +
+      '<div class="srow"><span class="pdot" style="background:#E8590C"></span><span class="nm">财务</span><span class="cnt">2</span><span class="grip">' + S.grip + '</span></div>' +
+      '<div class="srow new"><span class="pdot" style="background:transparent;border:1.5px dashed var(--hairline-strong)"></span><span class="nm" style="color:var(--faint);font-weight:500">新增项目名称</span><span class="btn sm" style="height:30px">' + S.plus + '</span></div>' +
+      '<div class="inline-note">' + S.info + ' 删除项目会连同其中的 Issue 一起移除，可先导出再删</div>' +
+    '</div>'});
+}
+
+function syncRunningScreen(){
+  return device({inner:
+    statusBar() +
+    backdropList() +
+    '<div class="dim"></div>' +
+    '<div style="position:absolute;inset:0;display:flex">' +
+    '<div class="modal-card">' +
+      '<div>' +
+        '<div style="font-size:17px;font-weight:700">正在同步</div>' +
+        '<div class="small muted" style="margin-top:2px">本机 ↔ 云端，可继续留在这一页</div>' +
+      '</div>' +
+      '<div class="progress"><i style="width:62%"></i></div>' +
+      '<div class="steps">' +
+        '<div class="step done"><span class="st">' + S.check + '</span>上传本地改动<span class="cnt">4/4</span></div>' +
+        '<div class="step on"><span class="st">' + S.check + '</span>拉取云端数据<span class="cnt">12/20</span></div>' +
+        '<div class="step"><span class="st"></span>同步设置<span class="cnt">—</span></div>' +
+        '<div class="step"><span class="st"></span>写回本地数据<span class="cnt">—</span></div>' +
+      '</div>' +
+      '<span class="btn line full">后台继续</span>' +
+    '</div></div>'});
+}
+
+function syncDoneScreen(){
+  return device({inner:
+    statusBar() +
+    backdropList() +
+    '<div class="dim"></div>' +
+    '<div style="position:absolute;inset:0;display:flex">' +
+    '<div class="modal-card">' +
+      '<div class="bigcheck">' + S.check.replace('width="13" height="13"', 'width="26" height="26"') + '</div>' +
+      '<div style="text-align:center"><div style="font-size:18px;font-weight:700">同步完成</div>' +
+      '<div class="small muted" style="margin-top:4px">上传 4 项 · 下载 20 项 · 无冲突</div></div>' +
+      '<div class="two-btns"><span class="btn line">查看详情</span><span class="btn">好的</span></div>' +
+    '</div></div>'});
+}
+
+function swipeScreen(){
+  return device({inner:
+    statusBar() +
+    '<div class="app">' +
+      appHeader({sub:'教学工作 · 12 项待处理'}) +
+      overview({}) +
+      chips([{name:'教学工作', count:12, cls:'p1', on:true}, {name:'班务', count:5, cls:'p2'}]) +
+      composer(false) +
+      '<div class="list">' +
+        groupHead('今天', '3') +
+        issueCard({title:'整理上周课堂记录', state:'today', pills:[{type:'time', text:'今天 18:00', tone:'today'}]}) +
+        '<div class="swipe-wrap"><div class="icard shifted">' +
+          '<span class="bar today"></span>' +
+          '<div class="body"><span class="check"></span><div class="cmain">' +
+            '<div class="ctitle">给家长回电话确认周三课后课</div>' +
+            '<div class="metas"><span class="pill today">' + S.clock + '今天 14:00</span><span class="pill ghost">' + S.pin + '教导处</span></div>' +
+          '</div></div>' +
+        '</div>' +
+        '<div class="swipe-actions">' +
+          '<span class="act done">' + S.check + '完成</span>' +
+          '<span class="act del">' + S.trash + '删除</span>' +
+        '</div></div>' +
+        groupHead('接下来', '3') +
+        issueCard({title:'联系供应商确认教具到货', state:'plan', pills:[{type:'time', text:'后天 09-19'}]}) +
+      '</div>' +
+      '<div style="margin-top:auto;text-align:center;font-size:11.5px;color:var(--faint)">左滑：完成 / 删除 · 长按：打开详情</div>' +
+    '</div>'});
+}
+
+function settingsScreen(){
+  return device({inner:
+    statusBar() +
+    '<div class="app">' +
+      appHeader({title:'设置', sub:'本机数据 · 上次同步 2 小时前', left:'back', right:'none'}) +
+      '<div class="setgroup">' +
+        '<div class="setrow"><span class="ictile">' + S.palette + '</span><span class="lb"><b>主题色</b><span>用于按钮、选中态与进度</span></span><span class="dot" style="background:#3B5BDB;width:14px;height:14px"></span>' + S.chev + '</div>' +
+        '<div class="setrow"><span class="ictile">' + S.user + '</span><span class="lb"><b>账号与同步</b><span>teacher@example.com · 已登录</span></span>' + S.chev + '</div>' +
+      '</div>' +
+      '<div class="setgroup">' +
+        '<div class="setrow"><span class="ictile">' + S.loop + '</span><span class="lb"><b>自动同步</b><span>仅在 Wi-Fi 下</span></span><span class="btn sm ghost" style="height:28px">开启</span></div>' +
+        '<div class="setrow"><span class="ictile">' + S.sun + '</span><span class="lb"><b>外观</b><span>跟随系统 / 浅色 / 深色</span></span>' + S.chev + '</div>' +
+      '</div>' +
+      '<div class="setgroup">' +
+        '<div class="setrow"><span class="ictile" style="background:var(--surface-2);color:var(--muted)">' + S.info + '</span><span class="lb"><b>关于 Issue</b><span>版本 1.0.3 (4)</span></span>' + S.chev + '</div>' +
+      '</div>' +
+    '</div>'});
+}
+
+function themeScreen(){
+  const presets = ['#3B5BDB','#0E9E8F','#E8590C','#C2255C','#7048E8','#0B7285'];
+  const grid = ['#E03131','#C92A2A','#F03E3E','#FF6B6B','#D9480F','#E8590C','#F08C00','#FAB005',
+                '#FCC419','#FFD43B','#82C91E','#74B816','#2F9E44','#37B24D','#51CF66','#065F46',
+                '#0CA678','#12B886','#20C997','#0B7285','#1098AD','#15AABF','#3BC9DB','#1864AB',
+                '#1C7ED6','#3A82F8','#4DABF7','#1E40AF','#1E3A8A','#364FC7','#4F46E5','#6741D9',
+                '#7E22CE','#8B5CF6','#BE4BDB','#DA77F2','#C2255C','#D6336C','#F06595','#F783AC',
+                '#374151','#495057','#868E96','#2F4F4F','#556B2F','#795548','#A16207','#BC8F8F'];
+  return device({inner:
+    statusBar() +
+    '<div class="app">' +
+      appHeader({title:'主题色', sub:'只影响强调色，不改变状态色', left:'back', right:'none'}) +
+      '<div class="preview-card">' +
+        '<div style="display:flex;align-items:center;gap:8px"><span class="ictile solid">' + S.palette + '</span>' +
+        '<div><div style="font-size:13.5px;font-weight:650">当前主题色</div><div style="font-size:12px;color:var(--accent-dark);font-weight:700;font-variant-numeric:tabular-nums">#3B5BDB</div></div></div>' +
+      '</div>' +
+      '<div><div class="grp"><span class="name">推荐</span><span class="line"></span></div>' +
+        '<div class="presetrow">' + presets.map(function(c, i){
+          return '<i style="background:' + c + (i === 0 ? ';box-shadow:0 0 0 2px #fff,0 0 0 4px #12151B' : '') + '"></i>';
+        }).join('') + '</div></div>' +
+      '<div><div class="grp"><span class="name">全部颜色</span><span class="line"></span></div>' +
+        '<div class="swatchgrid">' + grid.map(function(c){
+          return '<i style="background:' + c + '"' + (c === '#3B5BDB' ? ' class="sel"' : '') + '></i>';
+        }).join('') + '</div>' +
+      '</div>' +
+      '<div class="inline-note" style="margin-top:auto">' + S.info + ' 状态色（逾期红 / 今天琥珀 / 完成青）固定不变，避免语义漂移</div>' +
+    '</div>'});
+}
+
+function authScreen(){
+  return device({inner:
+    statusBar() +
+    '<div class="app" style="justify-content:center;gap:16px;padding-bottom:40px">' +
+      '<div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:8px">' +
+        '<span class="ictile solid" style="width:52px;height:52px;border-radius:16px">' + S.inbox + '</span>' +
+        '<div style="font-size:21px;font-weight:700">Issue</div>' +
+        '<div class="small muted" style="text-align:center;max-width:250px">登录后可在多台设备间同步项目与 Issue；不登录也能完全离线使用。</div>' +
+      '</div>' +
+      '<div class="field"><span class="lbl">邮箱</span><span class="val">teacher@example.com</span></div>' +
+      '<div class="field"><span class="lbl">密码</span><span class="val">••••••••</span></div>' +
+      '<span class="btn full">登录</span>' +
+      '<div style="text-align:center;font-size:12.5px;color:var(--muted)">还没有账号？<span style="color:var(--accent-dark);font-weight:650">注册</span></div>' +
+      '<div style="text-align:center;font-size:11.5px;color:var(--faint);margin-top:6px">本地数据在退出登录时会被清理，请先确认已同步</div>' +
+    '</div>'});
+}
+
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-core" data-section>' +
+    '<div class="sec-head"><span class="sec-num">04</span><h2>主界面屏组</h2><p>待处理 · 已完成 · 快速添加 · 空状态与骨架屏</p></div>' +
+    '<div class="fig-row">' +
+      '<div class="fig"><span class="tag new">待处理</span>' + pendingFullScreen() +
+        '<div class="fig-cap"><b>分组随滚动吸顶</b><span>今天 → 接下来 → 无期限；每组的颜色和计数固定，长列表里也能随时知道自己在哪一段。</span></div></div>' +
+      '<div class="fig"><span class="tag new">已完成</span>' + doneScreen() +
+        '<div class="fig-cap"><b>完成项有自己的家</b><span>右上分段切换待处理 / 已完成；顶部今日进度条让「今天还剩几件」变成可量化的目标，完成项按天分组、保留完成时刻。</span></div></div>' +
+      '<div class="fig"><span class="tag new">快速添加</span>' + quickAddOpenScreen() +
+        '<div class="fig-cap"><b>输入即出快捷参数</b><span>聚焦后展开一行快捷参数（时间 / 地点 / 优先），默认落在当前项目；回车或点「添加」即建，仍保持连续输入不丢字。</span></div></div>' +
+    '</div>' +
+    '<div class="fig-row" style="margin-top:38px">' +
+      '<div class="fig"><span class="tag">空状态</span>' + emptyScreen() +
+        '<div class="fig-cap"><b>引导建第一个项目</b><span>空态给动作而不是只给一句「暂无」；下方保留两张渐变占位卡，暗示这里将来会长出列表。</span></div></div>' +
+      '<div class="fig"><span class="tag">加载态</span>' + skeletonScreen() +
+        '<div class="fig-cap"><b>骨架屏代替转圈</b><span>冷启动时先铺骨架（概览条 / chip / 卡片），命中本地缓存则直接出内容——与现有 <code>hydrated</code> / <code>prewarmIssueScreenData</code> 逻辑对齐。</span></div></div>' +
+    '</div>' +
+  '</section>');
+
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-flows" data-section>' +
+    '<div class="sec-head"><span class="sec-num">05</span><h2>浮层与流程</h2><p>详情 · 项目 · 同步 · 滑动 · 设置 · 登录</p></div>' +
+    '<div class="fig-row">' +
+      '<div class="fig"><span class="tag new">Issue 详情</span>' + issueDetailSheet() +
+        '<div class="fig-cap"><b>补齐现有数据模型的全部字段</b><span>标题、日期、时间、地点、描述一次性可编辑（当前弹窗只编辑标题）；删除降级为描边按钮，保存为主按钮。</span></div></div>' +
+      '<div class="fig"><span class="tag new">项目编辑</span>' + projectSheetScreen() +
+        '<div class="fig-cap"><b>项目色 + 计数 + 拖拽排序</b><span>替代原来的上下箭头：手柄拖动排序，色点提示该项目在列表中的识别色，行尾显示待办数。</span></div></div>' +
+      '<div class="fig"><span class="tag new">同步中</span>' + syncRunningScreen() +
+        '<div class="fig-cap"><b>四步清单 + 进度条</b><span>沿用现有 <code>runManualSync</code> 的四阶段上报，把日志式的进度改成有终点的清单，并提供「后台继续」。</span></div></div>' +
+    '</div>' +
+    '<div class="fig-row" style="margin-top:38px">' +
+      '<div class="fig"><span class="tag new">同步完成</span>' + syncDoneScreen() +
+        '<div class="fig-cap"><b>结果可读</b><span>上传 / 下载 / 冲突三个数字取代一句「同步完成」，冲突时在这里给出「查看详情」入口。</span></div></div>' +
+      '<div class="fig"><span class="tag new">左滑操作</span>' + swipeScreen() +
+        '<div class="fig-cap"><b>滑动不只删除</b><span>左滑露出「完成」与「删除」，完成用状态青、删除用逾期红；同时把列表滚动锁住，避免误触（对应现有 <code>scrollEnabled</code> 处理）。</span></div></div>' +
+      '<div class="fig"><span class="tag new">设置</span>' + settingsScreen() +
+        '<div class="fig-cap"><b>分组式设置</b><span>主题色 / 账号 / 自动同步 / 外观 / 关于 分三组，行内直接显示当前值（主题色圆点、邮箱、版本号）。</span></div></div>' +
+    '</div>' +
+    '<div class="fig-row" style="margin-top:38px">' +
+      '<div class="fig"><span class="tag new">主题色</span>' + themeScreen() +
+        '<div class="fig-cap"><b>六色推荐 + 完整色板</b><span>保留现有 48 色能力，前置 6 个已验证的推荐色；明确提示状态色不随主题变化。</span></div></div>' +
+      '<div class="fig"><span class="tag new">登录</span>' + authScreen() +
+        '<div class="fig-cap"><b>先讲清代价</b><span>说明「不登录也能离线使用」，并在退出登录前提示本地数据会被清理（当前实现确实会清空）。</span></div></div>' +
+    '</div>' +
+    '<div class="divider"></div>' +
+    '<h3>现状参照：设置与主题色（当前构建真实渲染）</h3>' +
+    '<div class="fig-row">' +
+      '<div class="fig"><span class="tag now">现状 · 设置</span>' +
+        '<div class="mini"><img src="preview/current-settings.png" alt="当前版本设置页" /></div>' +
+        '<div class="fig-cap"><b>两行扁平列表</b><span>只有「主题色设置」「账号设置」两行，看不到当前主题色、登录账号与版本号。</span></div></div>' +
+      '<div class="fig"><span class="tag now">现状 · 主题色</span>' +
+        '<div class="mini"><img src="preview/current-theme.png" alt="当前版本主题色设置页" /></div>' +
+        '<div class="fig-cap"><b>48 色一次性铺开</b><span>色板密度高但没有推荐项，选完之后也看不到主题色会影响哪些界面。改版前置 6 个推荐色并给出实时预览。</span></div></div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 06 · 组件库 ---------- */
+function specimenCheckbox(){
+  return '<div class="specimen"><b class="small">复选框（触摸区 ≥ 44 × 44）</b>' +
+    '<div class="spec-row">' +
+      '<span style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--doc-muted)"><span class="check" style="width:23px;height:23px"></span>待办</span>' +
+      '<span style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--doc-muted)"><span class="check accent">' + S.check + '</span>进行中</span>' +
+      '<span style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--doc-muted)"><span class="check done">' + S.check + '</span>已完成</span>' +
+      '<span style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--doc-muted)"><span class="check" style="border-color:var(--overdue)"></span>逾期未办</span>' +
+    '</div></div>';
+}
+
+function specimenPills(){
+  return '<div class="specimen"><b class="small">状态胶囊（11.5 / 650，等宽数字）</b>' +
+    '<div class="spec-row">' +
+      '<span class="pill overdue">' + S.clock + '逾期 7 天</span>' +
+      '<span class="pill today">' + S.clock + '今天 14:00</span>' +
+      '<span class="pill">' + S.clock + '后天 09-19</span>' +
+      '<span class="pill done">' + S.clock + '09:20 完成</span>' +
+      '<span class="pill accent">' + S.flag + '高优先</span>' +
+      '<span class="pill ghost">' + S.pin + '教导处</span>' +
+      '<span class="pill ghost"><span class="dot" style="background:#3B5BDB;width:6px;height:6px"></span>教学工作</span>' +
+    '</div></div>';
+}
+
+function specimenChips(){
+  return '<div class="specimen"><b class="small">项目 chip / 分段控件</b>' +
+    '<div class="spec-row">' +
+      chips([{name:'全部', count:22}, {name:'教学工作', count:12, cls:'p1', on:true}, {name:'班务', count:5, cls:'p2'}]) +
+    '</div>' +
+    '<div class="spec-row">' +
+      '<div class="seg" style="width:250px"><span class="item">待处理<span class="n">12</span></span><span class="item on">已完成<span class="n">8</span></span></div>' +
+      '<div class="seg" style="width:190px"><span class="item on">今天</span><span class="item">本周</span><span class="item">全部</span></div>' +
+    '</div></div>';
+}
+
+function specimenButtons(){
+  return '<div class="specimen"><b class="small">按钮与输入</b>' +
+    '<div class="spec-row">' +
+      '<span class="btn">' + S.plus + ' 新建项目</span>' +
+      '<span class="btn ghost">次要</span>' +
+      '<span class="btn line">描边</span>' +
+      '<span class="btn danger">' + S.trash + ' 删除</span>' +
+      '<span class="btn" style="opacity:.45">禁用</span>' +
+    '</div>' +
+    '<div class="spec-row">' +
+      '<div class="field" style="width:196px"><span class="lbl">标题</span><span class="val">整理上周课堂记录</span></div>' +
+      '<div class="field focus" style="width:196px"><span class="lbl">聚焦态</span><span class="val">输入中<span class="caret" style="display:inline-block;vertical-align:-3px;margin-left:2px"></span></span></div>' +
+      '<div class="field" style="width:150px"><span class="lbl">空态</span><span class="val ph">地点</span></div>' +
+    '</div></div>';
+}
+
+function specimenFeedback(){
+  return '<div class="specimen"><b class="small">反馈：Toast / 步骤 / 左滑 / 空态</b>' +
+    '<div class="spec-row">' +
+      '<span class="toast">' + S.check + ' 已加入「教学工作」</span>' +
+      '<span class="toast" style="background:#12151B">' + S.loop + ' 同步中 62%</span>' +
+    '</div>' +
+    '<div class="spec-row" style="align-items:flex-start">' +
+      '<div class="steps" style="width:230px">' +
+        '<div class="step done"><span class="st">' + S.check + '</span>上传本地改动<span class="cnt">4/4</span></div>' +
+        '<div class="step on"><span class="st">' + S.check + '</span>拉取云端数据<span class="cnt">12/20</span></div>' +
+        '<div class="step"><span class="st"></span>同步设置<span class="cnt">—</span></div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px">' +
+        '<span class="act done" style="width:70px;height:64px;position:static">' + S.check + '完成</span>' +
+        '<span class="act del" style="width:70px;height:64px;position:static">' + S.trash + '删除</span>' +
+      '</div>' +
+    '</div></div>';
+}
+
+function specimenIcons(){
+  const icons = [['inbox', S.inbox], ['gear', S.gear], ['sync', S.sync], ['plus', S.plus], ['cal', S.cal], ['pin', S.pin], ['flag', S.flag], ['palette', S.palette], ['user', S.user], ['trash', S.trash], ['chev', S.chev], ['loop', S.loop]];
+  return '<div class="specimen"><b class="small">图标（Ionicons，线宽 1.9 / 网格 24）</b>' +
+    '<div class="spec-row">' + icons.map(function(p){
+      return '<span class="iconcell" title="' + p[0] + '">' + p[1] + '</span>';
+    }).join('') + '</div>' +
+    '<span class="small muted">当前实现沿用 Ionicons，无需引入新图标包：<code>checkmark</code> 替换为自绘 check 以控制线宽。</span></div>';
+}
+
+/* ---------- 07 · 动效与深色 ---------- */
+function motionFrames(){
+  const f1 = '<div class="frame">' +
+      '<div class="icard" style="position:relative">' +
+        '<span class="bar today"></span>' +
+        '<div class="body"><span class="check accent" style="box-shadow:0 0 0 6px rgba(59,91,219,.18)">' + S.check + '</span>' +
+        '<div class="cmain"><div class="ctitle">给家长回电话…</div>' +
+        '<div class="metas"><span class="pill today">' + S.clock + '今天 14:00</span></div></div></div>' +
+      '</div>' +
+      '<div class="cap"><b>0 – 120ms · 命中</b>勾选环扩散 + 轻微缩放 + 触感，音效在 60ms 处叠入。</div>' +
+    '</div>';
+  const f2 = '<div class="frame">' +
+      '<div class="icard" style="opacity:.55;transform:scale(.985)">' +
+        '<span class="bar done"></span>' +
+        '<div class="body"><span class="check done">' + S.check + '</span>' +
+        '<div class="cmain"><div class="ctitle done">给家长回电话…</div>' +
+        '<div class="metas"><span class="pill done">' + S.clock + '刚完成</span></div></div></div>' +
+      '</div>' +
+      '<div class="cap"><b>120 – 220ms · 确认</b>色条由琥珀转青、标题划线渐隐、底部进度环前进。</div>' +
+    '</div>';
+  const f3 = '<div class="frame">' +
+      '<div class="icard">' +
+        '<span class="bar plan"></span>' +
+        '<div class="body"><span class="check"></span>' +
+        '<div class="cmain"><div class="ctitle">联系供应商确认教具到货</div>' +
+        '<div class="metas"><span class="pill">' + S.clock + '后天 09-19</span></div></div></div>' +
+      '</div>' +
+      '<div class="cap"><b>220 – 320ms · 归位</b>卡片折叠、后续卡片上移填补空位；完成后一段时间内可一键撤销。</div>' +
+    '</div>';
+  return '<div class="frames">' + f1 + f2 + f3 + '</div>';
+}
+
+function darkScreen(){
+  return device({cls:'dark', inner:
+    statusBar() +
+    '<div class="app">' +
+      appHeader({sub:'教学工作 · 12 项待处理'}) +
+      overview({}) +
+      chips([{name:'教学工作', count:12, cls:'p1', on:true}, {name:'班务', count:5, cls:'p2'}, {name:'财务', count:2, cls:'p3'}]) +
+      composer(false) +
+      '<div class="list">' +
+        groupHead('逾期', '2', 'overdue') +
+        issueCard({title:'季度报销单据还没提交', state:'overdue', pills:[{type:'time', text:'逾期 7 天', tone:'overdue'}, {type:'place', text:'财务室'}]}) +
+        groupHead('今天', '3') +
+        issueCard({title:'给家长回电话确认周三课后课', state:'today', desc:'确认 15:30 能否加开一节，需要在班群里回复结果', pills:[{type:'time', text:'今天 14:00', tone:'today'}]}) +
+        issueCard({title:'整理上周课堂记录', state:'today', pills:[{type:'time', text:'今天 18:00', tone:'today'}]}) +
+      '</div>' +
+    '</div>'});
+}
+
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-components" data-section>' +
+    '<div class="sec-head"><span class="sec-num">06</span><h2>组件库</h2><p>改版只依赖现有组件栈（Ionicons + 自绘），不新增依赖</p></div>' +
+    '<div class="cols cols-2">' +
+      specimenCheckbox() + specimenPills() + specimenChips() + specimenButtons() +
+    '</div>' +
+    '<div class="cols cols-2" style="margin-top:24px">' + specimenFeedback() + specimenIcons() + '</div>' +
+    '<div class="divider"></div>' +
+    '<div class="do-dont">' +
+      '<div class="dd yes"><div class="h">Do</div><ul>' +
+        '<li>列表卡片用 1px 描边 + 3px 状态色条，阴影留给浮层。</li>' +
+        '<li>时间一律给相对文案，绝对日期只作次要信息（如「09-22 · 周二」）。</li>' +
+        '<li>每个项目一个色相，色点出现在 chip、详情页和项目面板。</li>' +
+        '<li>所有可点区域 ≥ 44pt；复选框视觉 23pt、触摸区 44pt。</li>' +
+      '</ul></div>' +
+      '<div class="dd no"><div class="h">Don\'t</div><ul>' +
+        '<li>不要用主题色表示状态（用户把主题改成绿色，「逾期」就失去含义）。</li>' +
+        '<li>不要整屏都用 700 字重，标题与元信息必须拉开层级。</li>' +
+        '<li>不要在列表里叠多层阴影，卡片互相“挤压”会产生视觉噪音。</li>' +
+        '<li>不要依赖颜色单独传达信息，胶囊文案必须同时说明状态。</li>' +
+      '</ul></div>' +
+    '</div>' +
+  '</section>');
+
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-motion" data-section>' +
+    '<div class="sec-head"><span class="sec-num">07</span><h2>动效与深色模式</h2><p>完成一项要有回响；深色要有设计而不是简单反色</p></div>' +
+    '<h3>完成动效：一次操作，三段时间</h3>' +
+    motionFrames() +
+    '<div class="cols cols-2" style="margin-top:26px">' +
+      '<div>' +
+        '<h3>时序与曲线</h3>' +
+        '<table>' +
+          '<tr><th>动作</th><th>时长</th><th>曲线</th></tr>' +
+          '<tr><td>勾选命中（缩放 + 环形扩散）</td><td>120ms</td><td>spring(0.32, 0.6)</td></tr>' +
+          '<tr><td>状态色条 琥珀 → 青</td><td>180ms</td><td>ease-out</td></tr>' +
+          '<tr><td>卡片折叠 + 列表合拢</td><td>220–320ms</td><td>cubic-bezier(.2,0,0,1)</td></tr>' +
+          '<tr><td>进度环前进</td><td>320ms</td><td>ease-in-out</td></tr>' +
+          '<tr><td>面板进出（BottomSheet）</td><td>260ms</td><td>系统默认 spring</td></tr>' +
+          '<tr><td>滑动露出动作</td><td>跟手 + 160ms 回弹</td><td>decelerate</td></tr>' +
+        '</table>' +
+        '<p class="small muted" style="margin-top:10px">音效沿用现有 <code>todo-complete-ding.wav</code>，在 60ms 处叠入；完成卡片在 220ms 内仍可点击撤销。</p>' +
+      '</div>' +
+      '<div>' +
+        '<h3>深色模式映射</h3>' +
+        '<table>' +
+          '<tr><th>Token</th><th>浅色</th><th>深色</th></tr>' +
+          '<tr><td><code>bg</code></td><td>#F5F6F8</td><td>#0E1117</td></tr>' +
+          '<tr><td><code>surface</code></td><td>#FFFFFF</td><td>#14181F</td></tr>' +
+          '<tr><td><code>hairline</code></td><td>#E4E7ED</td><td>#222833</td></tr>' +
+          '<tr><td><code>ink</code></td><td>#12151B</td><td>#EDF0F5</td></tr>' +
+          '<tr><td><code>muted</code></td><td>#6B7480</td><td>#8B94A3</td></tr>' +
+          '<tr><td><code>accent</code></td><td>#3B5BDB</td><td>#7C93FF</td></tr>' +
+          '<tr><td><code>overdue</code></td><td>#E5484D</td><td>#FF8A8E</td></tr>' +
+        '</table>' +
+        '<p class="small muted" style="margin-top:10px">深色下不投阴影，用 <code>#222833</code> 描边与两级表面分层；语义色整体提亮一档，保证对比度 ≥ 4.5:1。</p>' +
+      '</div>' +
+    '</div>' +
+    '<div class="fig-row" style="margin-top:34px">' +
+      '<div class="fig"><span class="tag new">深色 · 主界面</span>' + darkScreen() +
+        '<div class="fig-cap"><b>同一套 Token，两种明度</b><span>开启「外观」设置后跟随系统；语义状态色提亮但语义不变，逾期仍然是同一个红。</span></div></div>' +
+      '<div style="max-width:520px">' +
+        '<h3>动效原则</h3>' +
+        '<div class="callouts" style="max-width:none">' +
+          '<div class="callout"><span class="num">1</span><div><b>动效只服务于状态变化。</b>列表滚动、页面切换不加多余动画；勾选、完成、同步这类“状态切换”才给动效。</div></div>' +
+          '<div class="callout"><span class="num">2</span><div><b>先反馈，后收尾。</b>勾选立即变化（&lt; 120ms 感知为“瞬时”），折叠与归位可以慢一些，避免用户以为没点上。</div></div>' +
+          '<div class="callout"><span class="num">3</span><div><b>始终可撤销。</b>完成/删除在 3 秒内提供撤销，删除走「移入回收站」语义而不是立刻抹除。</div></div>' +
+          '<div class="callout"><span class="num">4</span><div><b>尊重系统偏好。</b>读取 <code>AccessibilityInfo.isReduceMotionEnabled()</code>，开启减弱动效时折叠改为淡出（120ms）。</div></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 08 · 落地映射 ---------- */
+document.getElementById('rest').insertAdjacentHTML('beforeend',
+  '<section id="s-impl" data-section>' +
+    '<div class="sec-head"><span class="sec-num">08</span><h2>落地映射</h2><p>设计稿对应到当前代码的改动点</p></div>' +
+    '<div class="cols cols-2">' +
+      '<div>' +
+        '<h3>Token → 代码</h3>' +
+        '<table>' +
+          '<tr><th>设计项</th><th>落点</th></tr>' +
+          '<tr><td>色板与语义色</td><td><code>src/theme.ts</code> 新增 <code>status</code> 与 <code>project</code> 两组色，<code>colors</code> 中性色替换为新值</td></tr>' +
+          '<tr><td>主题色默认值</td><td><code>src/local/settingsRepository.ts</code> 的 <code>defaultThemePrimaryColor</code> 改为 <code>#3B5BDB</code></td></tr>' +
+          '<tr><td>字阶 / 间距 / 圆角</td><td><code>src/theme.ts</code> 增加 <code>typography</code>、调整 <code>radius.xxl = 16</code>、新增 <code>radius.sheet = 28</code></td></tr>' +
+          '<tr><td>概览条 / 时间分组 / 相对时间</td><td><code>src/features/daily/issues/IssueScreen.tsx</code> + <code>utils.ts</code> 新增 <code>describeDue()</code>、<code>groupIssues()</code></td></tr>' +
+          '<tr><td>已完成分段</td><td><code>IssueScreen</code> 增加 <code>view: \'open\' | \'done\'</code>，复用 <code>SegmentedControl</code></td></tr>' +
+          '<tr><td>Issue 详情面板</td><td>把现有 <code>Modal</code> 换成 <code>FormSheet</code>，接上 <code>emptyIssueForm()</code> 已有字段</td></tr>' +
+          '<tr><td>项目色与拖拽排序</td><td><code>issuesRepository</code> 项目对象加 <code>color</code>（<code>docs/supabase-schema.sql</code> 同步加列），面板改为拖拽</td></tr>' +
+          '<tr><td>深色模式</td><td><code>ThemeProvider</code> 增加 <code>scheme</code>，按 <code>useColorScheme()</code> 输出两套 <code>RuntimeThemeColors</code></td></tr>' +
+        '</table>' +
+      '</div>' +
+      '<div>' +
+        '<h3>实施顺序</h3>' +
+        '<table>' +
+          '<tr><th>阶段</th><th>内容</th><th>风险</th></tr>' +
+          '<tr><td>P0 · 视觉基线</td><td>Token 替换、卡片/按钮/chip 组件样式、概览条</td><td>低：只改样式表</td></tr>' +
+          '<tr><td>P1 · 信息结构</td><td>时间分组、相对时间文案、已完成分段、Issue 详情面板</td><td>中：需同步 <code>sortIssues</code> 与测试</td></tr>' +
+          '<tr><td>P2 · 交互增强</td><td>左滑双操作、完成动效与撤销、项目色 + 拖拽排序、骨架屏</td><td>中高：涉及手势与动画</td></tr>' +
+          '<tr><td>P3 · 深色与无障碍</td><td>深色 Token、对比度校对、动态字体、减弱动效</td><td>中：需逐屏回归</td></tr>' +
+        '</table>' +
+        '<h3 style="margin-top:24px">验收清单</h3>' +
+        '<ul class="small" style="padding-left:18px;color:var(--doc-ink-2)">' +
+          '<li>390 × 844 下首屏至少能看到 4 条 Issue，且「逾期 / 今天」分组同时可见。</li>' +
+          '<li>把主题色改成绿色，逾期项仍是红色、完成项仍是青色。</li>' +
+          '<li>所有可点元素用 VoiceOver 均可聚焦，命中区 ≥ 44pt。</li>' +
+          '<li>开启系统深色与动态字体最大档，无文字截断、无对比度低于 4.5:1 的组合。</li>' +
+          '<li>勾选一项后 300ms 内列表合拢，顶部进度环数字同步 +1。</li>' +
+          '<li>冷启动命中本地缓存时不出现骨架屏闪烁（对齐 <code>hydrated</code> 逻辑）。</li>' +
+        '</ul>' +
+      '</div>' +
+    '</div>' +
+    '<div class="divider"></div>' +
+    '<div class="do-dont">' +
+      '<div class="dd yes"><div class="h">本次改版保持不动</div><ul>' +
+        '<li>本地优先的存储结构与手动同步流程（<code>manualSync</code> / <code>syncMerge</code>）。</li>' +
+        '<li>快速添加「提交后不覆盖新输入」的行为与相关回归测试脚本。</li>' +
+        '<li>项目 → Issue 的归属模型与 Supabase 表名，仅在项目对象上新增 <code>color</code> 字段。</li>' +
+      '</ul></div>' +
+      '<div class="dd no"><div class="h">需要单独决策</div><ul>' +
+        '<li>是否引入「撤销删除 / 回收站」，这会带来数据层改动。</li>' +
+        '<li>是否要「今天 / 本周 / 全部」的时间范围筛选（稿中已给出分段样式）。</li>' +
+        '<li>项目色是否参与云同步（加列后老数据需要回填默认色）。</li>' +
+      '</ul></div>' +
+    '</div>' +
+  '</section>');
+
+/* ---------- 00 · 改版速览 ---------- */
+(function(){
+  const hero =
+    '<section id="s-hero" data-section style="padding-top:44px">' +
+      '<div class="sec-head"><span class="sec-num">00</span><h2>改版速览</h2><p>三个屏看懂新方向：结论先行、完成可见、深浅一致</p></div>' +
+      '<div class="fig-row">' +
+        '<div class="fig"><span class="tag new">待处理 · 主界面</span>' + newScreen() +
+          '<div class="fig-cap"><b>概览条 + 项目色 + 时间分组</b><span>先给结论（还有多少、有几项逾期），再进入列表；卡片左侧色条与时间胶囊共同表达优先级。</span></div></div>' +
+        '<div class="fig"><span class="tag new">已完成 · 成就区</span>' + doneScreen() +
+          '<div class="fig-cap"><b>完成项有独立分段与今日进度</b><span>勾掉的 Issue 不会凭空消失，而是落进「已完成」并保留完成时刻，形成正反馈。</span></div></div>' +
+        '<div class="fig"><span class="tag new">深色模式</span>' + darkScreen() +
+          '<div class="fig-cap"><b>同一套 Token 的另一种明度</b><span>不投阴影、改用描边分层；语义色提亮但语义不变。</span></div></div>' +
+      '</div>' +
+    '</section>';
+  document.getElementById('s-direction').insertAdjacentHTML('beforebegin', hero);
+})();
+
+/* ?only=<section> 只渲染一节，便于导出图片 */
+(function(){
+  const only = new URLSearchParams(location.search).get('only');
+  if (!only) return;
+  document.body.classList.add('only');
+  document.querySelectorAll('[data-section]').forEach(function(el){ if (el.id !== only) el.remove(); });
+  const rest = document.getElementById('rest'); if (rest && !rest.querySelector('section')) rest.remove();
+})();
+</script>
+</body>
+</html>

@@ -16,6 +16,7 @@ type RemoteIssueProject = {
   user_id: string;
   project_key: string;
   name: string;
+  color: string | null;
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
@@ -25,6 +26,12 @@ type RemoteIssueItem = {
   id: string;
   user_id: string;
   project_key: string;
+  number: number | null;
+  type: string | null;
+  priority: string | null;
+  status: string | null;
+  labels: string[] | null;
+  version: string | null;
   title: string;
   description: string | null;
   is_completed: boolean;
@@ -41,6 +48,9 @@ type RemoteSettings = {
   user_id: string;
   theme_primary_color: string;
   issue_projects_order: string[];
+  default_project_key: string | null;
+  default_issue_type: string | null;
+  inbox_first: boolean | null;
   updated_at: string;
 };
 
@@ -68,6 +78,7 @@ function toRemoteProject(project: IssueProject, userId: string): RemoteIssueProj
     user_id: userId,
     project_key: project.key,
     name: project.name,
+    color: project.color ?? null,
     created_at: createdAt,
     updated_at: requiredTimestamp(project.updated_at || createdAt),
     deleted_at: project.deleted_at ?? null,
@@ -79,6 +90,7 @@ function toLocalProject(project: RemoteIssueProject): IssueProject {
     id: project.id,
     key: project.project_key,
     name: project.name,
+    color: project.color,
     created_at: project.created_at,
     updated_at: project.updated_at,
     deleted_at: project.deleted_at,
@@ -92,6 +104,12 @@ function toRemoteIssue(issue: IssueItem, userId: string): RemoteIssueItem {
     id: issue.id,
     user_id: userId,
     project_key: issue.project_key,
+    number: issue.number ?? null,
+    type: issue.type ?? null,
+    priority: issue.priority ?? null,
+    status: issue.status ?? null,
+    labels: issue.labels ?? [],
+    version: issue.version ?? null,
     title: issue.title,
     description: issue.description ?? null,
     is_completed: Boolean(issue.is_completed),
@@ -110,6 +128,12 @@ function toLocalIssue(issue: RemoteIssueItem): IssueItem {
     id: issue.id,
     client_sync_id: issue.id,
     project_key: issue.project_key,
+    number: issue.number,
+    type: (issue.type as IssueItem['type']) ?? null,
+    priority: (issue.priority as IssueItem['priority']) ?? null,
+    status: (issue.status as IssueItem['status']) ?? null,
+    labels: Array.isArray(issue.labels) ? issue.labels : [],
+    version: issue.version,
     title: issue.title,
     description: issue.description,
     is_completed: Boolean(issue.is_completed),
@@ -134,6 +158,9 @@ function toRemoteSettings(settings: IssueSettings, userId: string): RemoteSettin
     user_id: userId,
     theme_primary_color: settings.theme_primary_color,
     issue_projects_order: settings.issue_projects_order,
+    default_project_key: settings.default_project_key || null,
+    default_issue_type: settings.default_issue_type || 'bug',
+    inbox_first: Boolean(settings.inbox_first),
     updated_at: settings.updated_at || new Date().toISOString(),
   };
 }
@@ -184,13 +211,13 @@ export async function runManualSync({
   report?.(ratioProgress('pull', 0, '拉取云端数据…'));
   const { data: remoteProjectsData, error: remoteProjectsError } = await supabase
     .from('issue_projects')
-    .select('id,user_id,project_key,name,created_at,updated_at,deleted_at')
+    .select('id,user_id,project_key,name,color,created_at,updated_at,deleted_at')
     .eq('user_id', userId);
   if (remoteProjectsError) throw remoteProjectsError;
 
   const { data: remoteIssuesData, error: remoteIssuesError } = await supabase
     .from('issue_items')
-    .select('id,user_id,project_key,title,description,is_completed,completed_at,due_date,due_time,location,created_at,updated_at,deleted_at')
+    .select('id,user_id,project_key,number,type,priority,status,labels,version,title,description,is_completed,completed_at,due_date,due_time,location,created_at,updated_at,deleted_at')
     .eq('user_id', userId);
   if (remoteIssuesError) throw remoteIssuesError;
 
@@ -218,7 +245,7 @@ export async function runManualSync({
   report?.(ratioProgress('settings', 0, '同步设置…'));
   const { data: remoteSettingsData, error: remoteSettingsError } = await supabase
     .from('issue_settings')
-    .select('user_id,theme_primary_color,issue_projects_order,updated_at')
+    .select('user_id,theme_primary_color,issue_projects_order,default_project_key,default_issue_type,inbox_first,updated_at')
     .eq('user_id', userId)
     .maybeSingle();
   if (remoteSettingsError) throw remoteSettingsError;
@@ -237,7 +264,7 @@ export async function runManualSync({
 
   const { data: nextRemoteSettingsData, error: nextRemoteSettingsError } = await supabase
     .from('issue_settings')
-    .select('user_id,theme_primary_color,issue_projects_order,updated_at')
+    .select('user_id,theme_primary_color,issue_projects_order,default_project_key,default_issue_type,inbox_first,updated_at')
     .eq('user_id', userId)
     .maybeSingle();
   if (nextRemoteSettingsError) throw nextRemoteSettingsError;
@@ -248,6 +275,9 @@ export async function runManualSync({
     await saveSettingsFromSync({
       theme_primary_color: nextRemoteSettings.theme_primary_color,
       issue_projects_order: nextRemoteSettings.issue_projects_order || [],
+      default_project_key: nextRemoteSettings.default_project_key || '',
+      default_issue_type: (nextRemoteSettings.default_issue_type as IssueSettings['default_issue_type']) || 'bug',
+      inbox_first: Boolean(nextRemoteSettings.inbox_first),
       updated_at: nextRemoteSettings.updated_at,
       sync_status: 'synced',
     });

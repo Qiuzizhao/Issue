@@ -1,1 +1,1 @@
-export { IssueScreen } from './IssueScreen';
+export { IssueScreen, prewarmIssueScreenData } from './IssueScreen';
