@@ -1,6 +1,6 @@
 export type SyncStatus = 'pending' | 'synced' | 'failed';
 
-/** Issue 类型：bug / 功能 / 杂事 / 文档 / 界面 */
+/** 历史类型仅用于兼容旧数据；当前记录统一为 bug。 */
 export type IssueType = 'bug' | 'feature' | 'chore' | 'docs' | 'ui';
 
 /** 优先级：P0 阻塞、P1 影响主流程、P2 普通、P3 有空再说 */
@@ -52,7 +52,6 @@ export type IssueItem = {
 
 export type IssueEditForm = {
   title: string;
-  type: IssueType;
   priority: IssuePriority;
   status: IssueStatus;
   labels: string[];
@@ -64,7 +63,6 @@ export type IssueEditForm = {
 export type IssueFilter = {
   query: string;
   projectKey: string | null;
-  type: IssueType | null;
   priority: IssuePriority | null;
   label: string | null;
 };

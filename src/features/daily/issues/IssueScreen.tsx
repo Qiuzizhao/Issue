@@ -24,7 +24,6 @@ import {
   colors,
   issuePriorities,
   issueStatuses,
-  issueTypes,
   projectColors,
   typeface,
   useThemeColors,
@@ -41,7 +40,6 @@ import type {
   IssueItem,
   IssueProject,
   IssueStatus,
-  IssueType,
   IssueViewMode,
 } from './types';
 import {
@@ -55,7 +53,6 @@ import {
   formatRelativeTime,
   groupIssuesByStatus,
   issuePriorityOptions,
-  issueTypeOptions,
   sortIssues,
   statusTitle,
 } from './utils';
@@ -96,31 +93,6 @@ export function prewarmIssueScreenData() {
     issueScreenPrewarmPromise = null;
   });
   return issueScreenPrewarmPromise;
-}
-
-/** 类型选择：五个彩色卡片（Bug / 功能 / 杂事 / 文档 / 界面） */
-function TypePicker({ value, onChange }: { value: IssueType; onChange: (value: IssueType) => void }) {
-  return (
-    <View style={styles.typePicker}>
-      {issueTypeOptions.map((option) => {
-        const tone = issueTypes[option.key];
-        const selected = value === option.key;
-        return (
-          <Pressable
-            key={option.key}
-            onPress={() => onChange(option.key)}
-            style={[
-              styles.typeCard,
-              selected && { backgroundColor: tone.soft, borderColor: tone.color },
-            ]}
-          >
-            <Ionicons color={selected ? tone.color : colors.muted} name={tone.icon as never} size={15} />
-            <Text style={[styles.typeCardText, selected && { color: tone.color, fontWeight: '700' }]}>{option.label}</Text>
-          </Pressable>
-        );
-      })}
-    </View>
-  );
 }
 
 type IssueListRowProps = {
@@ -221,7 +193,6 @@ export function IssueScreen() {
   const [filter, setFilter] = useState<IssueFilter>({
     query: '',
     projectKey: null,
-    type: null,
     priority: null,
     label: null,
   });
@@ -317,7 +288,7 @@ export function IssueScreen() {
   const inboxIssues = useMemo(() => issues.filter((issue) => issue.project_key === inboxKey), [issues]);
   const labelOptions = useMemo(() => allLabels(issues), [issues]);
   const activeFilterCount =
-    (filter.type ? 1 : 0) + (filter.priority ? 1 : 0) + (filter.label ? 1 : 0);
+    (filter.priority ? 1 : 0) + (filter.label ? 1 : 0);
 
   const headerSubtitle = `${counts.open} 待处理 · ${counts.in_progress} 进行中 · ${counts.done} 已完成`;
 
@@ -418,7 +389,6 @@ export function IssueScreen() {
 
   const openCreateSheet = useCallback(async (projectKey?: string) => {
     const settings = await getSettingsLocal().catch(() => null);
-    const defaultType = (settings?.default_issue_type as IssueType) || 'bug';
     const fallbackProject = projectKey
       ?? (settings?.inbox_first
         ? inboxKey
@@ -429,7 +399,6 @@ export function IssueScreen() {
             : (projects[0]?.key ?? inboxKey))));
     setCreateForm({
       ...emptyIssueForm(null),
-      type: defaultType,
       priority: 'P2',
     });
     setPendingProjectKey(fallbackProject);
@@ -448,7 +417,6 @@ export function IssueScreen() {
       const created = await createIssueLocal({
         project_key: projectKey,
         title,
-        type: createForm.type,
         priority: createForm.priority,
         status: 'open',
         labels: createForm.labels,
@@ -479,7 +447,6 @@ export function IssueScreen() {
     try {
       const updated = await updateIssueLocal(editingIssue.id, {
         title,
-        type: editForm.type,
         priority: editForm.priority,
         labels: editForm.labels,
         description: editForm.description || null,
@@ -817,7 +784,7 @@ export function IssueScreen() {
       {/* 详情 / 编辑 */}
       <FormSheet bottomSheetRef={detailSheetRef} contentStyle={styles.sheetContent} lockHeight snapPoints={['90%']}>
         <View style={styles.sheetHead}>
-          <TypeBadge type={editForm.type} />
+          <TypeBadge />
           <Text style={styles.sheetCode}>{editingIssue ? formatIssueCode(editingIssue) : ''}</Text>
           <View style={{ flex: 1 }} />
           <Pressable hitSlop={8} onPress={closeIssueDetail}>
@@ -825,11 +792,6 @@ export function IssueScreen() {
           </Pressable>
         </View>
         <Text style={styles.sheetTitle}>编辑 Issue</Text>
-
-        <View>
-          <Text style={styles.fieldLabel}>类型</Text>
-          <TypePicker value={editForm.type} onChange={(type) => setEditForm((current) => ({ ...current, type }))} />
-        </View>
 
         <View>
           <Text style={styles.fieldLabel}>标题</Text>
@@ -991,11 +953,6 @@ export function IssueScreen() {
         </View>
 
         <View>
-          <Text style={styles.fieldLabel}>类型</Text>
-          <TypePicker value={createForm.type} onChange={(type) => setCreateForm((current) => ({ ...current, type }))} />
-        </View>
-
-        <View>
           <Text style={styles.fieldLabel}>标题</Text>
           <SheetTextInput
             autoFocus
@@ -1097,32 +1054,10 @@ export function IssueScreen() {
         <View style={styles.lineHeaderRow}>
           <Text style={styles.sheetTitle}>筛选</Text>
           <Pressable
-            onPress={() => setFilter((current) => ({ ...current, type: null, priority: null, label: null }))}
+            onPress={() => setFilter((current) => ({ ...current, priority: null, label: null }))}
           >
             <Text style={{ color: colors.primaryDark, fontSize: 13, fontWeight: '600' }}>重置</Text>
           </Pressable>
-        </View>
-
-        <View>
-          <Text style={styles.fieldLabel}>类型</Text>
-          <View style={styles.pickRow}>
-            {issueTypeOptions.map((option) => {
-              const tone = issueTypes[option.key];
-              const selected = filter.type === option.key;
-              const count = issues.filter((issue) => (issue.type || 'bug') === option.key).length;
-              return (
-                <Pressable
-                  key={option.key}
-                  onPress={() => setFilter((current) => ({ ...current, type: selected ? null : option.key }))}
-                  style={[styles.pickChip, selected && { backgroundColor: tone.soft, borderColor: tone.color }]}
-                >
-                  <Ionicons color={selected ? tone.color : colors.muted} name={tone.icon as never} size={13} />
-                  <Text style={[styles.pickChipText, selected && { color: tone.color }]}>{option.label}</Text>
-                  <Text style={styles.chipCount}>{count}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
         </View>
 
         <View>

@@ -3,7 +3,6 @@ import type {
   IssuePriority,
   IssueProject,
   IssueStatus,
-  IssueType,
   SyncStatus,
 } from '@/src/features/daily/issues/types';
 import { projectColors } from '@/src/theme';
@@ -11,7 +10,6 @@ import { localKeys } from '../keys';
 import { getSettingsLocal, saveSettingsLocal } from '../settingsRepository';
 import { getCachedList, setCachedList } from './localListCache';
 
-const issueTypes: IssueType[] = ['bug', 'feature', 'chore', 'docs', 'ui'];
 const issuePriorities: IssuePriority[] = ['P0', 'P1', 'P2', 'P3'];
 const issueStatuses: IssueStatus[] = ['open', 'in_progress', 'done'];
 /** 早期版本的 blocked / wontfix 已下线，统一并入「待处理」 */
@@ -57,10 +55,6 @@ export function normalizeIssueProject(value: StoredProject, index = 0): IssuePro
   };
 }
 
-function normalizeType(value: unknown): IssueType {
-  return issueTypes.includes(value as IssueType) ? (value as IssueType) : 'bug';
-}
-
 function normalizePriority(value: unknown): IssuePriority {
   return issuePriorities.includes(value as IssuePriority) ? (value as IssuePriority) : 'P2';
 }
@@ -86,7 +80,7 @@ export function normalizeIssueItem(value: StoredIssue, index = 0): IssueItem {
     client_sync_id: typeof value.client_sync_id === 'string' ? value.client_sync_id : id,
     project_key: String(value.project_key || ''),
     number: typeof value.number === 'number' && Number.isFinite(value.number) ? value.number : null,
-    type: normalizeType(value.type),
+    type: 'bug',
     priority: normalizePriority(value.priority),
     status: normalizeStatus(value.status, isCompleted),
     labels: normalizeLabels(value.labels),
@@ -274,7 +268,7 @@ export async function createIssueLocal(payload: Partial<IssueItem>) {
     client_sync_id: id,
     project_key: projectKey,
     number: maxNumber + 1,
-    type: normalizeType(payload.type),
+    type: 'bug',
     priority: normalizePriority(payload.priority),
     status: isCompleted ? 'done' : status,
     labels: normalizeLabels(payload.labels),
@@ -302,7 +296,7 @@ export async function updateIssueLocal(id: string, payload: Partial<IssueItem>):
   const next = issues.map((item) => {
     if (item.id !== id) return item;
     const normalizedPayload: Partial<IssueItem> = { ...payload };
-    if (payload.type !== undefined) normalizedPayload.type = normalizeType(payload.type);
+    normalizedPayload.type = 'bug';
     if (payload.priority !== undefined) normalizedPayload.priority = normalizePriority(payload.priority);
     if (payload.labels !== undefined) normalizedPayload.labels = normalizeLabels(payload.labels);
     if (payload.status !== undefined) {

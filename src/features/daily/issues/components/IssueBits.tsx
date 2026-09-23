@@ -3,30 +3,19 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, issuePriorities, issueStatuses, issueTypes, radius, spacing, typeface } from '@/src/shared/theme';
-import type { IssueItem, IssuePriority, IssueStatus, IssueType } from '../types';
+import type { IssueItem, IssuePriority, IssueStatus } from '../types';
 import { deriveStatus, formatIssueCode, formatRelativeTime } from '../utils';
 
-const typeIcon: Record<IssueType, keyof typeof Ionicons.glyphMap> = {
-  bug: 'bug-outline',
-  feature: 'sparkles-outline',
-  chore: 'build-outline',
-  docs: 'document-text-outline',
-  ui: 'color-wand-outline',
-};
-
 export function TypeBadge({
-  type,
   completed,
   onPress,
   size = 22,
 }: {
-  type?: IssueType | null;
   completed?: boolean;
   onPress?: () => void;
   size?: number;
 }) {
-  const key: IssueType = type || 'bug';
-  const tone = issueTypes[key];
+  const tone = issueTypes.bug;
   const badgeStyle = {
     backgroundColor: completed ? issueStatuses.done.soft : tone.soft,
     height: size,
@@ -36,7 +25,7 @@ export function TypeBadge({
     <View style={[styles.typeBadge, badgeStyle]}>
       <Ionicons
         color={completed ? issueStatuses.done.color : tone.color}
-        name={completed ? 'checkmark' : typeIcon[key]}
+        name={completed ? 'checkmark' : 'bug-outline'}
         size={size * 0.62}
       />
     </View>
@@ -104,7 +93,7 @@ export function ProgressBar({ ratio, color = colors.primary }: { ratio: number; 
   );
 }
 
-/** 列表行：类型徽标 + 编号 + 标题 + 项目 / 标签 / 文件 / 时间 + 优先级 */
+/** 列表行：Bug 徽标 + 编号 + 标题 + 项目 / 标签 / 文件 / 时间 + 优先级 */
 export function IssueRow({
   issue,
   projectName,
@@ -148,7 +137,7 @@ export function IssueRow({
       onPress={onPress}
       style={({ pressed }) => [styles.row, compact && styles.rowCompact, closed && styles.rowClosed, pressed && styles.rowPressed]}
     >
-      <TypeBadge completed={status === 'done'} onPress={onToggleComplete} type={issue.type} />
+      <TypeBadge completed={status === 'done'} onPress={onToggleComplete} />
       <View style={styles.rowMain}>
         <View style={styles.rowTop}>
           <Text style={styles.rowCode}>{formatIssueCode(issue)}</Text>

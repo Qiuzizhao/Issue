@@ -290,25 +290,6 @@ export const styles = StyleSheet.create({
     fontSize: 12.5,
     fontWeight: '600',
   },
-  typePicker: {
-    flexDirection: 'row',
-    gap: spacing.sm - 2,
-  },
-  typeCard: {
-    alignItems: 'center',
-    backgroundColor: colors.surfaceMuted,
-    borderColor: 'transparent',
-    borderRadius: radius.lg,
-    borderWidth: 1.5,
-    flex: 1,
-    gap: 4,
-    paddingVertical: spacing.sm,
-  },
-  typeCardText: {
-    color: colors.textSoft,
-    fontSize: 10.5,
-    fontWeight: '600',
-  },
   sheetActions: {
     flexDirection: 'row',
     gap: spacing.sm,

@@ -1,12 +1,4 @@
-import type { IssueEditForm, IssueFilter, IssueItem, IssuePriority, IssueStatus, IssueType } from './types';
-
-export const issueTypeOptions: { key: IssueType; label: string }[] = [
-  { key: 'bug', label: 'Bug' },
-  { key: 'feature', label: '功能' },
-  { key: 'chore', label: '杂事' },
-  { key: 'docs', label: '文档' },
-  { key: 'ui', label: '界面' },
-];
+import type { IssueEditForm, IssueFilter, IssueItem, IssuePriority, IssueStatus } from './types';
 
 export const issuePriorityOptions: IssuePriority[] = ['P0', 'P1', 'P2', 'P3'];
 
@@ -23,7 +15,6 @@ const priorityRank: Record<IssuePriority, number> = { P0: 0, P1: 1, P2: 2, P3: 3
 export function emptyIssueForm(issue?: IssueItem | null): IssueEditForm {
   return {
     title: issue?.title || '',
-    type: (issue?.type as IssueType) || 'bug',
     priority: (issue?.priority as IssuePriority) || 'P2',
     status: deriveStatus(issue),
     labels: Array.isArray(issue?.labels) ? issue!.labels!.slice() : [],
@@ -117,7 +108,6 @@ export function issueMatchesQuery(issue: IssueItem, rawQuery: string) {
     String(issue.number ?? ''),
     (issue.labels || []).join(' '),
     issue.description || '',
-    issue.type || '',
   ]
     .join(' ')
     .toLowerCase();
@@ -128,7 +118,6 @@ export function filterIssues(items: IssueItem[], filter: IssueFilter) {
   return items.filter((item) => {
     // projectKey 为 null 表示全部项目，'' 表示收件箱（未归类）
     if (filter.projectKey !== null && item.project_key !== filter.projectKey) return false;
-    if (filter.type && (item.type || 'bug') !== filter.type) return false;
     if (filter.priority && (item.priority || 'P2') !== filter.priority) return false;
     if (filter.label && !(item.labels || []).includes(filter.label)) return false;
     return issueMatchesQuery(item, filter.query);
