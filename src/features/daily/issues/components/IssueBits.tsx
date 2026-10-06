@@ -141,7 +141,7 @@ export function IssueRow({
       <View style={styles.rowMain}>
         <View style={styles.rowTop}>
           <Text style={styles.rowCode}>{formatIssueCode(issue)}</Text>
-          <Text numberOfLines={compact ? 1 : 2} style={[styles.rowTitle, closed && styles.rowTitleClosed]}>
+          <Text style={[styles.rowTitle, closed && styles.rowTitleClosed]}>
             {issue.title}
           </Text>
         </View>
