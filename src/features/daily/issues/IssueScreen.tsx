@@ -323,7 +323,10 @@ export function IssueScreen() {
       Alert.alert('同步完成', `上传 ${result.uploadedProjects + result.uploadedIssues} 项，下载 ${result.downloadedProjects + result.downloadedIssues} 项。`);
     } catch (err) {
       setShowSyncProgress(false);
-      Alert.alert('同步失败', err instanceof Error ? err.message : '请稍后重试');
+      const message = err && typeof err === 'object' && 'message' in err && typeof err.message === 'string'
+        ? err.message
+        : '请稍后重试';
+      Alert.alert('同步失败', message);
     } finally {
       setSyncing(false);
     }
