@@ -779,8 +779,8 @@ export function IssueScreen() {
           </ScrollView>
         )}
 
-        <Pressable accessibilityLabel="新建 Issue" onPress={() => void openCreateSheet()} style={styles.fab}>
-          <Ionicons color="#fff" name="add" size={26} />
+        <Pressable accessibilityLabel="新建 Issue" hitSlop={10} onPress={() => void openCreateSheet()} style={styles.fab}>
+          <Ionicons color="#fff" name="add" size={28} />
         </Pressable>
       </View>
 

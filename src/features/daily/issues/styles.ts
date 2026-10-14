@@ -5,13 +5,13 @@ import { colors, radius, shadow, spacing, typeface } from '@/src/shared/theme';
 export const styles = StyleSheet.create({
   content: {
     gap: spacing.sm + 2,
-    paddingBottom: 96,
+    paddingBottom: 112,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
   },
   /** 列表用：间距由每个单元格自己控制（原来的 7 / 10 节奏），不再依赖容器 gap */
   listContent: {
-    paddingBottom: 96,
+    paddingBottom: 112,
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
   },
@@ -213,12 +213,12 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.primary,
     borderRadius: radius.full,
-    bottom: 28,
-    height: 52,
+    bottom: 48,
+    height: 60,
     justifyContent: 'center',
     position: 'absolute',
     right: spacing.lg,
-    width: 52,
+    width: 60,
     ...shadow,
   },
   sheetContent: {
