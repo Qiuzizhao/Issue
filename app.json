@@ -48,7 +48,8 @@
       "expo-web-browser",
       "expo-asset",
       "expo-audio",
-      "expo-font"
+      "expo-font",
+      "./plugins/with-ios-release-version"
     ],
     "experiments": {
       "typedRoutes": true
