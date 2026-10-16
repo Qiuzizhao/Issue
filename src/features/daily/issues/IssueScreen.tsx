@@ -635,10 +635,13 @@ export function IssueScreen() {
     if (inboxIssues.length) {
       chips.push({ key: inboxKey, name: '收件箱', color: colors.faint, count: countOpenIssues(inboxIssues) });
     }
-    for (const project of projects) {
-      const projectIssues = issues.filter((issue) => issue.project_key === project.key);
-      chips.push({ key: project.key, name: project.name, color: project.color || colors.faint, count: countOpenIssues(projectIssues) });
-    }
+    const sortedProjectChips = projects.map((project) => ({
+      key: project.key,
+      name: project.name,
+      color: project.color || colors.faint,
+      count: countOpenIssues(issues.filter((issue) => issue.project_key === project.key)),
+    })).sort((a, b) => Number(b.count > 0) - Number(a.count > 0));
+    chips.push(...sortedProjectChips);
     return chips;
   }, [inboxIssues, issues, projects]);
 
