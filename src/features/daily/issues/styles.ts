@@ -214,11 +214,11 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: radius.full,
     bottom: 48,
-    height: 60,
+    height: 80,
     justifyContent: 'center',
     position: 'absolute',
     right: spacing.lg,
-    width: 60,
+    width: 80,
     ...shadow,
   },
   sheetContent: {
