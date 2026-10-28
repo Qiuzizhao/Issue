@@ -103,7 +103,6 @@ type IssueListRowProps = {
   onOpen: (issue: IssueItem) => void;
   onToggle: (issue: IssueItem) => void;
   onDelete: (issue: IssueItem) => void;
-  onStatusMenu: (issue: IssueItem) => void;
   onSwipeActiveChange: (active: boolean) => void;
 };
 
@@ -116,7 +115,6 @@ const IssueListRow = React.memo(function IssueListRow({
   onOpen,
   onToggle,
   onDelete,
-  onStatusMenu,
   onSwipeActiveChange,
 }: IssueListRowProps) {
   return (
@@ -138,7 +136,6 @@ const IssueListRow = React.memo(function IssueListRow({
       >
         <IssueRow
           issue={issue}
-          onLongPress={() => onStatusMenu(issue)}
           onPress={() => onOpen(issue)}
           onToggleComplete={() => onToggle(issue)}
           projectColor={projectColor}
@@ -154,7 +151,6 @@ type BoardCardProps = {
   projectName?: string;
   projectColor?: string;
   onOpen: (issue: IssueItem) => void;
-  onStatusMenu: (issue: IssueItem) => void;
 };
 
 const BoardCard = React.memo(function BoardCard({
@@ -162,18 +158,16 @@ const BoardCard = React.memo(function BoardCard({
   projectName,
   projectColor,
   onOpen,
-  onStatusMenu,
 }: BoardCardProps) {
   return (
-    <Pressable onLongPress={() => onStatusMenu(issue)} delayLongPress={280} onPress={() => onOpen(issue)}>
-      <IssueRow
-        compact
-        dense
-        issue={issue}
-        projectColor={projectColor}
-        projectName={projectName}
-      />
-    </Pressable>
+    <IssueRow
+      compact
+      dense
+      issue={issue}
+      onPress={() => onOpen(issue)}
+      projectColor={projectColor}
+      projectName={projectName}
+    />
   );
 });
 
@@ -370,15 +364,6 @@ export function IssueScreen() {
     void setIssueStatus(issue, current === 'done' ? 'open' : 'done');
   }, [setIssueStatus]);
 
-  const promptIssueStatus = useCallback((issue: IssueItem) => {
-    Alert.alert(formatIssueCode(issue), issue.title, [
-      { text: '待处理', onPress: () => void setIssueStatus(issue, 'open') },
-      { text: '进行中', onPress: () => void setIssueStatus(issue, 'in_progress') },
-      { text: '已完成', onPress: () => void setIssueStatus(issue, 'done') },
-      { text: '取消', style: 'cancel' },
-    ]);
-  }, [setIssueStatus]);
-
   const openIssueDetail = useCallback((issue: IssueItem) => {
     setEditingIssue(issue);
     setEditForm(emptyIssueForm(issue));
@@ -571,14 +556,13 @@ export function IssueScreen() {
         issue={item.issue}
         onDelete={removeIssue}
         onOpen={openIssueDetail}
-        onStatusMenu={promptIssueStatus}
         onSwipeActiveChange={handleSwipeActiveChange}
         onToggle={toggleIssueCompleted}
         projectColor={project?.color || colors.faint}
         projectName={project?.name}
       />
     );
-  }, [feedbackIssueIds, handleSwipeActiveChange, openIssueDetail, projectByKey, promptIssueStatus, removeIssue, toggleIssueCompleted]);
+  }, [feedbackIssueIds, handleSwipeActiveChange, openIssueDetail, projectByKey, removeIssue, toggleIssueCompleted]);
 
   const renderListEmpty = () => {
     if (!hydrated || error) return null;
@@ -612,7 +596,6 @@ export function IssueScreen() {
                   key={issue.id}
                   issue={issue}
                   onOpen={openIssueDetail}
-                  onStatusMenu={promptIssueStatus}
                   projectColor={projectByKey.get(issue.project_key)?.color || colors.faint}
                   projectName={projectByKey.get(issue.project_key)?.name}
                 />

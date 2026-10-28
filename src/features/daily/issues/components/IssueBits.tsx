@@ -99,7 +99,6 @@ export function IssueRow({
   projectName,
   projectColor,
   onPress,
-  onLongPress,
   onToggleComplete,
   compact = false,
   dense = false,
@@ -108,7 +107,6 @@ export function IssueRow({
   projectName?: string;
   projectColor?: string;
   onPress?: () => void;
-  onLongPress?: () => void;
   onToggleComplete?: () => void;
   compact?: boolean;
   /** 看板列里的窄卡片：只保留项目与第一个标签 */
@@ -132,8 +130,6 @@ export function IssueRow({
   return (
     <Pressable
       accessibilityRole="button"
-      delayLongPress={320}
-      onLongPress={onLongPress}
       onPress={onPress}
       style={({ pressed }) => [styles.row, compact && styles.rowCompact, closed && styles.rowClosed, pressed && styles.rowPressed]}
     >
