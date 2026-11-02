@@ -434,6 +434,7 @@ export function IssueScreen() {
     setSaving(true);
     try {
       const updated = await updateIssueLocal(editingIssue.id, {
+        project_key: editingIssue.project_key,
         title,
         priority: editForm.priority,
         labels: editForm.labels,
@@ -601,7 +602,7 @@ export function IssueScreen() {
                 />
               )) : (
                 <View style={styles.boardColumnEmpty}>
-                  <Text style={styles.boardColumnEmptyText}>长按卡片可切换状态</Text>
+                  <Text style={styles.boardColumnEmptyText}>暂无记录</Text>
                 </View>
               )}
             </View>
