@@ -24,7 +24,8 @@
       "package": "com.qiuzizhao.issueapp",
       "versionCode": 13,
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "output": "static",
@@ -49,7 +50,8 @@
       "expo-asset",
       "expo-audio",
       "expo-font",
-      "./plugins/with-ios-release-version"
+      "./plugins/with-ios-release-version",
+      "./plugins/with-android-release-signing"
     ],
     "experiments": {
       "typedRoutes": true

@@ -7,6 +7,7 @@ import { ScrollView as GestureScrollView } from 'react-native-gesture-handler';
 import {
   ActivityIndicator,
   AppState,
+  BackHandler,
   Keyboard,
   Modal,
   Platform,
@@ -28,7 +29,7 @@ export type { FloatingSegmentedTabOption } from './FloatingSegmentedTabBar';
 export function Screen({ children }: PropsWithChildren) {
   const insets = useSafeAreaInsets();
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, Platform.OS === 'android' && { paddingBottom: insets.bottom }]}>
       <StatusBar style="dark" backgroundColor={colors.brandSoft} translucent />
       <View style={{ height: insets.top, backgroundColor: colors.brandSoft }} />
       {children}
@@ -170,6 +171,15 @@ export function FormSheet({
   const sheetOpenRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (!sheetOpenRef.current) return false;
+      bottomSheetRef.current?.dismiss();
+      return true;
+    });
+    return () => subscription.remove();
+  }, [bottomSheetRef]);
+  useEffect(() => {
     if (Platform.OS === 'web') return undefined;
 
     const subscription = AppState.addEventListener('change', (nextState) => {
@@ -206,6 +216,7 @@ export function FormSheet({
       enableOverDrag={!lockHeight}
       keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
       backdropComponent={(props) => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.4} />}
       backgroundStyle={styles.bottomSheetBg}
       handleIndicatorStyle={styles.bottomSheetIndicator}
