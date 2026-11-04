@@ -10,7 +10,7 @@ APK URLs under `/issue/releases/`. Other apps can use their own directories.
 - HTTPS: independent Let's Encrypt certificate. The HTTP listener also supports the existing Cloudflare Flexible mode by respecting the forwarded visitor scheme; direct HTTP visits redirect to HTTPS. Flexible leaves the Cloudflare-to-origin leg unencrypted. A future per-host Full (strict) rule can enable encrypted origin traffic without changing this site configuration.
 - Metadata: `Cache-Control: no-store` plus CDN-specific no-store headers.
 - APK: versioned filename, one-year immutable cache; never overwrite a released file.
-- All other app-update paths are inaccessible, including staging and previous metadata.
+- Download portal: `/` and `/assets/`; service health: `/health.json`. Staging files and previous metadata remain inaccessible.
 
 The app checks on cold start and offers a manual Settings check. Automatic checks
 are quiet on network failure. Choosing Later suppresses that release on automatic
@@ -58,3 +58,22 @@ with no-store for metadata, and 206 for range downloads. Existing Flexible mode
 was retained; the HTTP listener avoids redirecting HTTPS visitors forwarded by
 Cloudflare. Existing users install this updater-enabled APK once before future
 in-app updates can be offered.
+
+## Download website
+
+`https://updates.qiuzizhao.com/` serves the public static portal from
+`server/updates/web`. It fetches the same `/issue/latest.json` used by the native
+App, so publishing an APK automatically updates both the portal and App discovery.
+There is no hardcoded download version in the website. Invalid metadata or a
+network failure disables downloading and offers Retry.
+
+Deploy only the website and Nginx locations with:
+
+```sh
+python3 scripts/deploy-update-website.py
+```
+
+This uploads frontend assets and HTML, backs up the Nginx locations snippet, then
+validates and reloads Nginx. Published APKs and `latest.json` are preserved. When
+changing frontend CSS/JS, bump their query version in `index.html` to invalidate
+browser/CDN caching. Webpages are no-store; assets may cache for one hour.
