@@ -46,3 +46,15 @@ Validate cache behavior after publishing: metadata must not return a CDN HIT;
 a versioned APK should return `CF-Cache-Status: HIT` after an initial download.
 APK paths support HTTP range requests. Do not enable HTML-only challenges or
 interactive bot challenges on these machine-readable update paths.
+
+## Verified release
+
+On 2026-11-04, Issue 1.0.10 (16) was published and tested on an Android 15
+ARM64 emulator. The installed build 14 discovered the public manifest, downloaded
+and validated build 16, requested install-source permission and completed the
+system installer update. Local issue data survived, and the updated app reported
+that build 16 was current. Cloudflare returned HIT for the versioned APK, DYNAMIC
+with no-store for metadata, and 206 for range downloads. Existing Flexible mode
+was retained; the HTTP listener avoids redirecting HTTPS visitors forwarded by
+Cloudflare. Existing users install this updater-enabled APK once before future
+in-app updates can be offered.
