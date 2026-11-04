@@ -24,7 +24,7 @@ async function loadRelease() {
     const release = validate(await response.json());
     $('download-version').textContent = `v${release.versionName} · ${(release.size / 1024 / 1024).toFixed(1)} MB`;
     button.href = release.apkUrl; button.classList.remove('disabled'); button.setAttribute('aria-disabled', 'false');
-    $('download-label').textContent = '下载 APK';
+    $('download-label').textContent = '安卓下载';
   } catch {
     $('download-version').textContent = '版本获取失败'; $('download-label').textContent = '暂时无法下载';
     $('release-status').textContent = '暂时无法获取安装包，请重试'; $('release-status').hidden = false; $('retry').hidden = false;
