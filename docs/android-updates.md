@@ -7,7 +7,7 @@ APK URLs under `/issue/releases/`. Other apps can use their own directories.
 - Nginx site: `/etc/nginx/sites-available/app-updates`.
 - Nginx locations: `/etc/nginx/snippets/app-updates-locations.conf` (source in `server/updates/locations.conf`).
 - DNS: Cloudflare proxied A record `updates` to the existing server.
-- HTTPS: independent Let's Encrypt certificate; keep Cloudflare origin TLS validation enabled.
+- HTTPS: independent Let's Encrypt certificate. The HTTP listener also supports the existing Cloudflare Flexible mode by respecting the forwarded visitor scheme; direct HTTP visits redirect to HTTPS. Flexible leaves the Cloudflare-to-origin leg unencrypted. A future per-host Full (strict) rule can enable encrypted origin traffic without changing this site configuration.
 - Metadata: `Cache-Control: no-store` plus CDN-specific no-store headers.
 - APK: versioned filename, one-year immutable cache; never overwrite a released file.
 - All other app-update paths are inaccessible, including staging and previous metadata.

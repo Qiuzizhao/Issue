@@ -70,7 +70,7 @@ def publish(ssh, apk, notes):
             run(ssh, f'sudo -n install -m 644 {temp} {staging} && sudo -n mv {staging} {shlex.quote(remote_apk)}')
         print('APK uploaded, checking public HTTPS download', flush=True)
         actual = hashlib.sha256()
-        with urllib.request.urlopen(manifest['apkUrl'], timeout=90) as response:
+        with urllib.request.urlopen(urllib.request.Request(manifest['apkUrl'], headers={'User-Agent': 'IssueUpdater/1.0'}), timeout=90) as response:
             while chunk := response.read(1024 * 1024): actual.update(chunk)
         if actual.hexdigest() != digest: raise ValueError('Public CDN APK checksum mismatch')
         manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + '\n').encode()
@@ -78,7 +78,7 @@ def publish(ssh, apk, notes):
         run(ssh, f'sudo -n install -m 644 {temp} {ROOT}/latest.json.new')
         run(ssh, f'if test -f {ROOT}/latest.json; then sudo -n cp {ROOT}/latest.json {ROOT}/latest.json.previous; fi')
         run(ssh, f'sudo -n mv {ROOT}/latest.json.new {ROOT}/latest.json')
-        with urllib.request.urlopen(f'{DOMAIN}/issue/latest.json?verify={uuid.uuid4().hex}', timeout=20) as response:
+        with urllib.request.urlopen(urllib.request.Request(f'{DOMAIN}/issue/latest.json?verify={uuid.uuid4().hex}', headers={'User-Agent': 'IssueUpdater/1.0'}), timeout=20) as response:
             if json.load(response) != manifest: raise ValueError('Published manifest verification failed')
         print(f'Published Issue {version} ({code}): {manifest["apkUrl"]}')
     finally:
