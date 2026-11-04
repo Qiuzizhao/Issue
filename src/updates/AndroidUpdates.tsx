@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Alert, DeviceEventEmitter, Modal, NativeEventEmitter, NativeModules, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, DeviceEventEmitter, Modal, NativeEventEmitter, NativeModules, Platform, Pressable, StyleSheet, Text, ToastAndroid, View } from 'react-native';
 import { parseUpdateManifest, type UpdateManifest } from './updateManifest';
 
 const native = Platform.OS === 'android' ? NativeModules.IssueUpdates : null;
@@ -22,6 +22,7 @@ export function AndroidUpdates() {
     if (!native || checking.current || busy.current) return;
     if (!manual && Date.now() - lastAutomaticCheck < 6 * 60 * 60 * 1000) return;
     checking.current = true;
+    if (manual) ToastAndroid.show('正在检查更新…', ToastAndroid.SHORT);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 12000);
     try {

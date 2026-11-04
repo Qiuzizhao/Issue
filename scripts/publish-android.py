@@ -42,6 +42,9 @@ def inspect(apk):
     return match[3], int(match[2])
 
 def publish(ssh, apk, notes):
+    if not notes or len(notes) > 20 or any(not isinstance(note, str) or not note or len(note) > 1000 for note in notes):
+        raise ValueError('Provide 1-20 release notes of at most 1000 characters each')
+    if not 0 < apk.stat().st_size <= 209715200: raise ValueError('APK size is outside the supported limit')
     version, code = inspect(apk)
     if not re.fullmatch(r'[0-9A-Za-z._-]+', version): raise ValueError('Unsafe version name')
     filename = f'Issue-{version}-{code}.apk'
@@ -63,7 +66,8 @@ def publish(ssh, apk, notes):
         if not current_digest:
             sftp.put(str(apk), temp)
             assert run(ssh, f'sha256sum {temp}').split()[0] == digest, 'Remote upload checksum mismatch'
-            run(ssh, f'sudo -n install -m 644 {temp} {shlex.quote(remote_apk)}')
+            staging = shlex.quote(remote_apk + '.new')
+            run(ssh, f'sudo -n install -m 644 {temp} {staging} && sudo -n mv {staging} {shlex.quote(remote_apk)}')
         print('APK uploaded, checking public HTTPS download', flush=True)
         actual = hashlib.sha256()
         with urllib.request.urlopen(manifest['apkUrl'], timeout=90) as response:
@@ -71,9 +75,9 @@ def publish(ssh, apk, notes):
         if actual.hexdigest() != digest: raise ValueError('Public CDN APK checksum mismatch')
         manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + '\n').encode()
         with sftp.open(temp, 'wb') as f: f.write(manifest_bytes)
-        run(ssh, f'sudo -n install -m 644 {temp} {ROOT}/latest.json.new && ' +
-            f'if test -f {ROOT}/latest.json; then sudo -n cp {ROOT}/latest.json {ROOT}/latest.json.previous; fi; ' +
-            f'sudo -n mv {ROOT}/latest.json.new {ROOT}/latest.json')
+        run(ssh, f'sudo -n install -m 644 {temp} {ROOT}/latest.json.new')
+        run(ssh, f'if test -f {ROOT}/latest.json; then sudo -n cp {ROOT}/latest.json {ROOT}/latest.json.previous; fi')
+        run(ssh, f'sudo -n mv {ROOT}/latest.json.new {ROOT}/latest.json')
         with urllib.request.urlopen(f'{DOMAIN}/issue/latest.json?verify={uuid.uuid4().hex}', timeout=20) as response:
             if json.load(response) != manifest: raise ValueError('Published manifest verification failed')
         print(f'Published Issue {version} ({code}): {manifest["apkUrl"]}')

@@ -92,9 +92,11 @@ class IssueUpdates(private val context: ReactApplicationContext) : ReactContextB
             } }
           } finally { connection.disconnect() }
           require(digest(part).equals(sha256, true)) { "安装包校验失败，请重新下载" }
+          if (cancelled.get()) error("下载已取消")
           validate(part, version.toLong())
           require(part.renameTo(file)) { "无法保存更新，请检查可用空间" }
         }
+        if (cancelled.get()) error("下载已取消")
         validate(file, version.toLong())
         directory.listFiles()?.filter { it != file }?.forEach { it.delete() }
         progress(bytes.toLong(), bytes.toLong()); promise.resolve(null)
