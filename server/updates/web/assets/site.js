@@ -1,4 +1,4 @@
-const apps = { issue: 'com.qiuzizhao.issueapp', booky: 'com.qiuzizhao.booky' };
+const apps = { issue: 'com.qiuzizhao.issueapp', booky: 'com.qiuzizhao.booky', notes: 'com.qiuzizhao.notesquicknote' };
 
 function validate(data, app) {
   if (!data || data.packageName !== apps[app] || !Number.isSafeInteger(data.versionCode) || data.versionCode < 1 ||

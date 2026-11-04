@@ -56,7 +56,9 @@ def main():
     ssh = paramiko.SSHClient(); ssh.load_system_host_keys()
     try:
         try: ssh.connect(args.host, port=args.port, username=args.user, password=os.environ.get('ISSUE_DEPLOY_PASSWORD'), timeout=15)
-        except paramiko.AuthenticationException:
+        except paramiko.SSHException as error:
+            if not isinstance(error, paramiko.AuthenticationException) and 'No authentication methods available' not in str(error):
+                raise
             ssh.connect(args.host, port=args.port, username=args.user, password=getpass.getpass('SSH password: '), timeout=15)
         deploy(ssh)
     finally: ssh.close()

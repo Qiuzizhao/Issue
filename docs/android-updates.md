@@ -62,8 +62,9 @@ in-app updates can be offered.
 ## Download website
 
 `https://updates.qiuzizhao.com/` serves the public static portal from
-`server/updates/web`. It fetches the same `/issue/latest.json` used by the native
-App, so publishing an APK automatically updates both the portal and App discovery.
+`server/updates/web`. Issue, Booky, and 简笔 each have a download card that fetches
+their own `/issue/latest.json`, `/booky/latest.json`, or `/notes/latest.json`.
+Publishing an APK automatically updates both the portal and App discovery.
 There is no hardcoded download version in the website. Invalid metadata or a
 network failure disables downloading and offers Retry.
 
