@@ -1,13 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import appConfig from '../../../app.json';
+import { androidInstalledVersion, checkForAppUpdates } from '@/src/updates/AndroidUpdates';
 
 import { Header, IconButton, Screen } from '@/src/shared/components';
 import { colors, useThemeColors } from '@/src/shared/theme';
 import { styles } from './styles';
 
-const appVersion = '1.0.3 (4)';
+const appVersion = androidInstalledVersion
+  ? `${androidInstalledVersion.versionName} (${androidInstalledVersion.versionCode})`
+  : `${appConfig.expo.version} (${appConfig.expo.ios.buildNumber})`;
 
 export function SettingsScreen() {
   const themeColors = useThemeColors();
@@ -46,6 +50,13 @@ export function SettingsScreen() {
               <Text style={styles.helperText}>本地优先的开发者 Issue 追踪 · 版本 {appVersion}</Text>
             </View>
           </View>
+          {Platform.OS === 'android' && androidInstalledVersion ? (
+            <Pressable accessibilityRole="button" accessibilityLabel="检查更新" onPress={checkForAppUpdates} style={({ pressed }) => [styles.settingRow, pressed && styles.cardPressed]}>
+              <View style={styles.settingIconWrap}><Ionicons name="cloud-download-outline" size={22} color={themeColors.primary} /></View>
+              <View style={styles.settingRowText}><Text style={styles.helperTitle}>检查更新</Text><Text style={styles.helperText}>当前版本 {appVersion}</Text></View>
+              <Ionicons name="chevron-forward" size={19} color={colors.muted} />
+            </Pressable>
+          ) : null}
           <View style={styles.bottomSpacer} />
         </ScrollView>
       </View>
