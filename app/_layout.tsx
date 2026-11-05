@@ -10,6 +10,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider } from '@/src/shared/theme';
 import { prewarmIssueScreenData } from '@/src/features/daily/issues';
 import { AndroidUpdates } from '@/src/updates/AndroidUpdates';
+import { AutoSync } from '@/src/sync/AutoSync';
 
 (ScrollView as any).defaultProps = {
   ...(ScrollView as any).defaultProps,
@@ -43,6 +44,7 @@ export default function RootLayout() {
               </Stack>
               <StatusBar style="auto" />
               <AndroidUpdates />
+              <AutoSync />
             </BottomSheetModalProvider>
           </NavigationThemeProvider>
         </ThemeProvider>

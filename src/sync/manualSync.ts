@@ -10,6 +10,8 @@ import { getSyncMetadata, saveSyncMetadata } from '@/src/local/syncMetadataRepos
 import { mergeSyncRecords } from './syncMerge';
 import { countProgress, ratioProgress, SYNC_PROGRESS_COMPLETE, type SyncProgressListener } from './syncProgress';
 import { getCurrentSession, getSupabaseClient, isSupabaseConfigured } from './supabaseClient';
+import { createSyncTask } from './syncTask';
+import { getLocalMode } from '@/src/local/localMode';
 
 type RemoteIssueProject = {
   id: string;
@@ -56,6 +58,7 @@ type RemoteSettings = {
 
 export type ManualSyncResult =
   | { status: 'signedOut' }
+  | { status: 'localMode' }
   | {
       status: 'synced';
       uploadedProjects: number;
@@ -165,12 +168,13 @@ function toRemoteSettings(settings: IssueSettings, userId: string): RemoteSettin
   };
 }
 
-export async function runManualSync({
+async function executeSync({
   onProgress,
 }: {
-  /** 同步进度回调：只给「同步中」弹窗用，不影响同步结果 */
+  /** 自动和手动入口共享的真实进度。 */
   onProgress?: SyncProgressListener;
 } = {}): Promise<ManualSyncResult> {
+  if (await getLocalMode()) return { status: 'localMode' };
   if (!isSupabaseConfigured()) {
     throw new Error('还没有配置 Supabase。请设置 EXPO_PUBLIC_SUPABASE_URL 和 EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY。');
   }
@@ -238,8 +242,8 @@ export async function runManualSync({
   ).map((issue) => ({ ...issue, sync_status: 'synced' as const }));
 
   await Promise.all([
-    replaceIssueProjectsFromSync(mergedProjects),
-    replaceIssuesFromSync(mergedIssues),
+    replaceIssueProjectsFromSync(mergedProjects, localProjects),
+    replaceIssuesFromSync(mergedIssues, localIssues),
   ]);
 
   report?.(ratioProgress('settings', 0, '同步设置…'));
@@ -280,9 +284,9 @@ export async function runManualSync({
       inbox_first: Boolean(nextRemoteSettings.inbox_first),
       updated_at: nextRemoteSettings.updated_at,
       sync_status: 'synced',
-    });
+    }, localSettings);
   } else {
-    await saveSettingsFromSync(localSettings);
+    await saveSettingsFromSync(localSettings, localSettings);
   }
   report?.(ratioProgress('settings', 1, uploadedSettings ? '设置已上传' : '设置已同步'));
 
@@ -300,4 +304,13 @@ export async function runManualSync({
     downloadedSettings,
     syncedAt,
   };
+}
+
+const syncTask = createSyncTask<ManualSyncResult>((onProgress) => executeSync({ onProgress }));
+
+export const runManualSync = syncTask.run;
+export const subscribeSync = syncTask.subscribe;
+export const getSyncState = syncTask.getState;
+export async function waitForRunningSync() {
+  await syncTask.getRunningTask()?.catch(() => undefined);
 }

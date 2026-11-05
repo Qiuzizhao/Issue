@@ -44,7 +44,14 @@ export async function saveSettingsLocal(settings: Partial<IssueSettings>) {
   return nextSettings;
 }
 
-export async function saveSettingsFromSync(settings: Partial<IssueSettings>) {
+export async function saveSettingsFromSync(settings: Partial<IssueSettings>, snapshot?: IssueSettings) {
+  if (snapshot) {
+    const stored = await getJson<Partial<IssueSettings> | null>(localKeys.settings, null);
+    if (stored) {
+      const latest = normalizeIssueSettings(stored);
+      if (JSON.stringify(latest) !== JSON.stringify(snapshot)) return latest;
+    }
+  }
   const nextSettings = {
     ...normalizeIssueSettings(settings),
     sync_status: 'synced' as const,

@@ -8,7 +8,8 @@ import type {
 import { projectColors } from '@/src/theme';
 import { localKeys } from '../keys';
 import { getSettingsLocal, saveSettingsLocal } from '../settingsRepository';
-import { getCachedList, setCachedList } from './localListCache';
+import { getCachedList, setCachedList, updateCachedList } from './localListCache';
+import { preserveConcurrentChanges } from '@/src/sync/syncMerge';
 
 const issuePriorities: IssuePriority[] = ['P0', 'P1', 'P2', 'P3'];
 const issueStatuses: IssueStatus[] = ['open', 'in_progress', 'done'];
@@ -166,23 +167,23 @@ export async function listIssuesForSync() {
   return readIssuesLocal();
 }
 
-export async function replaceIssueProjectsFromSync(items: IssueProject[]) {
-  await setCachedList<IssueProject>(
+export async function replaceIssueProjectsFromSync(items: IssueProject[], snapshot: IssueProject[]) {
+  await updateCachedList<IssueProject>(
     localKeys.issueProjects,
-    items.map((item, index) => ({
+    (latest) => preserveConcurrentChanges(snapshot, latest, items.map((item, index) => ({
       ...normalizeIssueProject(item, index),
       sync_status: 'synced' as const,
-    }))
+    })))
   );
 }
 
-export async function replaceIssuesFromSync(items: IssueItem[]) {
-  await setCachedList<IssueItem>(
+export async function replaceIssuesFromSync(items: IssueItem[], snapshot: IssueItem[]) {
+  await updateCachedList<IssueItem>(
     localKeys.issues,
-    items.map((item, index) => ({
+    (latest) => preserveConcurrentChanges(snapshot, latest, items.map((item, index) => ({
       ...normalizeIssueItem(item, index),
       sync_status: 'synced' as const,
-    }))
+    })))
   );
 }
 

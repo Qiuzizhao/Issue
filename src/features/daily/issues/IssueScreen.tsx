@@ -28,7 +28,8 @@ import {
   typeface,
   useThemeColors,
 } from '@/src/shared/theme';
-import { runManualSync } from '@/src/sync/manualSync';
+import { getSyncState, runManualSync, subscribeSync } from '@/src/sync/manualSync';
+import { useAppLayout } from '@/src/shared/useAppLayout';
 import type { SyncProgress } from '@/src/sync/syncProgress';
 import { SwipeDeleteCard } from '../_shared/SwipeDeleteCard';
 import { GroupHeader, IssueRow, TypeBadge } from './components/IssueBits';
@@ -172,6 +173,7 @@ const BoardCard = React.memo(function BoardCard({
 });
 
 export function IssueScreen() {
+  const { compact } = useAppLayout();
   const themeColors = useThemeColors();
   const completeSoundPlayer = useAudioPlayer(require('../../../../assets/sounds/todo-complete-ding.wav'), {
     downloadFirst: true,
@@ -201,6 +203,7 @@ export function IssueScreen() {
   const [hydrated, setHydrated] = useState(Boolean(initialSnapshot));
   const [saving, setSaving] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [syncFailed, setSyncFailed] = useState(false);
   const [syncProgress, setSyncProgress] = useState<SyncProgress | null>(null);
   const [syncCompleted, setSyncCompleted] = useState(false);
   const [syncSummary, setSyncSummary] = useState<string | undefined>(undefined);
@@ -213,6 +216,7 @@ export function IssueScreen() {
   const projectSheetRef = useRef<BottomSheetModal>(null);
   const filterSheetRef = useRef<BottomSheetModal>(null);
   const completionFeedbackTimersRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+  const manualSyncVisibleRef = useRef(false);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -229,6 +233,14 @@ export function IssueScreen() {
       setHydrated(true);
     }
   }, []);
+
+  useEffect(() => subscribeSync((state) => {
+    setSyncing(state.status === 'running');
+    setSyncFailed(state.status === 'failed');
+    if (state.status === 'succeeded' && state.result?.status === 'synced') {
+      void loadData();
+    }
+  }), [loadData]);
 
   useEffect(() => {
     const task = InteractionManager.runAfterInteractions(() => {
@@ -293,14 +305,20 @@ export function IssueScreen() {
   }, [completeSoundPlayer]);
 
   const handleManualSync = useCallback(async () => {
-    if (syncing) return;
-    setSyncing(true);
-    setSyncProgress(null);
+    if (manualSyncVisibleRef.current) return;
+    manualSyncVisibleRef.current = true;
+    const current = getSyncState();
+    setSyncProgress(current.status === 'running' ? current.progress : null);
     setSyncCompleted(false);
     setSyncSummary(undefined);
     setShowSyncProgress(true);
     try {
       const result = await runManualSync({ onProgress: setSyncProgress });
+      if (result.status === 'localMode') {
+        setShowSyncProgress(false);
+        Alert.alert('本地模式已开启', '请在设置中关闭本地模式后再同步。');
+        return;
+      }
       if (result.status === 'signedOut') {
         setShowSyncProgress(false);
         Alert.alert('需要登录', '请先登录账号后再同步 Issue 数据。', [
@@ -309,7 +327,6 @@ export function IssueScreen() {
         ]);
         return;
       }
-      await loadData();
       setSyncSummary(`已同步 ${result.uploadedProjects + result.uploadedIssues} 项 · 下载 ${result.downloadedProjects + result.downloadedIssues} 项`);
       setSyncCompleted(true);
       await new Promise((resolve) => setTimeout(resolve, 700));
@@ -322,9 +339,9 @@ export function IssueScreen() {
         : '请稍后重试';
       Alert.alert('同步失败', message);
     } finally {
-      setSyncing(false);
+      manualSyncVisibleRef.current = false;
     }
-  }, [loadData, syncing]);
+  }, []);
 
   /** 局部更新内存里的单条 Issue，避免每次操作都重读整个存储 */
   const patchIssueLocally = useCallback((id: string, patch: Partial<IssueItem>) => {
@@ -677,7 +694,7 @@ export function IssueScreen() {
             <Pressable
               key={option.key}
               onPress={() => setView(option.key)}
-              style={[styles.viewSwitchItem, active && styles.viewSwitchItemActive]}
+              style={[styles.viewSwitchItem, compact && styles.viewSwitchItemCompact, active && styles.viewSwitchItemActive]}
             >
               <Ionicons color={active ? colors.text : colors.muted} name={option.icon as never} size={16} />
               <Text style={[styles.viewSwitchText, active && styles.viewSwitchTextActive]}>{option.label}</Text>
@@ -705,7 +722,7 @@ export function IssueScreen() {
 
       <StateView error={error} loading={loading && !hydrated} onRetry={loadData} />
     </>
-  ), [activeFilterCount, error, filter.projectKey, hydrated, loadData, loading, projectChips, query, view]);
+  ), [activeFilterCount, compact, error, filter.projectKey, hydrated, loadData, loading, projectChips, query, view]);
 
   return (
     <Screen>
@@ -722,8 +739,8 @@ export function IssueScreen() {
               <Ionicons color={colors.textSoft} name="folder-outline" size={17} />
             </Pressable>
             <IconButton
-              name={syncing ? 'hourglass-outline' : 'sync-outline'}
-              label="同步"
+              name={syncing ? 'hourglass-outline' : syncFailed ? 'cloud-offline-outline' : 'sync-outline'}
+              label={syncing ? '同步中，查看进度' : syncFailed ? '同步失败，点击重试' : '同步'}
               transparent
               color={themeColors.primary}
               onPress={() => void handleManualSync()}
@@ -737,7 +754,7 @@ export function IssueScreen() {
       <View style={{ flex: 1 }}>
         {view === 'list' ? (
           <FlatList
-            contentContainerStyle={styles.listContent}
+            contentContainerStyle={[styles.listContent, compact && styles.compactContent]}
             data={listRows}
             initialNumToRender={8}
             keyboardShouldPersistTaps="handled"
@@ -755,7 +772,7 @@ export function IssueScreen() {
           />
         ) : (
           <ScrollView
-            contentContainerStyle={styles.content}
+            contentContainerStyle={[styles.content, compact && styles.compactContent]}
             keyboardShouldPersistTaps="handled"
             scrollEnabled={scrollEnabled}
             showsVerticalScrollIndicator={false}

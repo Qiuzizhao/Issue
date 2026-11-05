@@ -22,6 +22,7 @@ import { styles } from './styles';
 
 import { colors, spacing, useThemeColors } from '@/src/shared/theme';
 import { colorWithAlpha } from '@/src/shared/utils';
+import { useAppLayout } from '@/src/shared/useAppLayout';
 
 export { FloatingSegmentedTabBar } from './FloatingSegmentedTabBar';
 export type { FloatingSegmentedTabOption } from './FloatingSegmentedTabBar';
@@ -57,11 +58,12 @@ export function Header({
 }) {
   const leftAligned = align === 'left' || size === 'large';
   const large = size === 'large';
+  const { compact } = useAppLayout();
   return (
-    <View style={[styles.header, large && styles.headerLarge, centered && styles.headerCentered]}>
+    <View style={[styles.header, large && styles.headerLarge, compact && { paddingHorizontal: 12 }, large && compact && { height: 56 }, centered && styles.headerCentered]}>
       <View style={[styles.headerSide, styles.headerSideLeft, large && styles.headerSideLargeLeft]}>{action}</View>
       <View style={[styles.headerText, leftAligned && styles.headerTextLeft]}>
-        <Text style={[styles.title, large && styles.titleLarge, leftAligned && styles.titleLeft]} numberOfLines={1}>{title}</Text>
+        <Text style={[styles.title, large && styles.titleLarge, large && compact && { fontSize: 22, lineHeight: 28 }, leftAligned && styles.titleLeft]} numberOfLines={1}>{title}</Text>
         {subtitle ? (
           <Text style={[styles.subtitle, leftAligned && styles.subtitleLeft]} numberOfLines={1}>{subtitle}</Text>
         ) : null}

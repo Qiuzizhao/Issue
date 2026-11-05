@@ -41,3 +41,17 @@ export function mergeSyncRecords<T extends SyncRecord>(localRecords: T[], remote
     return b.id.localeCompare(a.id);
   });
 }
+
+/** Keep edits committed locally while the network was working, including tombstones. */
+export function preserveConcurrentChanges<T extends SyncRecord>(snapshot: T[], latest: T[], merged: T[]) {
+  const before = new Map(snapshot.map((record) => [record.id, record]));
+  const currentIds = new Set(latest.map((record) => record.id));
+  const result = new Map(merged.map((record) => [record.id, record]));
+  for (const record of latest) {
+    if (JSON.stringify(record) !== JSON.stringify(before.get(record.id))) result.set(record.id, record);
+  }
+  for (const record of snapshot) {
+    if (!currentIds.has(record.id)) result.delete(record.id);
+  }
+  return [...result.values()];
+}

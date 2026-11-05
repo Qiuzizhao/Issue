@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, issuePriorities, issueStatuses, issueTypes, radius, spacing, typeface } from '@/src/shared/theme';
 import type { IssueItem, IssuePriority, IssueStatus } from '../types';
 import { deriveStatus, formatIssueCode, formatRelativeTime } from '../utils';
+import { useAppLayout } from '@/src/shared/useAppLayout';
 
 export function TypeBadge({
   completed,
@@ -112,10 +113,15 @@ export function IssueRow({
   /** 看板列里的窄卡片：只保留项目与第一个标签 */
   dense?: boolean;
 }) {
+  const { compact: narrowLayout } = useAppLayout();
   const status = deriveStatus(issue);
   const closed = status === 'done';
   const labels = (issue.labels || []).slice(0, dense ? 1 : 2);
   const meta: React.ReactNode[] = [];
+
+  if (narrowLayout) {
+    meta.push(<Text key="code" style={styles.rowCode}>{formatIssueCode(issue)}</Text>);
+  }
 
   if (projectName) {
     meta.push(
@@ -136,7 +142,7 @@ export function IssueRow({
       <TypeBadge completed={status === 'done'} onPress={onToggleComplete} />
       <View style={styles.rowMain}>
         <View style={styles.rowTop}>
-          <Text style={styles.rowCode}>{formatIssueCode(issue)}</Text>
+          {!narrowLayout ? <Text style={styles.rowCode}>{formatIssueCode(issue)}</Text> : null}
           <Text style={[styles.rowTitle, closed && styles.rowTitleClosed]}>
             {issue.title}
           </Text>
@@ -188,9 +194,11 @@ const styles = StyleSheet.create({
   labelTag: {
     backgroundColor: colors.surfaceMuted,
     borderRadius: 5,
-    height: 18,
+    minHeight: 18,
     justifyContent: 'center',
     paddingHorizontal: 6,
+    maxWidth: '100%',
+    flexShrink: 1,
   },
   labelText: {
     color: colors.textSoft,
@@ -282,16 +290,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: 6,
-    overflow: 'hidden',
+    flexWrap: 'wrap',
   },
   metaItem: {
     alignItems: 'center',
     flexDirection: 'row',
     gap: 4,
+    maxWidth: '100%',
+    flexShrink: 1,
   },
   metaText: {
     color: colors.muted,
     fontSize: 11.5,
+    flexShrink: 1,
   },
   projectDot: {
     borderRadius: radius.full,

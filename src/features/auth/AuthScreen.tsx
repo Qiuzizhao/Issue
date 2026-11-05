@@ -5,6 +5,8 @@ import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'r
 import { clearAccountLocalData } from '@/src/local/localDataRepository';
 import { Header, IconButton, PrimaryButton, Screen, SheetTextInput } from '@/src/shared/components';
 import { colors, radius, spacing } from '@/src/shared/theme';
+import { waitForRunningSync } from '@/src/sync/manualSync';
+import { getLocalMode } from '@/src/local/localMode';
 import {
   getCurrentSession,
   isSupabaseConfigured,
@@ -38,8 +40,10 @@ export function AuthScreen() {
       const result = mode === 'signIn'
         ? await signInWithEmailPassword(trimmedEmail, password)
         : await signUpWithEmailPassword(trimmedEmail, password);
-      setUserEmail(result.user?.email ?? trimmedEmail);
-      Alert.alert(mode === 'signIn' ? '登录成功' : '注册成功', '现在可以回到 Issue 页手动同步。', [
+      setUserEmail(result.session?.user.email ?? null);
+      const message = !result.session ? '请查看邮箱并完成验证后登录。'
+        : await getLocalMode() ? '本地模式已开启，云端同步已暂停。' : '已登录，将在后台自动同步。';
+      Alert.alert(mode === 'signIn' ? '登录成功' : '注册成功', message, [
         { text: '好的', onPress: () => router.replace('/') },
       ]);
     } catch (err) {
@@ -53,6 +57,8 @@ export function AuthScreen() {
     setLoading(true);
     try {
       await signOut();
+      // Finish any in-flight writeback before clearing this account's local data.
+      await waitForRunningSync();
       await clearAccountLocalData();
       setUserEmail(null);
       Alert.alert('已退出登录', '本机上的账号 Issue 和同步状态已清空。', [

@@ -1,6 +1,6 @@
 {
   "name": "issue-standalone-app",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "private": true,
   "main": "expo-router/entry",
   "scripts": {
@@ -11,6 +11,7 @@
     "lint": "expo lint",
     "test:local-sync": "node scripts/test-issue-local-sync.mjs",
     "test:sync-progress": "node scripts/test-issue-sync-progress.mjs",
+    "test:auto-sync": "node --test scripts/test-issue-auto-sync.mjs",
     "test:structure": "node scripts/test-issue-port-structure.mjs",
     "apk": "bash scripts/build-android.sh"
   },

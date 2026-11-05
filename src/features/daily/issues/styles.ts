@@ -15,6 +15,10 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.md,
   },
+  compactContent: {
+    paddingHorizontal: 12,
+    paddingTop: 8,
+  },
   /** 列表头部区块：与原来的容器 gap 一致 */
   headerBlock: {
     gap: spacing.sm + 2,
@@ -146,6 +150,13 @@ export const styles = StyleSheet.create({
   },
   viewSwitchItemActive: {
     backgroundColor: colors.surface,
+  },
+  viewSwitchItemCompact: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+    minHeight: 40,
+    paddingVertical: 6,
   },
   viewSwitchText: {
     color: colors.textSoft,

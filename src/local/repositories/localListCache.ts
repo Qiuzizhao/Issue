@@ -25,3 +25,9 @@ export async function setCachedList<T>(key: string, items: T[]) {
   listCache.set(key, items);
   await setJson<T[]>(key, items);
 }
+
+export async function updateCachedList<T>(key: string, update: (current: T[]) => T[]) {
+  await getCachedList<T>(key);
+  // Read the latest cache and replace synchronously, before awaiting persistence.
+  await setCachedList(key, update(listCache.get(key) as T[]));
+}

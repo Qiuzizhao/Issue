@@ -147,6 +147,12 @@ export function SwipeActionCard({
   }, [canSwipeInDirection, onSwipeActiveChange]);
 
   const renderedAction = typeof action === 'function' ? action({ close }) : action;
+  // Fractional Android densities can round the closed action rail into view.
+  const actionOpacity = translateX.interpolate({
+    inputRange: [-Math.min(actionWidth, 12), 0],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
 
   return (
     <View style={containerStyle}>
@@ -161,7 +167,9 @@ export function SwipeActionCard({
         >
           {children}
         </View>
-        {renderedAction}
+        <Animated.View style={{ alignSelf: 'stretch', flexDirection: 'row', opacity: actionOpacity }}>
+          {renderedAction}
+        </Animated.View>
       </Animated.View>
     </View>
   );
