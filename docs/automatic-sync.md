@@ -17,8 +17,8 @@ iOS 与 Android 共用根布局中的 `AutoSync`、登录入口、本地模式�
 
 `npm run test:auto-sync` 覆盖共享任务身份、进度接入、失败重试、登录及前后台生命周期、本地模式零网络请求、真实同步入口与仓库写回的隔离测试。云端通过替身模拟，未使用真实账号上传或改动生产数据。
 
-另运行 TypeScript、lint、现有本地同步、进度与项目结构检查。本次未发布新版 App。
+另运行 TypeScript、lint、现有本地同步、进度与项目结构检查。双端正式发布状态见 [1.0.11 发布记录](releases/1.0.11.md)。
 
 iOS 补测覆盖 inactive/null 冷启动、通知中心、后台返回、原生 AppState 与登录事件接线、手动任务复用及监听清理。测试使用事件替身，不等同于 iPhone 真机验收。
 
-2026-11-05：21 项同步测试、类型检查和 lint 通过；`expo export --platform ios` 成功生成包含自动同步入口的 iOS Hermes bundle（`artifacts/ios-auto-sync-export/`）。未执行原生归档或 TestFlight 上传。
+2026-11-05：21 项同步测试、类型检查和 lint 通过；`expo export --platform ios` 成功生成包含自动同步入口的 iOS Hermes bundle（`artifacts/ios-auto-sync-export/`）。随后完成 iOS 1.0.11（14）原生归档和 TestFlight 上传，Apple 已处理通过，内部测试可用。

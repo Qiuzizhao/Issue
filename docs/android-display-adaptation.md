@@ -13,6 +13,6 @@
 
 已通过 TypeScript、Expo lint、现有项目结构检查、3 项配置插件测试，以及本地 `:app:compileDebugKotlin` 编译。插件测试覆盖生命周期保留、重复运行和拒绝覆盖自定义上下文。
 
-本次未进行模拟器或真机视觉验收，未构建或发布新版 APK。新配置需要安装包含这些原生修改的新版 APK 后生效。
+正式 APK 已于 1.0.11（17）构建发布，并完成模拟器同签名覆盖安装、320dp 窄屏启动及本地模式持久化检查，见 [发布记录](releases/1.0.11.md)。未进行安卓厂商真机验收。新配置在安装新版 APK 后生效。
 
 配置插件检查命令：`node --test scripts/test-issue-display-density.cjs`。
